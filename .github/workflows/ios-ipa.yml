@@ -1,0 +1,55 @@
+name: iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build-ios-ipa:
+    name: Build unsigned iOS IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Precache iOS artifacts
+        run: flutter precache --ios
+
+      - name: Build iOS app without code signing
+        run: flutter build ios --release --no-codesign
+
+      - name: Package unsigned IPA
+        run: |
+          IPA_DIR="build/ios/ipa"
+          PAYLOAD_DIR="$IPA_DIR/Payload"
+          APP_PATH="build/ios/iphoneos/Runner.app"
+          IPA_PATH="$IPA_DIR/tchin_app_3-unsigned.ipa"
+
+          test -d "$APP_PATH"
+          rm -rf "$IPA_DIR"
+          mkdir -p "$PAYLOAD_DIR"
+          cp -R "$APP_PATH" "$PAYLOAD_DIR/"
+          (cd "$IPA_DIR" && zip -qry "$(basename "$IPA_PATH")" Payload)
+          ls -lh "$IPA_PATH"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tchin-app-3-ios-unsigned-ipa
+          path: build/ios/ipa/tchin_app_3-unsigned.ipa
+          if-no-files-found: error

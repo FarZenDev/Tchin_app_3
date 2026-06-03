@@ -1,91 +1,159 @@
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdService {
   InterstitialAd? _interstitialAd;
-  bool _isAdLoaded = false;
-  bool _isSupported = true;
-  
-  // Test Ad Unit IDs - IMPORTANT: Replace with your real Ad Unit IDs before publishing
-  static const String _androidAdUnitId = 'ca-app-pub-3940256099942544/1033173712'; // Test ID
-  static const String _iosAdUnitId = 'ca-app-pub-3940256099942544/4411468910'; // Test ID
-  
-  static String get adUnitId {
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return _androidAdUnitId;
-    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      return _iosAdUnitId;
-    }
-    return _androidAdUnitId;
+  bool _isInterstitialLoading = false;
+  bool _isInitialized = false;
+  bool _isSupported = supportsAdsPlatform;
+  DateTime? _lastInterstitialShownAt;
+
+  static const Duration _minimumInterstitialInterval = Duration(minutes: 2);
+
+  // Google test Ad Unit IDs. Replace these before publishing.
+  static const String _androidBannerAdUnitId =
+      'ca-app-pub-3940256099942544/9214589741';
+  static const String _iosBannerAdUnitId =
+      'ca-app-pub-3940256099942544/2435281174';
+  static const String _androidInterstitialAdUnitId =
+      'ca-app-pub-3940256099942544/1033173712';
+  static const String _iosInterstitialAdUnitId =
+      'ca-app-pub-3940256099942544/4411468910';
+
+  static bool get supportsAdsPlatform {
+    return !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS);
   }
-  
+
+  bool get isSupported => _isSupported;
+  bool get isInitialized => _isInitialized;
+  bool get canRequestAds => _isSupported && _isInitialized;
+
+  static String get bannerAdUnitId {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return _androidBannerAdUnitId;
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return _iosBannerAdUnitId;
+    }
+    return _androidBannerAdUnitId;
+  }
+
+  static String get interstitialAdUnitId {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return _androidInterstitialAdUnitId;
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return _iosInterstitialAdUnitId;
+    }
+    return _androidInterstitialAdUnitId;
+  }
+
   Future<void> initialize() async {
-    // Google Mobile Ads is only supported on Android and iOS
-    if (kIsWeb || (defaultTargetPlatform != TargetPlatform.android && defaultTargetPlatform != TargetPlatform.iOS)) {
+    if (!supportsAdsPlatform) {
       _isSupported = false;
       debugPrint('AdService: Ads not supported on this platform');
       return;
     }
-    
+
     try {
       await MobileAds.instance.initialize();
+      _isInitialized = true;
       loadInterstitialAd();
     } catch (e) {
       debugPrint('AdService initialization error: $e');
       _isSupported = false;
     }
   }
-  
+
   void loadInterstitialAd() {
-    if (!_isSupported) return;
-    
+    if (!canRequestAds || _isInterstitialLoading || _interstitialAd != null) {
+      return;
+    }
+
+    _isInterstitialLoading = true;
+
     InterstitialAd.load(
-      adUnitId: adUnitId,
+      adUnitId: interstitialAdUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
           _interstitialAd = ad;
-          _isAdLoaded = true;
-          
-          // Set callbacks
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              ad.dispose();
-              _isAdLoaded = false;
-              // Preload next ad
-              loadInterstitialAd();
-            },
-            onAdFailedToShowFullScreenContent: (ad, error) {
-              debugPrint('Ad failed to show: $error');
-              ad.dispose();
-              _isAdLoaded = false;
-              loadInterstitialAd();
-            },
-          );
+          _isInterstitialLoading = false;
         },
         onAdFailedToLoad: (error) {
           debugPrint('InterstitialAd failed to load: $error');
-          _isAdLoaded = false;
+          _isInterstitialLoading = false;
         },
       ),
     );
   }
-  
-  Future<void> showAdIfReady() async {
-    if (!_isSupported) {
+
+  Future<bool> showInterstitialIfReady({bool isPremium = false}) async {
+    if (isPremium) return false;
+
+    if (!canRequestAds) {
       debugPrint('Ads not supported on this platform');
-      return;
+      return false;
     }
-    
-    if (_isAdLoaded && _interstitialAd != null) {
-      await _interstitialAd!.show();
-      _interstitialAd = null;
-      _isAdLoaded = false;
-    } else {
+
+    final lastShownAt = _lastInterstitialShownAt;
+    if (lastShownAt != null &&
+        DateTime.now().difference(lastShownAt) < _minimumInterstitialInterval) {
+      return false;
+    }
+
+    final ad = _interstitialAd;
+    if (ad == null) {
       debugPrint('Ad not ready yet');
+      loadInterstitialAd();
+      return false;
+    }
+
+    _interstitialAd = null;
+    _lastInterstitialShownAt = DateTime.now();
+
+    final dismissedCompleter = Completer<void>();
+    void completeOnce() {
+      if (!dismissedCompleter.isCompleted) {
+        dismissedCompleter.complete();
+      }
+    }
+
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        loadInterstitialAd();
+        completeOnce();
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        debugPrint('InterstitialAd failed to show: $error');
+        ad.dispose();
+        loadInterstitialAd();
+        completeOnce();
+      },
+    );
+
+    try {
+      await ad.show();
+      await dismissedCompleter.future.timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {},
+      );
+      return true;
+    } catch (e) {
+      debugPrint('InterstitialAd show error: $e');
+      ad.dispose();
+      loadInterstitialAd();
+      return false;
     }
   }
-  
+
+  Future<void> showAdIfReady({bool isPremium = false}) async {
+    await showInterstitialIfReady(isPremium: isPremium);
+  }
+
   void dispose() {
     _interstitialAd?.dispose();
   }

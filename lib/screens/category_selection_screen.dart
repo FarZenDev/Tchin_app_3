@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/game_layout.dart';
+import '../widgets/ad_banner_slot.dart';
 import 'autoroute_setup_screen.dart';
 
 class CategorySelectionScreen extends StatelessWidget {
@@ -19,8 +20,9 @@ class CategorySelectionScreen extends StatelessWidget {
           // ── Header ─────────────────────────────────────────────────────────
           Row(
             children: [
-              _BackButton(onTap: () =>
-                  Navigator.pushReplacementNamed(context, '/player-entry')),
+              _BackButton(
+                  onTap: () =>
+                      Navigator.pushReplacementNamed(context, '/player-entry')),
               const Expanded(
                 child: Center(
                   child: _ScreenTitle(text: 'Choisissez un jeu'),
@@ -28,7 +30,10 @@ class CategorySelectionScreen extends StatelessWidget {
               ),
               const SizedBox(width: 42),
             ],
-          ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.2, duration: 400.ms),
+          )
+              .animate()
+              .fadeIn(duration: 400.ms)
+              .slideY(begin: -0.2, duration: 400.ms),
 
           const SizedBox(height: 6),
 
@@ -56,7 +61,8 @@ class CategorySelectionScreen extends StatelessWidget {
                       index: 0,
                       number: '01',
                       title: 'TCHIN',
-                      subtitle: 'Questions, défis & gorgées pour toute la tablée.',
+                      subtitle:
+                          'Questions, défis & gorgées pour toute la tablée.',
                       tag: 'Classique',
                       accentColor: const Color(0xFFF5A623),
                       cardSymbols: const ['T', '+', '2'],
@@ -84,6 +90,7 @@ class CategorySelectionScreen extends StatelessWidget {
               },
             ),
           ),
+          const AdBannerSlot(),
         ],
       ),
     );
@@ -319,8 +326,8 @@ class _GameChoiceCardState extends State<_GameChoiceCard> {
                     color: widget.accentColor,
                     boxShadow: [
                       BoxShadow(
-                        color:
-                            widget.accentColor.withOpacity(_hovered ? 0.6 : 0.3),
+                        color: widget.accentColor
+                            .withOpacity(_hovered ? 0.6 : 0.3),
                         blurRadius: _hovered ? 20 : 10,
                       ),
                     ],

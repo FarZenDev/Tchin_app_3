@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/app_theme.dart';
+import '../widgets/ad_banner_slot.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
 import 'autoroute_game_screen.dart';
@@ -120,6 +121,7 @@ class _AutorouteSetupScreenState extends State<AutorouteSetupScreen> {
               ],
             ),
           ),
+          const AdBannerSlot(),
           GradientButton(
             text: "Lancer l'autoroute",
             icon: Icons.play_arrow_rounded,

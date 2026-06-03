@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../providers/game_provider.dart';
+import '../providers/premium_provider.dart';
+import '../services/ad_service.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
 import '../theme/app_theme.dart';
@@ -113,7 +115,8 @@ class GameScreen extends StatelessWidget {
                         const Text('🔥', style: TextStyle(fontSize: 18)),
                       ],
                     ),
-                  ).animate(onPlay: (c) => c.repeat(reverse: true))
+                  )
+                      .animate(onPlay: (c) => c.repeat(reverse: true))
                       .scaleXY(begin: 1.0, end: 1.02, duration: 800.ms);
                 },
               ),
@@ -545,10 +548,18 @@ class _GameOverContent extends StatelessWidget {
           text: "Voir les résultats",
           icon: Icons.bar_chart,
           isSmall: true,
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const StatsScreen()),
-          ),
+          onPressed: () async {
+            final premium = context.read<PremiumProvider>();
+            await context
+                .read<AdService>()
+                .showInterstitialIfReady(isPremium: premium.isPremium);
+
+            if (!context.mounted) return;
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const StatsScreen()),
+            );
+          },
         ),
       ],
     );

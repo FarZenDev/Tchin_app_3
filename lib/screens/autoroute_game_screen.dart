@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../models/card_model.dart';
+import '../providers/premium_provider.dart';
+import '../services/ad_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/poker_card_widget.dart';
@@ -73,6 +76,13 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
       DeviceOrientation.portraitDown,
     ]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
+
+  Future<void> _showInterstitialIfNeeded() async {
+    final premium = context.read<PremiumProvider>();
+    await context
+        .read<AdService>()
+        .showInterstitialIfReady(isPremium: premium.isPremium);
   }
 
   void _initGame() {
@@ -522,7 +532,11 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
             icon: Icons.arrow_back_rounded,
             color: Colors.blueAccent,
             isCompact: isCompact,
-            onTap: () => Navigator.pop(context),
+            onTap: () async {
+              await _showInterstitialIfNeeded();
+              if (!mounted) return;
+              Navigator.pop(context);
+            },
           ),
         ),
         const SizedBox(width: 10),
@@ -532,7 +546,11 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
             icon: Icons.restart_alt_rounded,
             color: Colors.amber,
             isCompact: isCompact,
-            onTap: _initGame,
+            onTap: () async {
+              await _showInterstitialIfNeeded();
+              if (!mounted) return;
+              _initGame();
+            },
           ),
         ),
       ],

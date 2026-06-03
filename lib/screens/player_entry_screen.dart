@@ -9,6 +9,7 @@ import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
 import '../theme/app_theme.dart';
 import '../widgets/beer_background.dart';
+import '../widgets/ad_banner_slot.dart';
 
 class PlayerEntryScreen extends StatefulWidget {
   const PlayerEntryScreen({super.key});
@@ -45,7 +46,8 @@ class _PlayerEntryScreenState extends State<PlayerEntryScreen> {
             child: Consumer<PremiumProvider>(
               builder: (context, premium, _) {
                 return IconButton(
-                  tooltip: premium.isPremium ? 'Premium actif' : 'Activer Premium',
+                  tooltip:
+                      premium.isPremium ? 'Premium actif' : 'Activer Premium',
                   onPressed: () async {
                     await premium.togglePremiumDebug();
                     if (!context.mounted) return;
@@ -70,9 +72,8 @@ class _PlayerEntryScreenState extends State<PlayerEntryScreen> {
                     premium.isPremium
                         ? Icons.star_rounded
                         : Icons.star_border_rounded,
-                    color: premium.isPremium
-                        ? AppTheme.secondary
-                        : Colors.white38,
+                    color:
+                        premium.isPremium ? AppTheme.secondary : Colors.white38,
                     size: 22,
                   ),
                   style: IconButton.styleFrom(
@@ -119,6 +120,7 @@ class _PlayerEntryScreenState extends State<PlayerEntryScreen> {
                       : null,
                 ),
               ),
+              const AdBannerSlot(),
             ],
           ),
         ],
@@ -163,9 +165,7 @@ class _HeroSection extends StatelessWidget {
         Text(
           'Le jeu festif entre amis',
           style: Theme.of(context).textTheme.bodyMedium,
-        )
-            .animate(delay: 200.ms)
-            .fadeIn(duration: 500.ms),
+        ).animate(delay: 200.ms).fadeIn(duration: 500.ms),
       ],
     );
   }
@@ -279,7 +279,8 @@ class _PlayerInputState extends State<_PlayerInput> {
                   )
                 ],
               ),
-              child: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
+              child:
+                  const Icon(Icons.add_rounded, color: Colors.white, size: 20),
             ),
           ),
         ],

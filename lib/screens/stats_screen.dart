@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
+import '../widgets/ad_banner_slot.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
 import '../theme/app_theme.dart';
@@ -147,6 +148,7 @@ class StatsScreen extends StatelessWidget {
                    },
                    child: const Text("Nouvelle partie complète", style: TextStyle(color: AppTheme.textSecondary)),
                 ),
+                const AdBannerSlot(),
             ],
           ),
         ),

@@ -8,6 +8,7 @@ import '../models/question_model.dart';
 import '../widgets/game_layout.dart';
 import '../theme/app_theme.dart';
 import '../theme/beer_colors.dart';
+import '../widgets/ad_banner_slot.dart';
 import '../widgets/liquid_transition.dart';
 import 'premium_screen.dart';
 
@@ -38,13 +39,25 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
   }
 
   static const _modes = [
-    (GameMode.classic,    'Classique',   '🍺', 'Défis équilibrés pour tout le groupe',  'Recommandé'),
-    (GameMode.duo,        'Duo',         '👥', 'Parfait pour jouer à deux',              'Équipe'),
-    (GameMode.bar,        'Bar',         '🍸', 'Questions absurdes de bar',              'Débile'),
-    (GameMode.chill,      'Chill',       '😌', 'Sans alcool, sans pression',             'Zen'),
-    (GameMode.hot,        'Hot',         '🔥', 'Questions épicées et coquines',          'Coquin'),
-    (GameMode.express,    'Express',     '⚡', 'Partie rapide en 15 min',               'Flash'),
-    (GameMode.borderline, 'Borderline',  '💀', 'Zéro tabou, tout est permis',           'Hardcore'),
+    (
+      GameMode.classic,
+      'Classique',
+      '🍺',
+      'Défis équilibrés pour tout le groupe',
+      'Recommandé'
+    ),
+    (GameMode.duo, 'Duo', '👥', 'Parfait pour jouer à deux', 'Équipe'),
+    (GameMode.bar, 'Bar', '🍸', 'Questions absurdes de bar', 'Débile'),
+    (GameMode.chill, 'Chill', '😌', 'Sans alcool, sans pression', 'Zen'),
+    (GameMode.hot, 'Hot', '🔥', 'Questions épicées et coquines', 'Coquin'),
+    (GameMode.express, 'Express', '⚡', 'Partie rapide en 15 min', 'Flash'),
+    (
+      GameMode.borderline,
+      'Borderline',
+      '💀',
+      'Zéro tabou, tout est permis',
+      'Hardcore'
+    ),
   ];
 
   @override
@@ -60,7 +73,6 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
               onCompleted: () {},
             ),
           ),
-
         GameLayout(
           child: Column(
             children: [
@@ -76,8 +88,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                       fixedSize: const Size(40, 40),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(
-                            color: Colors.white.withOpacity(0.1)),
+                        side: BorderSide(color: Colors.white.withOpacity(0.1)),
                       ),
                     ),
                   ),
@@ -130,18 +141,20 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                             _onModeSelected(mode);
                             Future.delayed(
                               const Duration(milliseconds: 800),
-                              () { if (mounted) _onTransitionComplete(mode); },
+                              () {
+                                if (mounted) _onTransitionComplete(mode);
+                              },
                             );
                           },
                         ),
-                        if (i < _modes.length - 1)
-                          const SizedBox(height: 8),
+                        if (i < _modes.length - 1) const SizedBox(height: 8),
                       ],
                       const SizedBox(height: 16),
                     ],
                   ),
                 ),
               ),
+              const AdBannerSlot(),
             ],
           ),
         ),
@@ -249,8 +262,8 @@ class _ModeCardState extends State<_ModeCard> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: color.withOpacity(0.13),
-                                border: Border.all(
-                                    color: color.withOpacity(0.3)),
+                                border:
+                                    Border.all(color: color.withOpacity(0.3)),
                               ),
                               child: Text(widget.emoji,
                                   style: const TextStyle(fontSize: 24)),
@@ -296,8 +309,8 @@ class _ModeCardState extends State<_ModeCard> {
                               decoration: BoxDecoration(
                                 color: color.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                    color: color.withOpacity(0.35)),
+                                border:
+                                    Border.all(color: color.withOpacity(0.35)),
                               ),
                               child: Text(
                                 widget.badge,

@@ -11,19 +11,37 @@ Le code de monétisation est implémenté, mais vous devez configurer vos propre
 ### Créer un compte AdMob
 1. Allez sur [AdMob](https://admob.google.com/)
 2. Créez une application "Tchin"
-3. Créez une **unité publicitaire Interstitielle**
+3. Créez une **unité publicitaire Bannière**
+4. Créez une **unité publicitaire Interstitielle**
+
+### Emplacements actuellement intégrés
+- **Bannières** : écrans joueurs, choix du jeu, choix du mode, configuration Autoroute et résultats.
+- **Interstitiels** : fin de partie Tchin et fin de partie Autoroute.
+- **Premium** : les pubs sont masquées quand `PremiumProvider.isPremium` vaut `true`.
 
 ### Remplacer les IDs de test
 Ouvrez `lib/services/ad_service.dart` et remplacez :
 
 ```dart
 // AVANT (IDs de test)
-static const String _androidAdUnitId = 'ca-app-pub-3940256099942544/1033173712';
-static const String _iosAdUnitId = 'ca-app-pub-3940256099942544/4411468910';
+static const String _androidBannerAdUnitId =
+    'ca-app-pub-3940256099942544/9214589741';
+static const String _iosBannerAdUnitId =
+    'ca-app-pub-3940256099942544/2435281174';
+static const String _androidInterstitialAdUnitId =
+    'ca-app-pub-3940256099942544/1033173712';
+static const String _iosInterstitialAdUnitId =
+    'ca-app-pub-3940256099942544/4411468910';
 
 // APRÈS (vos vrais IDs)
-static const String _androidAdUnitId = 'ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY';
-static const String _iosAdUnitId = 'ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ';
+static const String _androidBannerAdUnitId =
+    'ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY';
+static const String _iosBannerAdUnitId =
+    'ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ';
+static const String _androidInterstitialAdUnitId =
+    'ca-app-pub-XXXXXXXXXXXXXXXX/AAAAAAAAAA';
+static const String _iosInterstitialAdUnitId =
+    'ca-app-pub-XXXXXXXXXXXXXXXX/BBBBBBBBBB';
 ```
 
 ### Configuration Android
@@ -95,6 +113,7 @@ Les IDs de test actuels affichent des pubs de démonstration. Elles fonctionnent
 
 - [ ] Remplacer les Ad Unit IDs de test par les vrais
 - [ ] Ajouter l'App ID AdMob dans AndroidManifest.xml et Info.plist
+- [ ] Tester que les bannieres ne s'affichent pas en Premium
 - [ ] Créer le produit d'abonnement dans les stores
 - [ ] Remplacer le Product ID dans `premium_provider.dart`
 - [ ] Tester l'achat avec un compte sandbox

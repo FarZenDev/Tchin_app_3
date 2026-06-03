@@ -19,6 +19,17 @@ Le code de monétisation est implémenté, mais vous devez configurer vos propre
 - **Interstitiels** : fin de partie Tchin et fin de partie Autoroute.
 - **Premium** : les pubs sont masquées quand `PremiumProvider.isPremium` vaut `true`.
 
+### IDs AdMob configurés
+
+| Plateforme | Type | ID |
+| --- | --- | --- |
+| Android | App ID | `ca-app-pub-5050258385752502~9507153068` |
+| Android | Bannière | `ca-app-pub-5050258385752502/4285930219` |
+| Android | Interstitiel | ID de test Google, à remplacer |
+| iOS | App ID | `ca-app-pub-5050258385752502~4198986064` |
+| iOS | Bannière | `ca-app-pub-5050258385752502/4533342221` |
+| iOS | Interstitiel | ID de test Google, à remplacer |
+
 ### Remplacer les IDs de test
 Ouvrez `lib/services/ad_service.dart` et remplacez :
 

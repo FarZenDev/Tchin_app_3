@@ -93,13 +93,18 @@ class _GradientButtonState extends State<GradientButton> {
                     ),
                     const SizedBox(width: 9),
                   ],
-                  Text(
-                    widget.text,
-                    style: TextStyle(
-                      color: isDisabled ? AppTheme.textMuted : Colors.white,
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.3,
+                  Flexible(
+                    child: Text(
+                      widget.text,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: isDisabled ? AppTheme.textMuted : Colors.white,
+                        fontSize: fontSize,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.3,
+                      ),
                     ),
                   ),
                 ],

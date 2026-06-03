@@ -8,11 +8,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:tchin_app_2/main.dart';
-import 'package:tchin_app_2/services/ad_service.dart';
+import 'package:tchin_app_3/main.dart';
+import 'package:tchin_app_3/services/ad_service.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(1080, 1920));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(
@@ -23,12 +26,13 @@ void main() {
 
     // Build our app and trigger a frame.
     await tester.pumpWidget(TchinApp(adService: adService));
+    await tester.pump(const Duration(seconds: 1));
 
     // Verify that our app starts on the Player Entry Screen
-    expect(find.text('🍻 Tchin 2'), findsOneWidget);
-    expect(find.text('Commencer la partie'), findsOneWidget);
+    expect(find.text('Tchin !'), findsOneWidget);
+    expect(find.text('Commencer la fête'), findsOneWidget);
 
     await tester.pumpWidget(const SizedBox.shrink());
-    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
   });
 }

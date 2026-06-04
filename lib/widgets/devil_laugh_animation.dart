@@ -9,7 +9,7 @@ class DevilLaughAnimation extends StatefulWidget {
     super.key,
     this.size = 128,
     this.frameDuration = const Duration(milliseconds: 90),
-    this.repeat = true,
+    this.repeat = false,
   });
 
   static const List<String> frames = [
@@ -36,7 +36,7 @@ class _DevilLaughAnimationState extends State<DevilLaughAnimation>
       vsync: this,
       duration: Duration(
         milliseconds: widget.frameDuration.inMilliseconds *
-            DevilLaughAnimation.frames.length,
+            (DevilLaughAnimation.frames.length - 1),
       ),
     );
 
@@ -70,18 +70,44 @@ class _DevilLaughAnimationState extends State<DevilLaughAnimation>
         child: AnimatedBuilder(
           animation: _controller,
           builder: (context, _) {
-            final frameIndex =
-                (_controller.value * DevilLaughAnimation.frames.length)
-                    .floor()
-                    .clamp(0, DevilLaughAnimation.frames.length - 1)
-                    .toInt();
-            return Image.asset(
-              DevilLaughAnimation.frames[frameIndex],
-              width: widget.size,
-              height: widget.size,
-              fit: BoxFit.contain,
-              filterQuality: FilterQuality.medium,
-              gaplessPlayback: true,
+            final framePosition =
+                _controller.value * (DevilLaughAnimation.frames.length - 1);
+            final currentFrame = framePosition
+                .floor()
+                .clamp(0, DevilLaughAnimation.frames.length - 1)
+                .toInt();
+            final nextFrame = (currentFrame + 1)
+                .clamp(
+                  0,
+                  DevilLaughAnimation.frames.length - 1,
+                )
+                .toInt();
+            final blend = framePosition - currentFrame;
+
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(
+                  DevilLaughAnimation.frames[currentFrame],
+                  width: widget.size,
+                  height: widget.size,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.medium,
+                  gaplessPlayback: true,
+                ),
+                if (nextFrame != currentFrame)
+                  Opacity(
+                    opacity: blend.clamp(0.0, 1.0),
+                    child: Image.asset(
+                      DevilLaughAnimation.frames[nextFrame],
+                      width: widget.size,
+                      height: widget.size,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.medium,
+                      gaplessPlayback: true,
+                    ),
+                  ),
+              ],
             );
           },
         ),

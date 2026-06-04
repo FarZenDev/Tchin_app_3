@@ -782,7 +782,7 @@ class _DevilSkipOverlay extends StatelessWidget {
             children: [
               const DevilLaughAnimation(
                 size: 86,
-                frameDuration: Duration(milliseconds: 105),
+                frameDuration: Duration(milliseconds: 320),
               ),
               Text(
                 'PACTE SIGNE',

@@ -228,8 +228,8 @@ class _DevilSummonIntroState extends State<_DevilSummonIntro>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
-    )..repeat(reverse: true);
+      duration: const Duration(milliseconds: 3600),
+    )..forward();
   }
 
   @override
@@ -266,7 +266,7 @@ class _DevilSummonIntroState extends State<_DevilSummonIntro>
                           angle: wobble * 0.08,
                           child: const DevilLaughAnimation(
                             size: 158,
-                            frameDuration: Duration(milliseconds: 115),
+                            frameDuration: Duration(milliseconds: 650),
                           ),
                         ),
                       ),

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/ad_banner_slot.dart';
+import '../widgets/beer_background.dart';
 import 'autoroute_setup_screen.dart';
 
 class CategorySelectionScreen extends StatelessWidget {
@@ -14,6 +15,7 @@ class CategorySelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GameLayout(
       showBubbles: true,
+      customBackground: const BeerBackground(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

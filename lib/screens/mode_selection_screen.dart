@@ -9,6 +9,7 @@ import '../widgets/game_layout.dart';
 import '../theme/app_theme.dart';
 import '../theme/beer_colors.dart';
 import '../widgets/ad_banner_slot.dart';
+import '../widgets/beer_background.dart';
 import '../widgets/liquid_transition.dart';
 import 'premium_screen.dart';
 
@@ -74,6 +75,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
             ),
           ),
         GameLayout(
+          customBackground: const BeerBackground(),
           child: Column(
             children: [
               // ── Header ────────────────────────────────────────────────────

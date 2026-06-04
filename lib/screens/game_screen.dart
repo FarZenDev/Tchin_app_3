@@ -29,6 +29,8 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   bool _allowExitPop = false;
   bool _isExitInterstitialShowing = false;
+  bool _hasShownGameOverInterstitial = false;
+  bool _isGameOverInterstitialShowing = false;
 
   Future<void> _leaveGame() async {
     if (_isExitInterstitialShowing) return;
@@ -43,6 +45,36 @@ class _GameScreenState extends State<GameScreen> {
     if (!mounted) return;
     setState(() => _allowExitPop = true);
     Navigator.pop(context);
+  }
+
+  void _maybeShowGameOverInterstitial(GameProvider game) {
+    if (!game.isGameOver) {
+      _hasShownGameOverInterstitial = false;
+      return;
+    }
+
+    if (_hasShownGameOverInterstitial ||
+        _isGameOverInterstitialShowing ||
+        _isExitInterstitialShowing) {
+      return;
+    }
+
+    _hasShownGameOverInterstitial = true;
+    _isGameOverInterstitialShowing = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+
+      final premium = context.read<PremiumProvider>();
+      await context.read<AdService>().showInterstitialIfReady(
+            isPremium: premium.isPremium,
+            context: context,
+          );
+
+      if (mounted) {
+        _isGameOverInterstitialShowing = false;
+      }
+    });
   }
 
   @override
@@ -154,6 +186,8 @@ class _GameScreenState extends State<GameScreen> {
                 Expanded(
                   child: Consumer<GameProvider>(
                     builder: (context, game, _) {
+                      _maybeShowGameOverInterstitial(game);
+
                       return QuestionPlayingCard(
                         accentColor: themeColor,
                         modeLabel: BeerColors.getNameForMode(

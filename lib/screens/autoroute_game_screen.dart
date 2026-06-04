@@ -41,6 +41,8 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
   bool _isResolving = true;
   bool _allowExitPop = false;
   bool _isExitInterstitialShowing = false;
+  bool _hasShownGameOverInterstitial = false;
+  bool _isGameOverInterstitialShowing = false;
   String _message = "Prêt ? La première carte est posée.";
   _MessageTone _messageTone = _MessageTone.neutral;
 
@@ -97,6 +99,23 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
     if (!mounted) return;
     setState(() => _allowExitPop = true);
     Navigator.pop(context);
+  }
+
+  Future<void> _showGameOverInterstitialOnce() async {
+    if (_hasShownGameOverInterstitial ||
+        _isGameOverInterstitialShowing ||
+        _isExitInterstitialShowing) {
+      return;
+    }
+
+    _hasShownGameOverInterstitial = true;
+    _isGameOverInterstitialShowing = true;
+
+    await _showInterstitialIfNeeded();
+
+    if (mounted) {
+      _isGameOverInterstitialShowing = false;
+    }
   }
 
   void _initGame() {
@@ -174,6 +193,8 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
       _currentIndex = 0;
       _isGameOver = false;
       _isResolving = true;
+      _hasShownGameOverInterstitial = false;
+      _isGameOverInterstitialShowing = false;
       _message = message;
       _messageTone = tone;
       for (final card in _road) {
@@ -217,9 +238,10 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
       if (isCorrect) {
         HapticFeedback.lightImpact();
         final reachedSipStop = _isSipStop(nextIndex);
+        final completedRoad = nextIndex == _road.length - 1;
         setState(() {
           _currentIndex = nextIndex;
-          _isGameOver = _currentIndex == _road.length - 1;
+          _isGameOver = completedRoad;
           _isResolving = false;
           if (_isGameOver) {
             _message = "Autoroute terminee. La table a survecu.";
@@ -232,6 +254,13 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
             _messageTone = _MessageTone.success;
           }
         });
+        if (completedRoad) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _showGameOverInterstitialOnce();
+            }
+          });
+        }
         return;
       }
 

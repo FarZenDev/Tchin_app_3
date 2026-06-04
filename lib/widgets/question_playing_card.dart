@@ -135,25 +135,157 @@ class _CardDealTransition extends StatelessWidget {
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
-        final value = Curves.easeOutCubic.transform(animation.value);
-        final angle = (1 - value) * pi;
+        final isExiting = animation.status == AnimationStatus.reverse;
+        final raw = animation.value.clamp(0.0, 1.0).toDouble();
+
+        if (isExiting) {
+          final exit = Curves.easeInCubic.transform(1 - raw);
+          return Opacity(
+            opacity: (1 - exit).clamp(0.0, 1.0),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: _CardSwapFx(
+                    progress: exit,
+                    color: accentColor,
+                    isExit: true,
+                  ),
+                ),
+                FractionalTranslation(
+                  translation: Offset(-0.58 * exit, -0.08 * exit),
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..rotateZ(-0.32 * exit)
+                      ..rotateY((pi / 2) * exit),
+                    child: Transform.scale(
+                      scale: 1 - (0.08 * exit),
+                      child: child,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final deal = Curves.easeOutCubic.transform(raw);
+        final flipProgress =
+            Curves.easeInOutCubic.transform(((raw - 0.26) / 0.62).clamp(0, 1));
+        final angle = (1 - flipProgress) * pi;
         final showBack = angle > pi / 2;
 
         return Opacity(
-          opacity: (value * 1.2).clamp(0, 1).toDouble(),
-          child: FractionalTranslation(
-            translation: Offset((1 - value) * 0.72, (1 - value) * 0.03),
-            child: Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001)
-                ..rotateY(angle),
-              child: showBack ? _CardBack(accentColor: accentColor) : child,
-            ),
+          opacity: (raw * 1.35).clamp(0.0, 1.0),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: _CardSwapFx(
+                  progress: raw,
+                  color: accentColor,
+                  isExit: false,
+                ),
+              ),
+              FractionalTranslation(
+                translation: Offset((1 - deal) * 0.92, (1 - deal) * 0.14),
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.identity()
+                    ..setEntry(3, 2, 0.001)
+                    ..rotateZ((1 - deal) * 0.18)
+                    ..rotateY(angle),
+                  child: Transform.scale(
+                    scale: 0.88 + (0.12 * deal),
+                    child:
+                        showBack ? _CardBack(accentColor: accentColor) : child,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
     );
+  }
+}
+
+class _CardSwapFx extends StatelessWidget {
+  final double progress;
+  final Color color;
+  final bool isExit;
+
+  const _CardSwapFx({
+    required this.progress,
+    required this.color,
+    required this.isExit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: CustomPaint(
+        painter: _CardSwapFxPainter(
+          progress: progress,
+          color: color,
+          isExit: isExit,
+        ),
+      ),
+    );
+  }
+}
+
+class _CardSwapFxPainter extends CustomPainter {
+  final double progress;
+  final Color color;
+  final bool isExit;
+
+  const _CardSwapFxPainter({
+    required this.progress,
+    required this.color,
+    required this.isExit,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p = progress.clamp(0.0, 1.0).toDouble();
+    if (isExit) {
+      final paint = Paint()
+        ..strokeWidth = 3
+        ..strokeCap = StrokeCap.round
+        ..color = color.withOpacity((0.35 * (1 - p)).clamp(0.0, 0.35));
+      for (var i = 0; i < 6; i++) {
+        final y = size.height * (0.18 + (i * 0.12));
+        final start = Offset(size.width * (0.72 - p * 0.46), y);
+        final end = Offset(size.width * (0.92 - p * 0.34), y - 18 + i * 4);
+        canvas.drawLine(start, end, paint);
+      }
+      return;
+    }
+
+    final alpha = (1 - p).clamp(0.0, 1.0).toDouble();
+    final paint = Paint()
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 4
+      ..color = color.withOpacity(0.32 * alpha);
+    for (var i = 0; i < 7; i++) {
+      final y = size.height * (0.2 + (i * 0.1));
+      final x = size.width * (0.84 + (i % 2) * 0.04);
+      canvas.drawLine(
+        Offset(x, y),
+        Offset(size.width * 1.12, y - 18),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _CardSwapFxPainter oldDelegate) {
+    return oldDelegate.progress != progress ||
+        oldDelegate.color != color ||
+        oldDelegate.isExit != isExit;
   }
 }
 

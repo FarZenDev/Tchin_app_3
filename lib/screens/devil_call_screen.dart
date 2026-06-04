@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/game_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/devil_laugh_animation.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
 
@@ -263,12 +264,9 @@ class _DevilSummonIntroState extends State<_DevilSummonIntro>
                         offset: Offset(0, 22 - (_controller.value * 34)),
                         child: Transform.rotate(
                           angle: wobble * 0.08,
-                          child: Image.asset(
-                            'assets/devil_mascot_laugh.png',
-                            width: 150,
-                            height: 150,
-                            fit: BoxFit.contain,
-                            filterQuality: FilterQuality.medium,
+                          child: const DevilLaughAnimation(
+                            size: 158,
+                            frameDuration: Duration(milliseconds: 86),
                           ),
                         ),
                       ),

@@ -18,6 +18,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/slot_machine.dart';
 import '../widgets/question_playing_card.dart';
+import '../widgets/devil_laugh_animation.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -779,12 +780,9 @@ class _DevilSkipOverlay extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/devil_mascot.png',
-                width: 78,
-                height: 78,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.medium,
+              const DevilLaughAnimation(
+                size: 86,
+                frameDuration: Duration(milliseconds: 72),
               ),
               Text(
                 'PACTE SIGNE',

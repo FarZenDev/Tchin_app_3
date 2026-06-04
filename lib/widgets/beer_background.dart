@@ -24,7 +24,7 @@ class _BeerBackgroundState extends State<BeerBackground>
     )..repeat();
 
     // Generate initial bubbles scattered across the height
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 46; i++) {
       _bubbles.add(_createBubble(isInitial: true));
     }
   }
@@ -33,12 +33,14 @@ class _BeerBackgroundState extends State<BeerBackground>
     final sizeFactor = _random.nextDouble();
     return _Bubble(
       xPct: _random.nextDouble(),
-      yPct: isInitial ? _random.nextDouble() * 0.95 + 0.05 : 1.05, // start from bottom
-      radius: sizeFactor * 3.5 + 1.2,
-      speed: sizeFactor * 0.12 + 0.06,
-      swingWidth: _random.nextDouble() * 0.03 + 0.01,
+      yPct: isInitial
+          ? _random.nextDouble() * 0.95 + 0.05
+          : 1.05, // start from bottom
+      radius: sizeFactor * 5.5 + 1.8,
+      speed: sizeFactor * 0.14 + 0.07,
+      swingWidth: _random.nextDouble() * 0.04 + 0.012,
       swingSpeed: _random.nextDouble() * 2.5 + 1.0,
-      opacity: _random.nextDouble() * 0.3 + 0.15,
+      opacity: _random.nextDouble() * 0.35 + 0.22,
     );
   }
 
@@ -57,7 +59,7 @@ class _BeerBackgroundState extends State<BeerBackground>
         for (int i = 0; i < _bubbles.length; i++) {
           final bubble = _bubbles[i];
           bubble.yPct -= bubble.speed * 0.015; // speed of rising
-          
+
           // Recycle bubble when it hits the foam zone
           if (bubble.yPct < 0.08) {
             _bubbles[i] = _createBubble(isInitial: false);
@@ -69,7 +71,7 @@ class _BeerBackgroundState extends State<BeerBackground>
             bubbles: _bubbles,
             animationValue: _controller.value,
           ),
-          child: widget.child,
+          child: widget.child ?? const SizedBox.expand(),
         );
       },
     );
@@ -111,21 +113,37 @@ class _BeerPainter extends CustomPainter {
       begin: Alignment.bottomCenter,
       end: Alignment.topCenter,
       colors: const [
-        Color(0xFF3F1900), // Dark amber bottom
-        Color(0xFF7E3D00), // Medium amber
-        Color(0xFFC26D00), // Warm gold
-        Color(0xFFE08E0B), // Beer gold
-        Color(0xFFFCD34D), // Light beer head
+        Color(0xFF2E1200), // dark amber bottom
+        Color(0xFF6F3200), // medium amber
+        Color(0xFFC56D00), // warm gold
+        Color(0xFFE69A19), // beer gold
+        Color(0xFFFFD66B), // light beer head
       ],
       stops: const [0.0, 0.22, 0.55, 0.85, 1.0],
     );
     final liquidPaint = Paint()..shader = liquidGradient.createShader(rect);
     canvas.drawRect(rect, liquidPaint);
 
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = RadialGradient(
+          center: const Alignment(-0.45, -0.25),
+          radius: 1.1,
+          colors: [
+            Colors.white.withOpacity(0.18),
+            Colors.white.withOpacity(0.02),
+            Colors.black.withOpacity(0.28),
+          ],
+          stops: const [0.0, 0.48, 1.0],
+        ).createShader(rect),
+    );
+
     // 2. Draw rising carbonation bubbles
     for (final bubble in bubbles) {
       // Horizontal swing using sine wave
-      final swing = math.sin(bubble.yPct * math.pi * 2 * bubble.swingSpeed) * bubble.swingWidth;
+      final swing = math.sin(bubble.yPct * math.pi * 2 * bubble.swingSpeed) *
+          bubble.swingWidth;
       final x = (bubble.xPct + swing).clamp(0.0, 1.0) * size.width;
       final y = bubble.yPct * size.height;
 
@@ -144,10 +162,10 @@ class _BeerPainter extends CustomPainter {
     }
 
     // 3. Draw frothy beer head (foam) at the top
-    final foamPaint = Paint()..color = const Color(0xFFFFFDF7); // Creamy white
+    final foamPaint = Paint()..color = const Color(0xFFFFFDF7);
     final foamPath = Path();
 
-    final foamHeight = size.height * 0.12; 
+    final foamHeight = size.height * 0.17;
     foamPath.moveTo(0, 0);
     foamPath.lineTo(0, foamHeight);
 
@@ -159,7 +177,8 @@ class _BeerPainter extends CustomPainter {
       final endX = (i + 1) * waveWidth;
       final midX = startX + waveWidth / 2;
       // Animate wave shape dynamically with a rolling motion
-      final waveDepth = foamHeight + (math.sin(i * 1.5 + animationValue * math.pi * 2) * 5);
+      final waveDepth =
+          foamHeight + (math.sin(i * 1.5 + animationValue * math.pi * 2) * 7);
 
       foamPath.quadraticBezierTo(
         midX,
@@ -186,7 +205,7 @@ class _BeerPainter extends CustomPainter {
     // Render inner brighter foam layer
     final innerFoamPaint = Paint()..color = Colors.white;
     final innerFoamPath = Path();
-    final innerFoamHeight = foamHeight - 12;
+    final innerFoamHeight = foamHeight - 18;
 
     innerFoamPath.moveTo(0, 0);
     innerFoamPath.lineTo(0, innerFoamHeight);
@@ -196,7 +215,8 @@ class _BeerPainter extends CustomPainter {
       final endX = (i + 1) * waveWidth;
       final midX = startX + waveWidth / 2;
       // Parallax rolling effect for the inner layer
-      final waveDepth = innerFoamHeight + (math.cos(i * 1.5 - animationValue * math.pi * 2) * 4);
+      final waveDepth = innerFoamHeight +
+          (math.cos(i * 1.5 - animationValue * math.pi * 2) * 5);
 
       innerFoamPath.quadraticBezierTo(
         midX,
@@ -208,6 +228,13 @@ class _BeerPainter extends CustomPainter {
     innerFoamPath.lineTo(size.width, 0);
     innerFoamPath.close();
     canvas.drawPath(innerFoamPath, innerFoamPaint);
+
+    final foamBubblePaint = Paint()..color = Colors.white.withOpacity(0.7);
+    for (var i = 0; i < 22; i++) {
+      final x = ((i * 47.0) + animationValue * 26) % size.width;
+      final y = size.height * (0.035 + (i % 5) * 0.018);
+      canvas.drawCircle(Offset(x, y), 4 + (i % 4) * 2.0, foamBubblePaint);
+    }
   }
 
   @override

@@ -39,6 +39,8 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
   int _dealToken = 0;
   bool _isGameOver = false;
   bool _isResolving = true;
+  bool _allowExitPop = false;
+  bool _isExitInterstitialShowing = false;
   String _message = "Prêt ? La première carte est posée.";
   _MessageTone _messageTone = _MessageTone.neutral;
 
@@ -84,6 +86,17 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
           isPremium: premium.isPremium,
           context: context,
         );
+  }
+
+  Future<void> _leaveGame() async {
+    if (_isExitInterstitialShowing) return;
+    _isExitInterstitialShowing = true;
+
+    await _showInterstitialIfNeeded();
+
+    if (!mounted) return;
+    setState(() => _allowExitPop = true);
+    Navigator.pop(context);
   }
 
   void _initGame() {
@@ -243,25 +256,32 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GameLayout(
-      showBubbles: true,
-      maxFrameWidth: 1040,
-      outerPadding: 8,
-      framePadding: 14,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isCompact = constraints.maxHeight < 420;
+    return PopScope(
+      canPop: _allowExitPop,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        await _leaveGame();
+      },
+      child: GameLayout(
+        showBubbles: true,
+        maxFrameWidth: 1040,
+        outerPadding: 8,
+        framePadding: 14,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isCompact = constraints.maxHeight < 420;
 
-          return Column(
-            children: [
-              _buildHeader(isCompact: isCompact),
-              SizedBox(height: isCompact ? 8 : 12),
-              Expanded(child: _buildRoadBoard()),
-              SizedBox(height: isCompact ? 8 : 12),
-              _buildFooter(isCompact: isCompact),
-            ],
-          );
-        },
+            return Column(
+              children: [
+                _buildHeader(isCompact: isCompact),
+                SizedBox(height: isCompact ? 8 : 12),
+                Expanded(child: _buildRoadBoard()),
+                SizedBox(height: isCompact ? 8 : 12),
+                _buildFooter(isCompact: isCompact),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -271,7 +291,7 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
       children: [
         IconButton(
           tooltip: 'Retour',
-          onPressed: () => Navigator.pop(context),
+          onPressed: _leaveGame,
           icon: const Icon(
             Icons.arrow_back_ios_new,
             size: 19,
@@ -533,11 +553,7 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
             icon: Icons.arrow_back_rounded,
             color: Colors.blueAccent,
             isCompact: isCompact,
-            onTap: () async {
-              await _showInterstitialIfNeeded();
-              if (!mounted) return;
-              Navigator.pop(context);
-            },
+            onTap: _leaveGame,
           ),
         ),
         const SizedBox(width: 10),

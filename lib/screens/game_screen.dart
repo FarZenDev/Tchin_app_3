@@ -19,8 +19,31 @@ import 'package:google_fonts/google_fonts.dart';
 import '../widgets/slot_machine.dart';
 import '../widgets/question_playing_card.dart';
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
+
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  bool _allowExitPop = false;
+  bool _isExitInterstitialShowing = false;
+
+  Future<void> _leaveGame() async {
+    if (_isExitInterstitialShowing) return;
+    _isExitInterstitialShowing = true;
+
+    final premium = context.read<PremiumProvider>();
+    await context.read<AdService>().showInterstitialIfReady(
+          isPremium: premium.isPremium,
+          context: context,
+        );
+
+    if (!mounted) return;
+    setState(() => _allowExitPop = true);
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,155 +53,163 @@ class GameScreen extends StatelessWidget {
       game.currentMode ?? GameMode.classic,
     );
 
-    return Stack(
-      children: [
-        // Initial Fill Animation (Background)
-        Positioned.fill(
-          child: LiquidTransition(
-            isFilling: true,
-            color: themeColor,
-            duration: const Duration(milliseconds: 1000),
+    return PopScope(
+      canPop: _allowExitPop,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        await _leaveGame();
+      },
+      child: Stack(
+        children: [
+          // Initial Fill Animation (Background)
+          Positioned.fill(
+            child: LiquidTransition(
+              isFilling: true,
+              color: themeColor,
+              duration: const Duration(milliseconds: 1000),
+            ),
           ),
-        ),
 
-        // Happy Hour Overlay (Pulse Effect)
-        Consumer<GameProvider>(
-          builder: (context, game, _) {
-            if (!game.isHappyHour) return const SizedBox.shrink();
-            return IgnorePointer(
-              child: Container(color: Colors.red.withOpacity(0.1))
-                  .animate(
-                    onPlay: (controller) => controller.repeat(reverse: true),
-                  )
-                  .shimmer(
-                    color: Colors.redAccent,
-                    duration: 1500.ms,
-                  ) // Usage of shimmer instead of boxShadow
-                  .fadeIn(duration: 500.ms),
-            );
-          },
-        ),
+          // Happy Hour Overlay (Pulse Effect)
+          Consumer<GameProvider>(
+            builder: (context, game, _) {
+              if (!game.isHappyHour) return const SizedBox.shrink();
+              return IgnorePointer(
+                child: Container(color: Colors.red.withOpacity(0.1))
+                    .animate(
+                      onPlay: (controller) => controller.repeat(reverse: true),
+                    )
+                    .shimmer(
+                      color: Colors.redAccent,
+                      duration: 1500.ms,
+                    ) // Usage of shimmer instead of boxShadow
+                    .fadeIn(duration: 500.ms),
+              );
+            },
+          ),
 
-        GameLayout(
-          enableBackground: false,
-          child: Column(
-            children: [
-              _GameHeader(
-                accentColor: themeColor,
-                modeLabel: BeerColors.getNameForMode(
-                  game.currentMode ?? GameMode.classic,
+          GameLayout(
+            enableBackground: false,
+            child: Column(
+              children: [
+                _GameHeader(
+                  accentColor: themeColor,
+                  modeLabel: BeerColors.getNameForMode(
+                    game.currentMode ?? GameMode.classic,
+                  ),
+                  onLeaveGame: _leaveGame,
                 ),
-              ),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              // Happy Hour Banner
-              Consumer<GameProvider>(
-                builder: (context, game, _) {
-                  if (!game.isHappyHour) return const SizedBox.shrink();
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFFF1744), Color(0xFFFF6D00)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.red.withOpacity(0.5),
-                          blurRadius: 18,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('🔥', style: TextStyle(fontSize: 18)),
-                        const SizedBox(width: 8),
-                        Text(
-                          'HAPPY HOUR — X2 GORGÉES',
-                          style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                            fontSize: 13,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Text('🔥', style: TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                  )
-                      .animate(onPlay: (c) => c.repeat(reverse: true))
-                      .scaleXY(begin: 1.0, end: 1.02, duration: 800.ms);
-                },
-              ),
-
-              Expanded(
-                child: Consumer<GameProvider>(
+                // Happy Hour Banner
+                Consumer<GameProvider>(
                   builder: (context, game, _) {
-                    return QuestionPlayingCard(
-                      accentColor: themeColor,
-                      modeLabel: BeerColors.getNameForMode(
-                        game.currentMode ?? GameMode.classic,
+                    if (!game.isHappyHour) return const SizedBox.shrink();
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
                       ),
-                      isSpecial: game.currentQuestionType ==
-                              QuestionType.centralGlass ||
-                          game.isHappyHour,
-                      child: _QuestionCardContent(
-                        accentColor: themeColor,
-                        game: game,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFFF1744), Color(0xFFFF6D00)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.red.withOpacity(0.5),
+                            blurRadius: 18,
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
-                    );
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('🔥', style: TextStyle(fontSize: 18)),
+                          const SizedBox(width: 8),
+                          Text(
+                            'HAPPY HOUR — X2 GORGÉES',
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              fontSize: 13,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text('🔥', style: TextStyle(fontSize: 18)),
+                        ],
+                      ),
+                    )
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .scaleXY(begin: 1.0, end: 1.02, duration: 800.ms);
                   },
                 ),
-              ),
 
-              const SizedBox(height: 16),
-              _QuestionNavigationBar(accentColor: themeColor),
-            ],
-          ),
-        ),
+                Expanded(
+                  child: Consumer<GameProvider>(
+                    builder: (context, game, _) {
+                      return QuestionPlayingCard(
+                        accentColor: themeColor,
+                        modeLabel: BeerColors.getNameForMode(
+                          game.currentMode ?? GameMode.classic,
+                        ),
+                        isSpecial: game.currentQuestionType ==
+                                QuestionType.centralGlass ||
+                            game.isHappyHour,
+                        child: _QuestionCardContent(
+                          accentColor: themeColor,
+                          game: game,
+                        ),
+                      );
+                    },
+                  ),
+                ),
 
-        Positioned(
-          left: 0,
-          top: 120,
-          bottom: 116,
-          width: MediaQuery.of(context).size.width * 0.24,
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              Provider.of<GameProvider>(
-                context,
-                listen: false,
-              ).previousQuestion();
-            },
-            child: Container(color: Colors.transparent),
+                const SizedBox(height: 16),
+                _QuestionNavigationBar(accentColor: themeColor),
+              ],
+            ),
           ),
-        ),
 
-        Positioned(
-          right: 0,
-          top: 120,
-          bottom: 116,
-          width: MediaQuery.of(context).size.width * 0.24,
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              final game = Provider.of<GameProvider>(context, listen: false);
-              if (!game.isGameOver) game.nextQuestion();
-            },
-            child: Container(color: Colors.transparent),
+          Positioned(
+            left: 0,
+            top: 120,
+            bottom: 116,
+            width: MediaQuery.of(context).size.width * 0.24,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                Provider.of<GameProvider>(
+                  context,
+                  listen: false,
+                ).previousQuestion();
+              },
+              child: Container(color: Colors.transparent),
+            ),
           ),
-        ),
-      ],
+
+          Positioned(
+            right: 0,
+            top: 120,
+            bottom: 116,
+            width: MediaQuery.of(context).size.width * 0.24,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                final game = Provider.of<GameProvider>(context, listen: false);
+                if (!game.isGameOver) game.nextQuestion();
+              },
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -186,8 +217,13 @@ class GameScreen extends StatelessWidget {
 class _GameHeader extends StatelessWidget {
   final Color accentColor;
   final String modeLabel;
+  final Future<void> Function() onLeaveGame;
 
-  const _GameHeader({required this.accentColor, required this.modeLabel});
+  const _GameHeader({
+    required this.accentColor,
+    required this.modeLabel,
+    required this.onLeaveGame,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +274,7 @@ class _GameHeader extends StatelessWidget {
           const SizedBox(width: 8),
           IconButton(
             tooltip: 'Stats',
-            onPressed: () {
+            onPressed: () async {
               final game = Provider.of<GameProvider>(context, listen: false);
               if (game.playerSips.isNotEmpty) {
                 Navigator.push(
@@ -246,7 +282,7 @@ class _GameHeader extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => const StatsScreen()),
                 );
               } else {
-                Navigator.pop(context);
+                await onLeaveGame();
               }
             },
             icon: Icon(Icons.bar_chart_rounded, size: 20, color: accentColor),

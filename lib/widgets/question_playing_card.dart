@@ -10,6 +10,7 @@ class QuestionPlayingCard extends StatelessWidget {
   final Color accentColor;
   final String modeLabel;
   final bool isSpecial;
+  final Object? animationKey;
 
   const QuestionPlayingCard({
     super.key,
@@ -17,6 +18,7 @@ class QuestionPlayingCard extends StatelessWidget {
     required this.accentColor,
     required this.modeLabel,
     this.isSpecial = false,
+    this.animationKey,
   });
 
   @override
@@ -31,43 +33,122 @@ class QuestionPlayingCard extends StatelessWidget {
             width: cardWidth,
             child: AspectRatio(
               aspectRatio: 0.68,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Positioned.fill(
-                    top: isCompact ? 16 : 22,
-                    left: isCompact ? 17 : 24,
-                    right: isCompact ? -12 : -18,
-                    bottom: isCompact ? -6 : -8,
-                    child: Transform.rotate(
-                      angle: 0.075,
-                      child: _CardBack(
-                        accentColor: accentColor.withOpacity(0.82),
-                      ),
-                    ),
-                  ),
-                  Positioned.fill(
-                    top: isCompact ? 8 : 10,
-                    left: isCompact ? -11 : -16,
-                    right: isCompact ? 12 : 18,
-                    bottom: isCompact ? 6 : 8,
-                    child: Transform.rotate(
-                      angle: -0.06,
-                      child: _CardBack(
-                        accentColor: AppTheme.secondary.withOpacity(0.72),
-                      ),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: _CardFront(
-                      accentColor: accentColor,
-                      modeLabel: modeLabel,
-                      isSpecial: isSpecial,
-                      child: child,
-                    ),
-                  ),
-                ],
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 620),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  return _CardDealTransition(
+                    animation: animation,
+                    accentColor: accentColor,
+                    child: child,
+                  );
+                },
+                child: _CardDeck(
+                  key: ValueKey(animationKey ?? modeLabel),
+                  accentColor: accentColor,
+                  modeLabel: modeLabel,
+                  isSpecial: isSpecial,
+                  isCompact: isCompact,
+                  child: child,
+                ),
               ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CardDeck extends StatelessWidget {
+  final Widget child;
+  final Color accentColor;
+  final String modeLabel;
+  final bool isSpecial;
+  final bool isCompact;
+
+  const _CardDeck({
+    super.key,
+    required this.child,
+    required this.accentColor,
+    required this.modeLabel,
+    required this.isSpecial,
+    required this.isCompact,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned.fill(
+          top: isCompact ? 16 : 22,
+          left: isCompact ? 17 : 24,
+          right: isCompact ? -12 : -18,
+          bottom: isCompact ? -6 : -8,
+          child: Transform.rotate(
+            angle: 0.075,
+            child: _CardBack(
+              accentColor: accentColor.withOpacity(0.82),
+            ),
+          ),
+        ),
+        Positioned.fill(
+          top: isCompact ? 8 : 10,
+          left: isCompact ? -11 : -16,
+          right: isCompact ? 12 : 18,
+          bottom: isCompact ? 6 : 8,
+          child: Transform.rotate(
+            angle: -0.06,
+            child: _CardBack(
+              accentColor: AppTheme.secondary.withOpacity(0.72),
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: _CardFront(
+            accentColor: accentColor,
+            modeLabel: modeLabel,
+            isSpecial: isSpecial,
+            child: child,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CardDealTransition extends StatelessWidget {
+  final Animation<double> animation;
+  final Color accentColor;
+  final Widget child;
+
+  const _CardDealTransition({
+    required this.animation,
+    required this.accentColor,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final value = Curves.easeOutCubic.transform(animation.value);
+        final angle = (1 - value) * pi;
+        final showBack = angle > pi / 2;
+
+        return Opacity(
+          opacity: (value * 1.2).clamp(0, 1).toDouble(),
+          child: FractionalTranslation(
+            translation: Offset((1 - value) * 0.72, (1 - value) * 0.03),
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateY(angle),
+              child: showBack ? _CardBack(accentColor: accentColor) : child,
             ),
           ),
         );

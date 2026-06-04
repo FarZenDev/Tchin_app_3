@@ -7,6 +7,7 @@ import '../widgets/ad_banner_slot.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
 import '../theme/app_theme.dart';
+import 'devil_call_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class StatsScreen extends StatelessWidget {
@@ -14,8 +15,12 @@ class StatsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final game = Provider.of<GameProvider>(context, listen: false);
+    final game = Provider.of<GameProvider>(context);
     final sortedPlayers = game.playerSips.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final loserEntries = game.playerLoserScores.entries
+        .where((entry) => entry.value > 0)
+        .toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
     int totalSips = sortedPlayers.fold(0, (sum, item) => sum + item.value);
@@ -118,6 +123,45 @@ class StatsScreen extends StatelessWidget {
                         );
                       }),
 
+                      if (game.hasLoserScores) ...[
+                        const Divider(
+                            color: Colors.black, thickness: 2, height: 30),
+                        Text("PACTE DU DIABLE",
+                            style: GoogleFonts.courierPrime(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black)),
+                        const SizedBox(height: 6),
+                        ...loserEntries.map((entry) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 3),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    entry.key.toUpperCase(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.courierPrime(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87),
+                                  ),
+                                ),
+                                Text(
+                                  "+${entry.value} LOOSER",
+                                  style: GoogleFonts.courierPrime(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF9B1C1C)),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+
                       const Divider(
                           color: Colors.black, thickness: 2, height: 30),
 
@@ -166,6 +210,21 @@ class StatsScreen extends StatelessWidget {
               const SizedBox(height: 30),
 
               // Controls
+              if (game.hasLoserScores) ...[
+                GradientButton(
+                  text: "Appel du diable",
+                  icon: Icons.local_fire_department_rounded,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const DevilCallScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+              ],
               GradientButton(
                 text: "Retour au menu",
                 icon: Icons.home,

@@ -31,6 +31,8 @@ class _GameScreenState extends State<GameScreen> {
   bool _isExitInterstitialShowing = false;
   bool _hasShownGameOverInterstitial = false;
   bool _isGameOverInterstitialShowing = false;
+  bool _showDevilSkipEffect = false;
+  int _devilSkipEffectSerial = 0;
 
   Future<void> _leaveGame() async {
     if (_isExitInterstitialShowing) return;
@@ -75,6 +77,23 @@ class _GameScreenState extends State<GameScreen> {
         _isGameOverInterstitialShowing = false;
       }
     });
+  }
+
+  Future<void> _skipQuestionWithDevil() async {
+    final game = context.read<GameProvider>();
+    if (!game.canSkipWithDevil || _showDevilSkipEffect) return;
+
+    setState(() {
+      _showDevilSkipEffect = true;
+      _devilSkipEffectSerial++;
+    });
+
+    game.skipCurrentQuestionWithDevil();
+
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (mounted) {
+      setState(() => _showDevilSkipEffect = false);
+    }
   }
 
   @override
@@ -193,6 +212,8 @@ class _GameScreenState extends State<GameScreen> {
                         modeLabel: BeerColors.getNameForMode(
                           game.currentMode ?? GameMode.classic,
                         ),
+                        animationKey:
+                            '${game.currentQuestionText}-${game.currentQuestionType}-${game.isGameOver}',
                         isSpecial: game.currentQuestionType ==
                                 QuestionType.centralGlass ||
                             game.isHappyHour,
@@ -206,7 +227,10 @@ class _GameScreenState extends State<GameScreen> {
                 ),
 
                 const SizedBox(height: 16),
-                _QuestionNavigationBar(accentColor: themeColor),
+                _QuestionNavigationBar(
+                  accentColor: themeColor,
+                  onDevilSkip: _skipQuestionWithDevil,
+                ),
               ],
             ),
           ),
@@ -242,6 +266,13 @@ class _GameScreenState extends State<GameScreen> {
               child: Container(color: Colors.transparent),
             ),
           ),
+
+          if (_showDevilSkipEffect)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: _DevilSkipOverlay(key: ValueKey(_devilSkipEffectSerial)),
+              ),
+            ),
         ],
       ),
     );
@@ -639,8 +670,12 @@ class _GameOverContent extends StatelessWidget {
 
 class _QuestionNavigationBar extends StatelessWidget {
   final Color accentColor;
+  final VoidCallback onDevilSkip;
 
-  const _QuestionNavigationBar({required this.accentColor});
+  const _QuestionNavigationBar({
+    required this.accentColor,
+    required this.onDevilSkip,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -695,6 +730,12 @@ class _QuestionNavigationBar extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               _NavButton(
+                icon: Icons.local_fire_department_rounded,
+                color: const Color(0xFFD7263D),
+                onPressed: game.canSkipWithDevil ? onDevilSkip : null,
+              ),
+              const SizedBox(width: 8),
+              _NavButton(
                 icon: Icons.arrow_forward_rounded,
                 color: accentColor,
                 onPressed: game.isGameOver ? null : game.nextQuestion,
@@ -703,6 +744,69 @@ class _QuestionNavigationBar extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _DevilSkipOverlay extends StatelessWidget {
+  const _DevilSkipOverlay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black.withOpacity(0.24),
+      child: Center(
+        child: Container(
+          width: 172,
+          height: 172,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: const RadialGradient(
+              colors: [
+                Color(0xFFFFE45E),
+                Color(0xFFFF6B35),
+                Color(0xFF5C0D12),
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFFF3D00).withOpacity(0.45),
+                blurRadius: 36,
+                spreadRadius: 8,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('😈', style: TextStyle(fontSize: 58)),
+              Text(
+                'PACTE SIGNE',
+                style: GoogleFonts.bebasNeue(
+                  color: Colors.white,
+                  fontSize: 25,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '+1 LOOSER',
+                style: GoogleFonts.inter(
+                  color: const Color(0xFFFFF3C4),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+        )
+            .animate()
+            .fadeIn(duration: 120.ms)
+            .scale(begin: const Offset(0.55, 0.55), end: const Offset(1, 1))
+            .shake(hz: 6, duration: 360.ms)
+            .then(delay: 240.ms)
+            .fadeOut(duration: 180.ms),
+      ),
     );
   }
 }

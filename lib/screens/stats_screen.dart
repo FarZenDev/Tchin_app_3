@@ -39,7 +39,7 @@ class StatsScreen extends StatelessWidget {
       },
     );
 
-    await Future.delayed(const Duration(milliseconds: 2900));
+    await Future.delayed(const Duration(milliseconds: 3300));
     if (!context.mounted) return;
     Navigator.of(context, rootNavigator: true).pop();
 
@@ -292,7 +292,7 @@ class _DevilCallLaunchOverlayState extends State<_DevilCallLaunchOverlay>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2800),
+      duration: const Duration(milliseconds: 3200),
     )..forward();
   }
 
@@ -304,7 +304,9 @@ class _DevilCallLaunchOverlayState extends State<_DevilCallLaunchOverlay>
 
   @override
   Widget build(BuildContext context) {
-    final width = math.min(MediaQuery.sizeOf(context).width * 0.88, 390.0);
+    final size = MediaQuery.sizeOf(context);
+    final width = math.min(size.width * 0.88, 390.0);
+    final height = math.min(size.height * 0.82, 500.0);
     return Material(
       color: Colors.transparent,
       child: RepaintBoundary(
@@ -327,7 +329,7 @@ class _DevilCallLaunchOverlayState extends State<_DevilCallLaunchOverlay>
               child: Center(
                 child: SizedBox(
                   width: width,
-                  height: 470,
+                  height: height,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -337,28 +339,56 @@ class _DevilCallLaunchOverlayState extends State<_DevilCallLaunchOverlay>
                         ),
                       ),
                       Positioned(
-                        top: 46 - (16 * titleIn),
+                        top: 32 - (14 * titleIn),
                         child: Opacity(
                           opacity: titleIn,
-                          child: Text(
-                            'APPEL DU DIABLE',
-                            style: GoogleFonts.bebasNeue(
-                              color: const Color(0xFFFFE45E),
-                              fontSize: 43,
-                              letterSpacing: 1.4,
-                              shadows: [
-                                Shadow(
-                                  color:
-                                      const Color(0xFFFF3D00).withOpacity(0.9),
-                                  blurRadius: 18,
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 13,
+                                  vertical: 6,
                                 ),
-                              ],
-                            ),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.32),
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                    color: const Color(0xFFFFC46B)
+                                        .withOpacity(0.2),
+                                  ),
+                                ),
+                                child: Text(
+                                  'LE TCHIN BAR PRESENTE',
+                                  style: GoogleFonts.inter(
+                                    color: const Color(0xFFFFC46B),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1.3,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'APPEL DU DIABLE',
+                                style: GoogleFonts.bebasNeue(
+                                  color: const Color(0xFFFFE45E),
+                                  fontSize: 43,
+                                  letterSpacing: 1.4,
+                                  shadows: [
+                                    Shadow(
+                                      color: const Color(0xFFFF3D00)
+                                          .withOpacity(0.9),
+                                      blurRadius: 18,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       Positioned(
-                        top: 132 - (42 * rise),
+                        top: 155 - (50 * rise),
                         child: Transform.scale(
                           scale: 0.74 + (0.28 * rise),
                           child: const DevilLaughAnimation(
@@ -368,7 +398,7 @@ class _DevilCallLaunchOverlayState extends State<_DevilCallLaunchOverlay>
                         ),
                       ),
                       Positioned(
-                        bottom: 76,
+                        bottom: 72,
                         left: 38,
                         right: 38,
                         child: Column(
@@ -435,6 +465,39 @@ class _LaunchPortalPainter extends CustomPainter {
     final p = progress.clamp(0.0, 1.0).toDouble();
     final center = Offset(size.width / 2, size.height * 0.46);
     final pulse = math.sin(p * math.pi);
+
+    final stagePaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          const Color(0xFFFFC46B).withOpacity(0.1 * p),
+          Colors.transparent,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(Offset.zero & size);
+    for (var i = 0; i < 3; i++) {
+      final x = size.width * (0.18 + i * 0.32);
+      final path = Path()
+        ..moveTo(x - 28, 0)
+        ..lineTo(x + 28, 0)
+        ..lineTo(x + 68, size.height * 0.78)
+        ..lineTo(x - 68, size.height * 0.78)
+        ..close();
+      canvas.drawPath(path, stagePaint);
+    }
+
+    final shelfPaint = Paint()
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..color = const Color(0xFFFFC46B).withOpacity(0.12 * p);
+    for (var i = 0; i < 2; i++) {
+      final y = size.height * (0.62 + i * 0.08);
+      canvas.drawLine(
+        Offset(size.width * 0.18, y),
+        Offset(size.width * 0.82, y),
+        shelfPaint,
+      );
+    }
 
     final glowPaint = Paint()
       ..shader = RadialGradient(

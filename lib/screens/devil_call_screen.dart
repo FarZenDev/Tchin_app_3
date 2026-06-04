@@ -121,6 +121,22 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
                   duration: const Duration(milliseconds: 520),
                   switchInCurve: Curves.easeOutCubic,
                   switchOutCurve: Curves.easeInCubic,
+                  transitionBuilder: (child, animation) {
+                    final curved = CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    );
+                    return FadeTransition(
+                      opacity: curved,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 0.035),
+                          end: Offset.zero,
+                        ).animate(curved),
+                        child: child,
+                      ),
+                    );
+                  },
                   child: _introDone
                       ? _buildChallenge()
                       : const _DevilSummonIntro(key: ValueKey('intro')),
@@ -155,6 +171,7 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
             const SizedBox(height: 12),
             Expanded(
               child: ListView.separated(
+                padding: const EdgeInsets.only(bottom: 8),
                 itemCount: _players.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
@@ -164,6 +181,7 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
                       stoppedAt == null ? null : _stopOrder.indexOf(player);
 
                   return _HellPlayerTile(
+                    slotNumber: index + 1,
                     name: player,
                     isActive: stoppedAt == null,
                     stoppedAt:
@@ -207,96 +225,160 @@ class _DevilTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 13),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF2A090D), Color(0xFF10050A)],
+          colors: [Color(0xFF311015), Color(0xFF17070C), Color(0xFF0B0508)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFFF6B35).withOpacity(0.42)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFFFC46B).withOpacity(0.34)),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFFF3D00).withOpacity(0.16),
-            blurRadius: 22,
+            color: const Color(0xFFFF3D00).withOpacity(0.18),
+            blurRadius: 28,
             spreadRadius: 1,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFF6B35).withOpacity(0.15),
-              borderRadius: BorderRadius.circular(13),
-              border: Border.all(
-                color: const Color(0xFFFFB000).withOpacity(0.36),
-              ),
-            ),
-            child: const Icon(
-              Icons.local_fire_department_rounded,
-              color: Color(0xFFFFB000),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'APPEL DU DIABLE',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.bebasNeue(
-                    color: Colors.white,
-                    fontSize: 25,
-                    letterSpacing: 1.2,
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF6B35).withOpacity(0.16),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: const Color(0xFFFFE45E).withOpacity(0.36),
                   ),
                 ),
-                Text(
-                  isChallenge ? 'defi en cours' : 'invocation',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: const Icon(
+                  Icons.nightlife_rounded,
+                  color: Color(0xFFFFE45E),
+                  size: 26,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'LE TCHIN BAR',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.inter(
+                        color: const Color(0xFFFFC46B),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.8,
+                      ),
+                    ),
+                    Text(
+                      'APPEL DU DIABLE',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.bebasNeue(
+                        color: Colors.white,
+                        fontSize: 29,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.44),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.white.withOpacity(0.09)),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'CHRONO',
+                      style: GoogleFonts.inter(
+                        color: AppTheme.textSecondary,
+                        fontSize: 8,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.6,
+                      ),
+                    ),
+                    Text(
+                      elapsed,
+                      style: GoogleFonts.robotoMono(
+                        color: const Color(0xFFFFE45E),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 11),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 1,
+                  color: const Color(0xFFFFC46B).withOpacity(0.18),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  isChallenge ? 'SERVICE EN COURS' : 'INVOCATION EN COURS',
                   style: GoogleFonts.inter(
                     color: const Color(0xFFFFE45E),
-                    fontSize: 11,
+                    fontSize: 10,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 0.7,
+                    letterSpacing: 1.1,
                   ),
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: Container(
+                  height: 1,
+                  color: const Color(0xFFFFC46B).withOpacity(0.18),
+                ),
+              ),
+            ],
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.42),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white.withOpacity(0.08)),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  'CHRONO',
+          const SizedBox(height: 9),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.local_bar_rounded,
+                size: 14,
+                color: Color(0xFFFFC46B),
+              ),
+              const SizedBox(width: 7),
+              Flexible(
+                child: Text(
+                  isChallenge
+                      ? 'Tape les noms quand les verres tombent'
+                      : 'Le comptoir descend aux enfers',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.inter(
                     color: AppTheme.textSecondary,
-                    fontSize: 8,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                Text(
-                  elapsed,
-                  style: GoogleFonts.robotoMono(
-                    color: const Color(0xFFFFE45E),
-                    fontSize: 14,
+                    fontSize: 11,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -380,25 +462,25 @@ class _DevilSummonIntroState extends State<_DevilSummonIntro>
                 Opacity(
                   opacity: titleIn,
                   child: Text(
-                    'LE PACTE COMMENCE',
+                    'LA TOURNEE DES DAMNES',
                     style: GoogleFonts.bebasNeue(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 30,
                       letterSpacing: 1.3,
                     ),
                   ),
                 ),
                 Text(
-                  'HA HA HA',
+                  'PACTE EN COURS',
                   style: GoogleFonts.bebasNeue(
                     color: const Color(0xFFFFE45E),
-                    fontSize: 34 + (p * 5),
+                    fontSize: 34 + (p * 4),
                     letterSpacing: 2,
                   ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
-                  width: 210,
+                  width: 228,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(999),
                     child: LinearProgressIndicator(
@@ -412,12 +494,40 @@ class _DevilSummonIntroState extends State<_DevilSummonIntro>
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  'Le diable ouvre le bar.',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(
-                    color: AppTheme.textSecondary,
-                    fontWeight: FontWeight.w700,
+                Opacity(
+                  opacity: titleIn,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 9,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.28),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(
+                        color: const Color(0xFFFFC46B).withOpacity(0.2),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.local_bar_rounded,
+                          color: Color(0xFFFFC46B),
+                          size: 15,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Dernier service avant la sentence',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            color: AppTheme.textSecondary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -485,11 +595,35 @@ class _InfernalBackdropPainter extends CustomPainter {
       rect,
       Paint()
         ..shader = const LinearGradient(
-          colors: [Color(0xFF26070C), Color(0xFF0D0710), Color(0xFF161A2B)],
+          colors: [
+            Color(0xFF30090E),
+            Color(0xFF13070B),
+            Color(0xFF101522),
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ).createShader(rect),
     );
+
+    final lightPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          const Color(0xFFFFC46B).withOpacity(0.13),
+          Colors.transparent,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(rect);
+    for (var i = 0; i < 3; i++) {
+      final x = size.width * (0.2 + i * 0.3) + pulse * (3 - i);
+      final path = Path()
+        ..moveTo(x - 34, 0)
+        ..lineTo(x + 34, 0)
+        ..lineTo(x + 86, size.height * 0.72)
+        ..lineTo(x - 86, size.height * 0.72)
+        ..close();
+      canvas.drawPath(path, lightPaint);
+    }
 
     final center = Offset(size.width / 2, size.height * (0.2 + pulse * 0.015));
     canvas.drawCircle(
@@ -504,6 +638,34 @@ class _InfernalBackdropPainter extends CustomPainter {
           ],
         ).createShader(Rect.fromCircle(center: center, radius: size.width)),
     );
+
+    final bottlePaint = Paint()..color = Colors.black.withOpacity(0.17);
+    final bottleGlowPaint = Paint()
+      ..color = const Color(0xFFFF6B35).withOpacity(0.06);
+    for (var row = 0; row < 2; row++) {
+      final shelfY = size.height * (0.31 + row * 0.12);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(size.width * 0.12, shelfY, size.width * 0.76, 3),
+          const Radius.circular(999),
+        ),
+        Paint()..color = const Color(0xFFFFC46B).withOpacity(0.11),
+      );
+      for (var i = 0; i < 8; i++) {
+        final x = size.width * 0.16 + i * size.width * 0.095;
+        final h = 20.0 + ((i + row) % 3) * 7;
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(x, shelfY - h, 10, h),
+            const Radius.circular(3),
+          ),
+          bottlePaint,
+        );
+        canvas.drawRect(
+            Rect.fromLTWH(x + 2, shelfY - h - 7, 6, 8), bottlePaint);
+        canvas.drawCircle(Offset(x + 5, shelfY - h + 7), 6, bottleGlowPaint);
+      }
+    }
 
     final barPaint = Paint()
       ..color = Colors.black.withOpacity(0.22)
@@ -574,6 +736,26 @@ class _SummonAuraPainter extends CustomPainter {
             Colors.transparent,
           ],
         ).createShader(Rect.fromCircle(center: center, radius: size.width)),
+    );
+
+    final ringPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2.2
+      ..color = const Color(0xFFFFC46B).withOpacity(0.18 + 0.2 * p);
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: size.width * (0.33 + 0.04 * p)),
+      -math.pi / 2 + p * 0.4,
+      math.pi * 1.55,
+      false,
+      ringPaint,
+    );
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: size.width * (0.41 + 0.04 * p)),
+      math.pi / 2 - p * 0.32,
+      math.pi * 1.2,
+      false,
+      ringPaint..strokeWidth = 1.4,
     );
 
     final rayPaint = Paint()
@@ -826,55 +1008,126 @@ class _RulePanel extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.fromLTRB(14, 13, 14, 14),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.26),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFF6B35).withOpacity(0.32)),
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFF211218).withOpacity(0.94),
+            const Color(0xFF12080D).withOpacity(0.96),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFFFC46B).withOpacity(0.24)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.22),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  '$remaining/$total boivent encore',
-                  style: GoogleFonts.bebasNeue(
-                    color: Colors.white,
-                    fontSize: 25,
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF6B35).withOpacity(0.14),
+                  borderRadius: BorderRadius.circular(11),
+                  border: Border.all(
+                    color: const Color(0xFFFFE45E).withOpacity(0.26),
                   ),
                 ),
+                child: const Icon(
+                  Icons.sports_bar_rounded,
+                  color: Color(0xFFFFC46B),
+                  size: 19,
+                ),
               ),
-              Text(
-                '$stopped arretes',
-                style: GoogleFonts.inter(
-                  color: const Color(0xFFFFE45E),
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.4,
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'MANCHE INFERNALE',
+                      style: GoogleFonts.inter(
+                        color: const Color(0xFFFFC46B),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.3,
+                      ),
+                    ),
+                    Text(
+                      '$remaining/$total boivent encore',
+                      style: GoogleFonts.bebasNeue(
+                        color: Colors.white,
+                        fontSize: 27,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFE45E).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: const Color(0xFFFFE45E).withOpacity(0.24),
+                  ),
+                ),
+                child: Text(
+                  '$stopped STOP',
+                  style: GoogleFonts.inter(
+                    color: const Color(0xFFFFE45E),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.6,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 11),
           ClipRRect(
             borderRadius: BorderRadius.circular(999),
             child: LinearProgressIndicator(
-              minHeight: 7,
+              minHeight: 8,
               value: progress,
               backgroundColor: Colors.white.withOpacity(0.08),
               valueColor: const AlwaysStoppedAnimation(Color(0xFFFF6B35)),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Tape un joueur quand il arrete. Le premier garde le pacte looser, les derniers peuvent le purifier.',
-            style: GoogleFonts.inter(
-              color: AppTheme.textSecondary,
-              fontSize: 12,
-              height: 1.25,
-            ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Premier arret: pacte. Dernier debout: purification.',
+                  style: GoogleFonts.inter(
+                    color: AppTheme.textSecondary,
+                    fontSize: 12,
+                    height: 1.25,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Icon(
+                Icons.touch_app_rounded,
+                color: Color(0xFFFFC46B),
+                size: 18,
+              ),
+            ],
           ),
         ],
       ),
@@ -883,6 +1136,7 @@ class _RulePanel extends StatelessWidget {
 }
 
 class _HellPlayerTile extends StatelessWidget {
+  final int slotNumber;
   final String name;
   final bool isActive;
   final String? stoppedAt;
@@ -891,6 +1145,7 @@ class _HellPlayerTile extends StatelessWidget {
   final VoidCallback onTap;
 
   const _HellPlayerTile({
+    required this.slotNumber,
     required this.name,
     required this.isActive,
     required this.stoppedAt,
@@ -902,6 +1157,7 @@ class _HellPlayerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final verdict = rank == null ? null : _verdictForRank(rank!, totalPlayers);
+    final orderLabel = rank == null ? '$slotNumber' : '${rank! + 1}';
 
     return AnimatedScale(
       duration: const Duration(milliseconds: 180),
@@ -912,13 +1168,15 @@ class _HellPlayerTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
             gradient: LinearGradient(
               colors: isActive
-                  ? const [Color(0xFF4A1116), Color(0xFF8A281C)]
-                  : const [Color(0xFF202432), Color(0xFF171A24)],
+                  ? const [Color(0xFF521217), Color(0xFF8A281C)]
+                  : const [Color(0xFF222A36), Color(0xFF141820)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
             border: Border.all(
               color: isActive
@@ -939,24 +1197,42 @@ class _HellPlayerTile extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 42,
-                height: 42,
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(isActive ? 0.22 : 0.12),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(15),
                   border: Border.all(
                     color: isActive
                         ? const Color(0xFFFFE45E).withOpacity(0.44)
                         : const Color(0xFF7BD88F).withOpacity(0.24),
                   ),
                 ),
-                child: Icon(
-                  isActive
-                      ? Icons.local_fire_department_rounded
-                      : Icons.check_circle_rounded,
-                  color: isActive
-                      ? const Color(0xFFFFB000)
-                      : const Color(0xFF7BD88F),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      isActive
+                          ? Icons.local_fire_department_rounded
+                          : Icons.check_circle_rounded,
+                      color: isActive
+                          ? const Color(0xFFFFB000)
+                          : const Color(0xFF7BD88F),
+                      size: 25,
+                    ),
+                    Positioned(
+                      right: 4,
+                      bottom: 2,
+                      child: Text(
+                        orderLabel,
+                        style: GoogleFonts.robotoMono(
+                          color: Colors.white.withOpacity(0.82),
+                          fontSize: 9,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 12),
@@ -976,7 +1252,7 @@ class _HellPlayerTile extends StatelessWidget {
                     ),
                     Text(
                       isActive
-                          ? 'boit encore'
+                          ? 'verre en cours'
                           : '${_rankText(rank!, totalPlayers)} a $stoppedAt',
                       style: GoogleFonts.inter(
                         color: AppTheme.textSecondary,
@@ -1013,8 +1289,8 @@ class _HellPlayerTile extends StatelessWidget {
               else
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 11,
-                    vertical: 7,
+                    horizontal: 12,
+                    vertical: 8,
                   ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFE45E).withOpacity(0.16),
@@ -1024,11 +1300,12 @@ class _HellPlayerTile extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'TAPER',
+                    'STOP',
                     style: GoogleFonts.inter(
                       color: const Color(0xFFFFE45E),
                       fontSize: 10,
                       fontWeight: FontWeight.w900,
+                      letterSpacing: 0.6,
                     ),
                   ),
                 ),
@@ -1063,57 +1340,269 @@ class _ResultPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 520),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 18 * (1 - value)),
+            child: child,
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF241015), Color(0xFF12070B)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFFFC46B).withOpacity(0.36)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFFF3D00).withOpacity(0.16),
+              blurRadius: 24,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFF6B35).withOpacity(0.14),
+                    borderRadius: BorderRadius.circular(13),
+                    border: Border.all(
+                      color: const Color(0xFFFFE45E).withOpacity(0.28),
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.receipt_long_rounded,
+                    color: Color(0xFFFFC46B),
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 11),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'VERDICT DU DIABLE',
+                        style: GoogleFonts.bebasNeue(
+                          color: const Color(0xFFFFE45E),
+                          fontSize: 28,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      Text(
+                        'Le ticket de caisse est mis a jour',
+                        style: GoogleFonts.inter(
+                          color: AppTheme.textSecondary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (stopOrder.length > 1) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _ResultSpotlight(
+                      label: 'PACTE',
+                      name: stopOrder.first,
+                      color: const Color(0xFFFF6B35),
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: _ResultSpotlight(
+                      label: 'PURIFIE',
+                      name: stopOrder.last,
+                      color: const Color(0xFF7BD88F),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            const SizedBox(height: 12),
+            ...stopOrder.asMap().entries.map((entry) {
+              final rank = entry.key;
+              final verdict = rank == 0
+                  ? 'PACTE'
+                  : rank == totalPlayers - 1
+                      ? 'PURIFIE'
+                      : 'SAUVE';
+              return _ResultRow(
+                rank: rank + 1,
+                name: entry.value,
+                verdict: verdict,
+                delta: _deltaForRank(rank),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  int _deltaForRank(int rank) {
+    if (totalPlayers <= 1) return -1;
+    return totalPlayers - 1 - (rank * 2);
+  }
+}
+
+class _ResultSpotlight extends StatelessWidget {
+  final String label;
+  final String name;
+  final Color color;
+
+  const _ResultSpotlight({
+    required this.label,
+    required this.name,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
       decoration: BoxDecoration(
-        color: const Color(0xFF16070A).withOpacity(0.92),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFFFB000).withOpacity(0.4)),
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Verdict du diable',
-            style: GoogleFonts.bebasNeue(
-              color: const Color(0xFFFFE45E),
-              fontSize: 25,
+            label,
+            style: GoogleFonts.inter(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
             ),
           ),
-          const SizedBox(height: 6),
-          ...stopOrder.asMap().entries.map((entry) {
-            final verdict = entry.key == 0
-                ? 'PACTE'
-                : entry.key == totalPlayers - 1
-                    ? 'PURIFIE'
-                    : 'SAUVE';
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      entry.value,
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    verdict,
-                    style: GoogleFonts.inter(
-                      color: entry.key == 0
-                          ? const Color(0xFFFF6B35)
-                          : const Color(0xFF7BD88F),
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ],
+          const SizedBox(height: 3),
+          Text(
+            name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.inter(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResultRow extends StatelessWidget {
+  final int rank;
+  final String name;
+  final String verdict;
+  final int delta;
+
+  const _ResultRow({
+    required this.rank,
+    required this.name,
+    required this.verdict,
+    required this.delta,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final positive = delta > 0;
+    final neutral = delta == 0;
+    final color = positive
+        ? const Color(0xFFFF6B35)
+        : neutral
+            ? const Color(0xFFFFC46B)
+            : const Color(0xFF7BD88F);
+    final deltaLabel = neutral
+        ? '0'
+        : positive
+            ? '+$delta'
+            : '$delta';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: Colors.white.withOpacity(0.07)),
+      ),
+      child: Row(
+        children: [
+          Text(
+            '#$rank',
+            style: GoogleFonts.robotoMono(
+              color: AppTheme.textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
               ),
-            );
-          }),
+            ),
+          ),
+          Text(
+            verdict,
+            style: GoogleFonts.inter(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.4,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Container(
+            width: 43,
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.13),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              deltaLabel,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.robotoMono(
+                color: color,
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff3b1f" stop-opacity="0.9"/>
+      <stop offset="0.58" stop-color="#ff8b2d" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#ffe15a" stop-opacity="0.88"/>
+    </linearGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+  </defs>
+  <g opacity="0.74" filter="url(#glow)">
+    <path d="M40 1786c-38-86 22-124 12-202 66 72 82 128 22 202z" fill="url(#flame)"/>
+    <path d="M150 1840c-50-96 40-142 10-230 92 82 104 154 24 230z" fill="url(#flame)"/>
+    <path d="M1040 1788c38-86-22-126-12-202-66 72-82 128-22 202z" fill="url(#flame)"/>
+    <path d="M930 1844c50-98-40-144-10-232-92 82-104 154-24 232z" fill="url(#flame)"/>
+  </g>
+  <g opacity="0.5">
+    <path d="M44 1786c-22-54 18-78 12-126 38 46 46 82 14 126z" fill="#ffe15a"/>
+    <path d="M154 1838c-26-58 22-88 12-140 48 52 54 94 14 140z" fill="#ffe15a"/>
+    <path d="M1036 1788c22-54-18-78-12-126-38 46-46 82-14 126z" fill="#ffe15a"/>
+    <path d="M926 1840c26-58-22-88-12-140-48 52-54 94-14 140z" fill="#ffe15a"/>
+  </g>
+</svg>

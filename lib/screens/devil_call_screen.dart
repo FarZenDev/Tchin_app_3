@@ -11,6 +11,12 @@ import '../widgets/devil_laugh_animation.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
 
+const _hellBarBackgroundAsset =
+    'assets/devil_call/hell_bar_background_clean.png';
+const _hellBarAtmosphereAsset =
+    'assets/devil_call/hell_bar_atmosphere_overlay.png';
+const _hellBarFlamesAsset = 'assets/devil_call/hell_bar_flame_edges.png';
+
 class DevilCallScreen extends StatefulWidget {
   const DevilCallScreen({super.key});
 
@@ -569,322 +575,126 @@ class _InfernalPageBackdropState extends State<_InfernalPageBackdrop>
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            return CustomPaint(
-              painter: _InfernalBackdropPainter(phase: _controller.value),
-            );
-          },
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              _hellBarBackgroundAsset,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.medium,
+              gaplessPlayback: true,
+            ),
+            Container(
+              color: const Color(0xFF050408).withOpacity(0.16),
+            ),
+            Opacity(
+              opacity: 0.86,
+              child: Image.asset(
+                _hellBarAtmosphereAsset,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.medium,
+                gaplessPlayback: true,
+              ),
+            ),
+            AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) {
+                return CustomPaint(
+                  painter: _HellBarAssetOverlayPainter(
+                    phase: _controller.value,
+                  ),
+                );
+              },
+            ),
+            Opacity(
+              opacity: 0.88,
+              child: Image.asset(
+                _hellBarFlamesAsset,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.medium,
+                gaplessPlayback: true,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _InfernalBackdropPainter extends CustomPainter {
+class _HellBarAssetOverlayPainter extends CustomPainter {
   final double phase;
 
-  const _InfernalBackdropPainter({required this.phase});
+  const _HellBarAssetOverlayPainter({required this.phase});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final pulse = math.sin(phase * math.pi * 2);
     final rect = Offset.zero & size;
+    final pulse = math.sin(phase * math.pi * 2);
 
     canvas.drawRect(
       rect,
       Paint()
-        ..shader = const LinearGradient(
+        ..shader = LinearGradient(
           colors: [
-            Color(0xFF30090E),
-            Color(0xFF13070B),
-            Color(0xFF101522),
+            Colors.black.withOpacity(0.08),
+            Colors.transparent,
+            Colors.black.withOpacity(0.28),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ).createShader(rect),
     );
 
-    final panelPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..color = const Color(0xFFFFC46B).withOpacity(0.045);
-    for (var i = 0; i < 7; i++) {
-      final x = size.width * (i / 6);
-      canvas.drawLine(Offset(x, 0), Offset(x - 30, size.height), panelPaint);
-    }
+    final readableCenter = Offset(size.width / 2, size.height * 0.5);
+    canvas.drawCircle(
+      readableCenter,
+      size.width * 0.56,
+      Paint()
+        ..shader = RadialGradient(
+          colors: [
+            Colors.black.withOpacity(0.38),
+            Colors.black.withOpacity(0.18),
+            Colors.transparent,
+          ],
+          stops: const [0.0, 0.68, 1.0],
+        ).createShader(
+          Rect.fromCircle(center: readableCenter, radius: size.width * 0.62),
+        ),
+    );
 
-    final lightPaint = Paint()
-      ..shader = LinearGradient(
+    final warmGlow = Paint()
+      ..shader = RadialGradient(
         colors: [
-          const Color(0xFFFFC46B).withOpacity(0.13),
+          const Color(0xFFFF6B35).withOpacity(0.11 + pulse.abs() * 0.04),
           Colors.transparent,
         ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ).createShader(rect);
-    for (var i = 0; i < 3; i++) {
-      final x = size.width * (0.2 + i * 0.3) + pulse * (3 - i);
-      final path = Path()
-        ..moveTo(x - 34, 0)
-        ..lineTo(x + 34, 0)
-        ..lineTo(x + 86, size.height * 0.72)
-        ..lineTo(x - 86, size.height * 0.72)
-        ..close();
-      canvas.drawPath(path, lightPaint);
-    }
-
-    final backBarRect = Rect.fromLTWH(
-      size.width * 0.08,
-      size.height * 0.18,
-      size.width * 0.84,
-      size.height * 0.48,
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(backBarRect, const Radius.circular(24)),
-      Paint()
-        ..shader = LinearGradient(
-          colors: [
-            Colors.black.withOpacity(0.18),
-            const Color(0xFF2C0A0F).withOpacity(0.28),
-            Colors.black.withOpacity(0.22),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ).createShader(backBarRect),
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(backBarRect, const Radius.circular(24)),
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.4
-        ..color = const Color(0xFFFFC46B).withOpacity(0.16),
-    );
-
-    final archPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..color = const Color(0xFFFF6B35).withOpacity(0.12);
-    for (var i = 0; i < 3; i++) {
-      final archX = size.width * (0.19 + i * 0.25);
-      final arch = Rect.fromLTWH(
-        archX,
-        size.height * 0.22,
-        size.width * 0.16,
-        size.height * 0.22,
-      );
-      final path = Path()
-        ..moveTo(arch.left, arch.bottom)
-        ..lineTo(arch.left, arch.top + arch.height * 0.45)
-        ..quadraticBezierTo(
-          arch.center.dx,
-          arch.top - 18,
-          arch.right,
-          arch.top + arch.height * 0.45,
-        )
-        ..lineTo(arch.right, arch.bottom);
-      canvas.drawPath(path, archPaint);
-    }
-
-    final center = Offset(size.width / 2, size.height * (0.32 + pulse * 0.01));
-    canvas.drawCircle(
-      center,
-      size.width * (0.5 + pulse * 0.018),
-      Paint()
-        ..shader = RadialGradient(
-          colors: [
-            const Color(0xFFFF6B35).withOpacity(0.16),
-            const Color(0xFF5C0D12).withOpacity(0.09),
-            Colors.transparent,
-          ],
-        ).createShader(Rect.fromCircle(center: center, radius: size.width)),
-    );
-
-    final shelfLipPaint = Paint()
-      ..shader = LinearGradient(
-        colors: [
-          const Color(0xFF3B1A12).withOpacity(0.8),
-          const Color(0xFFFFC46B).withOpacity(0.2),
-          const Color(0xFF1A0A08).withOpacity(0.92),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, 4));
-    final bottleBasePaint = Paint();
-    final bottleGlowPaint = Paint();
-    for (var row = 0; row < 3; row++) {
-      final shelfY = size.height * (0.3 + row * 0.105);
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(size.width * 0.13, shelfY, size.width * 0.74, 5),
-          const Radius.circular(999),
+      ).createShader(
+        Rect.fromCircle(
+          center: Offset(size.width / 2, size.height * 0.83),
+          radius: size.width * 0.72,
         ),
-        shelfLipPaint,
       );
-      for (var i = 0; i < 9; i++) {
-        final x = size.width * 0.155 + i * size.width * 0.082;
-        final h = 19.0 + ((i + row) % 4) * 5;
-        final bottleColor = [
-          const Color(0xFFFF6B35),
-          const Color(0xFFFFC46B),
-          const Color(0xFF7BD88F),
-          const Color(0xFFB66CFF),
-        ][(i + row) % 4];
-        bottleBasePaint.color = Colors.black.withOpacity(0.22);
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromLTWH(x, shelfY - h, 10 + (i % 2) * 2, h),
-            const Radius.circular(3),
-          ),
-          bottleBasePaint,
-        );
-        canvas.drawRect(
-          Rect.fromLTWH(x + 2, shelfY - h - 6, 6, 7),
-          bottleBasePaint,
-        );
-        bottleGlowPaint.color = bottleColor.withOpacity(0.055 + row * 0.018);
-        canvas.drawCircle(
-          Offset(x + 5.5, shelfY - h * 0.48),
-          6 + (i % 2),
-          bottleGlowPaint,
-        );
-      }
-    }
-
-    final crackPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.6
-      ..strokeCap = StrokeCap.round
-      ..color = const Color(0xFFFF6B35).withOpacity(0.16 + pulse.abs() * 0.06);
-    for (var i = 0; i < 6; i++) {
-      final x = size.width * (0.14 + i * 0.14);
-      final y = size.height * (0.56 + (i % 3) * 0.035);
-      final path = Path()
-        ..moveTo(x, y)
-        ..lineTo(x + 14, y + 13)
-        ..lineTo(x + 7, y + 28)
-        ..lineTo(x + 25, y + 42);
-      canvas.drawPath(path, crackPaint);
-    }
-
-    final readabilityCenter = Offset(size.width / 2, size.height * 0.48);
-    canvas.drawCircle(
-      readabilityCenter,
-      size.width * 0.62,
-      Paint()
-        ..shader = RadialGradient(
-          colors: [
-            Colors.black.withOpacity(0.44),
-            Colors.black.withOpacity(0.2),
-            Colors.transparent,
-          ],
-          stops: const [0.0, 0.66, 1.0],
-        ).createShader(
-          Rect.fromCircle(center: readabilityCenter, radius: size.width * 0.7),
-        ),
-    );
-
-    final barPaint = Paint()
-      ..shader = LinearGradient(
-        colors: [
-          const Color(0xFF130708).withOpacity(0.94),
-          const Color(0xFF442012).withOpacity(0.86),
-          const Color(0xFF0C0507).withOpacity(0.98),
-        ],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ).createShader(rect)
-      ..style = PaintingStyle.fill;
-    final barTop = size.height * 0.735;
-    final counterPath = Path()
-      ..moveTo(size.width * 0.02, barTop + 18)
-      ..quadraticBezierTo(
-        size.width * 0.5,
-        barTop - 18,
-        size.width * 0.98,
-        barTop + 18,
-      )
-      ..lineTo(size.width, size.height)
-      ..lineTo(0, size.height)
-      ..close();
-    canvas.drawPath(counterPath, barPaint);
-
-    final linePaint = Paint()
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round
-      ..color = const Color(0xFFFFB000).withOpacity(0.14 + pulse.abs() * 0.08);
-    canvas.drawArc(
-      Rect.fromLTWH(size.width * 0.02, barTop - 30, size.width * 0.96, 60),
-      math.pi * 0.08,
-      math.pi * 0.84,
-      false,
-      linePaint,
-    );
-
-    final grainPaint = Paint()
-      ..strokeWidth = 1.1
-      ..strokeCap = StrokeCap.round
-      ..color = const Color(0xFFFFC46B).withOpacity(0.075);
-    for (var i = 0; i < 9; i++) {
-      final y = size.height * (0.78 + i * 0.025);
-      canvas.drawLine(
-        Offset(size.width * 0.08, y),
-        Offset(
-          size.width * 0.92,
-          y + math.sin(phase * math.pi * 2 + i) * 1.1,
-        ),
-        grainPaint,
-      );
-    }
-
-    final stoolPaint = Paint()..color = Colors.black.withOpacity(0.18);
-    for (var i = 0; i < 3; i++) {
-      final x = size.width * (0.2 + i * 0.3);
-      final y = size.height * 0.86;
-      canvas.drawOval(
-        Rect.fromCenter(center: Offset(x, y), width: 52, height: 9),
-        stoolPaint,
-      );
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(x - 3, y, 6, 45),
-          const Radius.circular(999),
-        ),
-        stoolPaint,
-      );
-    }
-
-    final flamePaint = Paint();
-    for (var i = 0; i < 8; i++) {
-      final side = i < 4 ? -1.0 : 1.0;
-      final x = side < 0
-          ? size.width * (0.04 + i * 0.035)
-          : size.width * (0.86 + (i - 4) * 0.035);
-      final y = size.height * (0.78 + (i % 2) * 0.04);
-      final h = 28 + math.sin(phase * math.pi * 2 + i) * 5;
-      final flame = Path()
-        ..moveTo(x, y)
-        ..quadraticBezierTo(x - 13, y - h * 0.35, x, y - h)
-        ..quadraticBezierTo(x + 14, y - h * 0.35, x, y);
-      flamePaint.color =
-          (i.isEven ? const Color(0xFFFFE45E) : const Color(0xFFFF6B35))
-              .withOpacity(0.16);
-      canvas.drawPath(flame, flamePaint);
-    }
+    canvas.drawRect(rect, warmGlow);
 
     final emberPaint = Paint();
-    for (var i = 0; i < 18; i++) {
-      final drift = math.sin((phase * math.pi * 2) + i) * 10;
-      final x = ((i * 61.0) + drift) % size.width;
-      final y = size.height * (0.16 + ((i * 17) % 66) / 100) - (phase * 24);
-      emberPaint.color =
-          (i.isEven ? const Color(0xFFFFE45E) : const Color(0xFFFF6B35))
-              .withOpacity(0.08 + ((i % 4) * 0.025));
-      canvas.drawCircle(Offset(x, y), 2 + (i % 3), emberPaint);
+    for (var i = 0; i < 24; i++) {
+      final drift = math.sin(phase * math.pi * 2 + i * 0.8) * 12;
+      final x = ((i * 47.0) + drift) % size.width;
+      final y = size.height * (0.18 + ((i * 23) % 72) / 100) - phase * 34;
+      final color =
+          i.isEven ? const Color(0xFFFFC46B) : const Color(0xFFFF6B35);
+      emberPaint.color = color.withOpacity(0.07 + (i % 5) * 0.018);
+      canvas.drawCircle(
+        Offset(x, y < 0 ? y + size.height * 0.74 : y),
+        1.4 + (i % 3) * 0.7,
+        emberPaint,
+      );
     }
   }
 
   @override
-  bool shouldRepaint(covariant _InfernalBackdropPainter oldDelegate) {
+  bool shouldRepaint(covariant _HellBarAssetOverlayPainter oldDelegate) {
     return oldDelegate.phase != phase;
   }
 }

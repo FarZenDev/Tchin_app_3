@@ -80,9 +80,10 @@ class _AutorouteGameScreenState extends State<AutorouteGameScreen> {
 
   Future<void> _showInterstitialIfNeeded() async {
     final premium = context.read<PremiumProvider>();
-    await context
-        .read<AdService>()
-        .showInterstitialIfReady(isPremium: premium.isPremium);
+    await context.read<AdService>().showInterstitialIfReady(
+          isPremium: premium.isPremium,
+          context: context,
+        );
   }
 
   void _initGame() {

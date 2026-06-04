@@ -18,6 +18,7 @@ Le code de monétisation est implémenté, mais vous devez configurer vos propre
 - **Bannières** : écrans joueurs, choix du jeu, choix du mode, configuration Autoroute et résultats.
 - **Interstitiels** : fin de partie Tchin et fin de partie Autoroute.
 - **Premium** : les pubs sont masquées quand `PremiumProvider.isPremium` vaut `true`.
+- **Windows/PC** : affichage d'une preview locale de pub pour tester les emplacements. AdMob reel reste limite a Android/iOS.
 
 ### IDs AdMob configurés
 

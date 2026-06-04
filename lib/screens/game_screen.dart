@@ -550,9 +550,10 @@ class _GameOverContent extends StatelessWidget {
           isSmall: true,
           onPressed: () async {
             final premium = context.read<PremiumProvider>();
-            await context
-                .read<AdService>()
-                .showInterstitialIfReady(isPremium: premium.isPremium);
+            await context.read<AdService>().showInterstitialIfReady(
+                  isPremium: premium.isPremium,
+                  context: context,
+                );
 
             if (!context.mounted) return;
             Navigator.push(

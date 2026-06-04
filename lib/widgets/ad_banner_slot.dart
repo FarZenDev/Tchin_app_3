@@ -29,7 +29,9 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
     final premium = Provider.of<PremiumProvider>(context);
     final adService = Provider.of<AdService>(context, listen: false);
 
-    if (premium.isPremium || !adService.canRequestAds) {
+    if (premium.isPremium ||
+        AdService.supportsDesktopAdPreview ||
+        !adService.canRequestAds) {
       _disposeBanner();
       return;
     }
@@ -88,7 +90,19 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
     final adService = Provider.of<AdService>(context, listen: false);
     final banner = _bannerAd;
 
-    if (premium.isPremium || !adService.canRequestAds) {
+    if (premium.isPremium) {
+      return const SizedBox.shrink();
+    }
+
+    if (AdService.supportsDesktopAdPreview) {
+      return Container(
+        margin: widget.margin,
+        alignment: Alignment.center,
+        child: const _DesktopAdPreviewBanner(),
+      );
+    }
+
+    if (!adService.canRequestAds) {
       return const SizedBox.shrink();
     }
 
@@ -111,5 +125,54 @@ class _AdBannerSlotState extends State<AdBannerSlot> {
   void dispose() {
     _disposeBanner();
     super.dispose();
+  }
+}
+
+class _DesktopAdPreviewBanner extends StatelessWidget {
+  const _DesktopAdPreviewBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 320,
+      height: 50,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF262C3F), Color(0xFF463B23)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: const Color(0xFFFFC857).withValues(alpha: 0.72),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.24),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.campaign_rounded, color: Color(0xFFFFC857), size: 18),
+          SizedBox(width: 8),
+          Text(
+            'PUBLICITE',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.4,
+            ),
+          ),
+          SizedBox(width: 10),
+          Text('Tchin sponsor', style: TextStyle(color: Color(0xFFD8DCE8))),
+        ],
+      ),
+    );
   }
 }

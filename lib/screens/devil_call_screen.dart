@@ -104,7 +104,7 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
     }
 
     return GameLayout(
-      showBubbles: true,
+      showBubbles: false,
       maxFrameWidth: 560,
       child: Stack(
         children: [
@@ -591,6 +591,7 @@ class _InfernalBackdropPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final pulse = math.sin(phase * math.pi * 2);
     final rect = Offset.zero & size;
+
     canvas.drawRect(
       rect,
       Paint()
@@ -604,6 +605,15 @@ class _InfernalBackdropPainter extends CustomPainter {
           end: Alignment.bottomCenter,
         ).createShader(rect),
     );
+
+    final panelPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = const Color(0xFFFFC46B).withOpacity(0.045);
+    for (var i = 0; i < 7; i++) {
+      final x = size.width * (i / 6);
+      canvas.drawLine(Offset(x, 0), Offset(x - 30, size.height), panelPaint);
+    }
 
     final lightPaint = Paint()
       ..shader = LinearGradient(
@@ -625,75 +635,240 @@ class _InfernalBackdropPainter extends CustomPainter {
       canvas.drawPath(path, lightPaint);
     }
 
-    final center = Offset(size.width / 2, size.height * (0.2 + pulse * 0.015));
+    final backBarRect = Rect.fromLTWH(
+      size.width * 0.08,
+      size.height * 0.18,
+      size.width * 0.84,
+      size.height * 0.48,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(backBarRect, const Radius.circular(24)),
+      Paint()
+        ..shader = LinearGradient(
+          colors: [
+            Colors.black.withOpacity(0.18),
+            const Color(0xFF2C0A0F).withOpacity(0.28),
+            Colors.black.withOpacity(0.22),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ).createShader(backBarRect),
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(backBarRect, const Radius.circular(24)),
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4
+        ..color = const Color(0xFFFFC46B).withOpacity(0.16),
+    );
+
+    final archPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2
+      ..color = const Color(0xFFFF6B35).withOpacity(0.12);
+    for (var i = 0; i < 3; i++) {
+      final archX = size.width * (0.19 + i * 0.25);
+      final arch = Rect.fromLTWH(
+        archX,
+        size.height * 0.22,
+        size.width * 0.16,
+        size.height * 0.22,
+      );
+      final path = Path()
+        ..moveTo(arch.left, arch.bottom)
+        ..lineTo(arch.left, arch.top + arch.height * 0.45)
+        ..quadraticBezierTo(
+          arch.center.dx,
+          arch.top - 18,
+          arch.right,
+          arch.top + arch.height * 0.45,
+        )
+        ..lineTo(arch.right, arch.bottom);
+      canvas.drawPath(path, archPaint);
+    }
+
+    final center = Offset(size.width / 2, size.height * (0.32 + pulse * 0.01));
     canvas.drawCircle(
       center,
-      size.width * (0.56 + pulse * 0.025),
+      size.width * (0.5 + pulse * 0.018),
       Paint()
         ..shader = RadialGradient(
           colors: [
-            const Color(0xFFFF6B35).withOpacity(0.18),
-            const Color(0xFF5C0D12).withOpacity(0.08),
+            const Color(0xFFFF6B35).withOpacity(0.16),
+            const Color(0xFF5C0D12).withOpacity(0.09),
             Colors.transparent,
           ],
         ).createShader(Rect.fromCircle(center: center, radius: size.width)),
     );
 
-    final bottlePaint = Paint()..color = Colors.black.withOpacity(0.17);
-    final bottleGlowPaint = Paint()
-      ..color = const Color(0xFFFF6B35).withOpacity(0.06);
-    for (var row = 0; row < 2; row++) {
-      final shelfY = size.height * (0.31 + row * 0.12);
+    final shelfLipPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          const Color(0xFF3B1A12).withOpacity(0.8),
+          const Color(0xFFFFC46B).withOpacity(0.2),
+          const Color(0xFF1A0A08).withOpacity(0.92),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, 4));
+    final bottleBasePaint = Paint();
+    final bottleGlowPaint = Paint();
+    for (var row = 0; row < 3; row++) {
+      final shelfY = size.height * (0.3 + row * 0.105);
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromLTWH(size.width * 0.12, shelfY, size.width * 0.76, 3),
+          Rect.fromLTWH(size.width * 0.13, shelfY, size.width * 0.74, 5),
           const Radius.circular(999),
         ),
-        Paint()..color = const Color(0xFFFFC46B).withOpacity(0.11),
+        shelfLipPaint,
       );
-      for (var i = 0; i < 8; i++) {
-        final x = size.width * 0.16 + i * size.width * 0.095;
-        final h = 20.0 + ((i + row) % 3) * 7;
+      for (var i = 0; i < 9; i++) {
+        final x = size.width * 0.155 + i * size.width * 0.082;
+        final h = 19.0 + ((i + row) % 4) * 5;
+        final bottleColor = [
+          const Color(0xFFFF6B35),
+          const Color(0xFFFFC46B),
+          const Color(0xFF7BD88F),
+          const Color(0xFFB66CFF),
+        ][(i + row) % 4];
+        bottleBasePaint.color = Colors.black.withOpacity(0.22);
         canvas.drawRRect(
           RRect.fromRectAndRadius(
-            Rect.fromLTWH(x, shelfY - h, 10, h),
+            Rect.fromLTWH(x, shelfY - h, 10 + (i % 2) * 2, h),
             const Radius.circular(3),
           ),
-          bottlePaint,
+          bottleBasePaint,
         );
         canvas.drawRect(
-            Rect.fromLTWH(x + 2, shelfY - h - 7, 6, 8), bottlePaint);
-        canvas.drawCircle(Offset(x + 5, shelfY - h + 7), 6, bottleGlowPaint);
+          Rect.fromLTWH(x + 2, shelfY - h - 6, 6, 7),
+          bottleBasePaint,
+        );
+        bottleGlowPaint.color = bottleColor.withOpacity(0.055 + row * 0.018);
+        canvas.drawCircle(
+          Offset(x + 5.5, shelfY - h * 0.48),
+          6 + (i % 2),
+          bottleGlowPaint,
+        );
       }
     }
 
+    final crackPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.6
+      ..strokeCap = StrokeCap.round
+      ..color = const Color(0xFFFF6B35).withOpacity(0.16 + pulse.abs() * 0.06);
+    for (var i = 0; i < 6; i++) {
+      final x = size.width * (0.14 + i * 0.14);
+      final y = size.height * (0.56 + (i % 3) * 0.035);
+      final path = Path()
+        ..moveTo(x, y)
+        ..lineTo(x + 14, y + 13)
+        ..lineTo(x + 7, y + 28)
+        ..lineTo(x + 25, y + 42);
+      canvas.drawPath(path, crackPaint);
+    }
+
+    final readabilityCenter = Offset(size.width / 2, size.height * 0.48);
+    canvas.drawCircle(
+      readabilityCenter,
+      size.width * 0.62,
+      Paint()
+        ..shader = RadialGradient(
+          colors: [
+            Colors.black.withOpacity(0.44),
+            Colors.black.withOpacity(0.2),
+            Colors.transparent,
+          ],
+          stops: const [0.0, 0.66, 1.0],
+        ).createShader(
+          Rect.fromCircle(center: readabilityCenter, radius: size.width * 0.7),
+        ),
+    );
+
     final barPaint = Paint()
-      ..color = Colors.black.withOpacity(0.22)
+      ..shader = LinearGradient(
+        colors: [
+          const Color(0xFF130708).withOpacity(0.94),
+          const Color(0xFF442012).withOpacity(0.86),
+          const Color(0xFF0C0507).withOpacity(0.98),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(rect)
       ..style = PaintingStyle.fill;
-    final barTop = size.height * 0.76;
-    canvas.drawRect(
-        Rect.fromLTWH(0, barTop, size.width, size.height), barPaint);
+    final barTop = size.height * 0.735;
+    final counterPath = Path()
+      ..moveTo(size.width * 0.02, barTop + 18)
+      ..quadraticBezierTo(
+        size.width * 0.5,
+        barTop - 18,
+        size.width * 0.98,
+        barTop + 18,
+      )
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+    canvas.drawPath(counterPath, barPaint);
 
     final linePaint = Paint()
-      ..strokeWidth = 2
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round
       ..color = const Color(0xFFFFB000).withOpacity(0.14 + pulse.abs() * 0.08);
-    canvas.drawLine(
-      Offset(18, barTop),
-      Offset(size.width - 18, barTop),
+    canvas.drawArc(
+      Rect.fromLTWH(size.width * 0.02, barTop - 30, size.width * 0.96, 60),
+      math.pi * 0.08,
+      math.pi * 0.84,
+      false,
       linePaint,
     );
 
-    final shelfPaint = Paint()
-      ..strokeWidth = 1.3
+    final grainPaint = Paint()
+      ..strokeWidth = 1.1
       ..strokeCap = StrokeCap.round
-      ..color = const Color(0xFFFFE45E).withOpacity(0.08);
-    for (var i = 0; i < 4; i++) {
-      final y = size.height * (0.82 + i * 0.045);
+      ..color = const Color(0xFFFFC46B).withOpacity(0.075);
+    for (var i = 0; i < 9; i++) {
+      final y = size.height * (0.78 + i * 0.025);
       canvas.drawLine(
-        Offset(size.width * 0.12, y),
-        Offset(size.width * 0.88, y + math.sin(phase * math.pi * 2 + i) * 1.4),
-        shelfPaint,
+        Offset(size.width * 0.08, y),
+        Offset(
+          size.width * 0.92,
+          y + math.sin(phase * math.pi * 2 + i) * 1.1,
+        ),
+        grainPaint,
       );
+    }
+
+    final stoolPaint = Paint()..color = Colors.black.withOpacity(0.18);
+    for (var i = 0; i < 3; i++) {
+      final x = size.width * (0.2 + i * 0.3);
+      final y = size.height * 0.86;
+      canvas.drawOval(
+        Rect.fromCenter(center: Offset(x, y), width: 52, height: 9),
+        stoolPaint,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(x - 3, y, 6, 45),
+          const Radius.circular(999),
+        ),
+        stoolPaint,
+      );
+    }
+
+    final flamePaint = Paint();
+    for (var i = 0; i < 8; i++) {
+      final side = i < 4 ? -1.0 : 1.0;
+      final x = side < 0
+          ? size.width * (0.04 + i * 0.035)
+          : size.width * (0.86 + (i - 4) * 0.035);
+      final y = size.height * (0.78 + (i % 2) * 0.04);
+      final h = 28 + math.sin(phase * math.pi * 2 + i) * 5;
+      final flame = Path()
+        ..moveTo(x, y)
+        ..quadraticBezierTo(x - 13, y - h * 0.35, x, y - h)
+        ..quadraticBezierTo(x + 14, y - h * 0.35, x, y);
+      flamePaint.color =
+          (i.isEven ? const Color(0xFFFFE45E) : const Color(0xFFFF6B35))
+              .withOpacity(0.16);
+      canvas.drawPath(flame, flamePaint);
     }
 
     final emberPaint = Paint();

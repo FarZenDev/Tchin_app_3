@@ -36,7 +36,7 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
         setState(() => _elapsed += const Duration(milliseconds: 250));
       }
     });
-    Future.delayed(const Duration(milliseconds: 2200), () {
+    Future.delayed(const Duration(milliseconds: 3600), () {
       if (mounted) setState(() => _introDone = true);
     });
   }
@@ -266,7 +266,7 @@ class _DevilSummonIntroState extends State<_DevilSummonIntro>
                           angle: wobble * 0.08,
                           child: const DevilLaughAnimation(
                             size: 158,
-                            frameDuration: Duration(milliseconds: 86),
+                            frameDuration: Duration(milliseconds: 115),
                           ),
                         ),
                       ),

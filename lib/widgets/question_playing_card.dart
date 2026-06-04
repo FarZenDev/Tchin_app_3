@@ -34,7 +34,7 @@ class QuestionPlayingCard extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 0.68,
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 620),
+                duration: const Duration(milliseconds: 1050),
                 switchInCurve: Curves.easeOutCubic,
                 switchOutCurve: Curves.easeInCubic,
                 transitionBuilder: (child, animation) {

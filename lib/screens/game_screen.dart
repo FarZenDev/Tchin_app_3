@@ -91,7 +91,7 @@ class _GameScreenState extends State<GameScreen> {
 
     game.skipCurrentQuestionWithDevil();
 
-    await Future.delayed(const Duration(milliseconds: 900));
+    await Future.delayed(const Duration(milliseconds: 1900));
     if (mounted) {
       setState(() => _showDevilSkipEffect = false);
     }
@@ -782,7 +782,7 @@ class _DevilSkipOverlay extends StatelessWidget {
             children: [
               const DevilLaughAnimation(
                 size: 86,
-                frameDuration: Duration(milliseconds: 72),
+                frameDuration: Duration(milliseconds: 105),
               ),
               Text(
                 'PACTE SIGNE',
@@ -805,11 +805,15 @@ class _DevilSkipOverlay extends StatelessWidget {
           ),
         )
             .animate()
-            .fadeIn(duration: 120.ms)
-            .scale(begin: const Offset(0.55, 0.55), end: const Offset(1, 1))
-            .shake(hz: 6, duration: 360.ms)
-            .then(delay: 240.ms)
-            .fadeOut(duration: 180.ms),
+            .fadeIn(duration: 180.ms)
+            .scale(
+              begin: const Offset(0.5, 0.5),
+              end: const Offset(1, 1),
+              duration: 360.ms,
+            )
+            .shake(hz: 5, duration: 760.ms)
+            .then(delay: 540.ms)
+            .fadeOut(duration: 260.ms),
       ),
     );
   }

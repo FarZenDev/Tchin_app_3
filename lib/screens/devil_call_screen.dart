@@ -26,6 +26,7 @@ class DevilCallScreen extends StatefulWidget {
 
 class _DevilCallScreenState extends State<DevilCallScreen> {
   late final List<String> _players;
+  late final Map<String, int> _startingLoserScores;
   final List<String> _stopOrder = [];
   final Map<String, Duration> _stopTimes = {};
   Timer? _timer;
@@ -38,7 +39,9 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
   @override
   void initState() {
     super.initState();
-    _players = context.read<GameProvider>().devilCallParticipants;
+    final game = context.read<GameProvider>();
+    _players = game.devilCallParticipants;
+    _startingLoserScores = game.playerLoserScores;
     _timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
       if (mounted && !_resultApplied) {
         setState(() => _elapsed += const Duration(milliseconds: 250));
@@ -189,6 +192,7 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
                   return _HellPlayerTile(
                     slotNumber: index + 1,
                     name: player,
+                    loserScore: _startingLoserScores[player] ?? 0,
                     isActive: stoppedAt == null,
                     stoppedAt:
                         stoppedAt == null ? null : _formatTime(stoppedAt),
@@ -1114,7 +1118,80 @@ class _RulePanel extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              _BaremChip(
+                label: '1ER ARRET',
+                value: _formatDelta(total <= 1 ? -1 : total - 1),
+                color: const Color(0xFFFF6B35),
+              ),
+              const SizedBox(width: 8),
+              _BaremChip(
+                label: 'DERNIER',
+                value: _formatDelta(total <= 1 ? -1 : 1 - total),
+                color: const Color(0xFF7BD88F),
+              ),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  String _formatDelta(int value) {
+    if (value == 0) return '0';
+    return value > 0 ? '+$value' : '$value';
+  }
+}
+
+class _BaremChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _BaremChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.2)),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  color: AppTheme.textSecondary,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              value,
+              style: GoogleFonts.robotoMono(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1123,6 +1200,7 @@ class _RulePanel extends StatelessWidget {
 class _HellPlayerTile extends StatelessWidget {
   final int slotNumber;
   final String name;
+  final int loserScore;
   final bool isActive;
   final String? stoppedAt;
   final int? rank;
@@ -1132,6 +1210,7 @@ class _HellPlayerTile extends StatelessWidget {
   const _HellPlayerTile({
     required this.slotNumber,
     required this.name,
+    required this.loserScore,
     required this.isActive,
     required this.stoppedAt,
     required this.rank,
@@ -1143,6 +1222,14 @@ class _HellPlayerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final verdict = rank == null ? null : _verdictForRank(rank!, totalPlayers);
     final orderLabel = rank == null ? '$slotNumber' : '${rank! + 1}';
+    final delta = rank == null ? null : _deltaForRank(rank!, totalPlayers);
+    final deltaLabel = delta == null
+        ? null
+        : delta == 0
+            ? '0'
+            : delta > 0
+                ? '+$delta'
+                : '$delta';
 
     return AnimatedScale(
       duration: const Duration(milliseconds: 180),
@@ -1237,8 +1324,8 @@ class _HellPlayerTile extends StatelessWidget {
                     ),
                     Text(
                       isActive
-                          ? 'verre en cours'
-                          : '${_rankText(rank!, totalPlayers)} a $stoppedAt',
+                          ? 'verre en cours · $loserScore looser'
+                          : '${_rankText(rank!, totalPlayers)} a $stoppedAt · $deltaLabel looser',
                       style: GoogleFonts.inter(
                         color: AppTheme.textSecondary,
                         fontSize: 12,
@@ -1262,7 +1349,7 @@ class _HellPlayerTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
-                    verdict,
+                    '$verdict $deltaLabel',
                     style: GoogleFonts.bebasNeue(
                       color: rank == 0
                           ? const Color(0xFFFF6B35)
@@ -1311,6 +1398,11 @@ class _HellPlayerTile extends StatelessWidget {
     if (rank == 0) return 'PACTE';
     if (rank == totalPlayers - 1) return 'PURIFIE';
     return 'SAUVE';
+  }
+
+  int _deltaForRank(int rank, int totalPlayers) {
+    if (totalPlayers <= 1) return -1;
+    return totalPlayers - 1 - (rank * 2);
   }
 }
 

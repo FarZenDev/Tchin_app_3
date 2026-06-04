@@ -152,7 +152,44 @@ class _GameScreenState extends State<GameScreen> {
                   onLeaveGame: _leaveGame,
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
+
+                Consumer<GameProvider>(
+                  builder: (context, game, _) {
+                    return Column(
+                      children: [
+                        _PartyProgressStrip(
+                          accentColor: themeColor,
+                          game: game,
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 260),
+                          transitionBuilder: (child, animation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(0, -0.18),
+                                  end: Offset.zero,
+                                ).animate(animation),
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: game.lastPartyEvent == null
+                              ? const SizedBox.shrink()
+                              : _PartyEventToast(
+                                  key: ValueKey(game.partyEventSerial),
+                                  message: game.lastPartyEvent!,
+                                  accentColor: themeColor,
+                                ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 8),
 
                 // Happy Hour Banner
                 Consumer<GameProvider>(
@@ -415,6 +452,202 @@ class _HeaderPill extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PartyProgressStrip extends StatelessWidget {
+  final Color accentColor;
+  final GameProvider game;
+
+  const _PartyProgressStrip({
+    required this.accentColor,
+    required this.game,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final chaos = game.partyChaosScore;
+    final progress = chaos / 100;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 11),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.18),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: accentColor.withOpacity(0.22)),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withOpacity(0.08),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(
+                game.isHappyHour
+                    ? Icons.local_fire_department_rounded
+                    : Icons.nightlife_rounded,
+                color: game.isHappyHour ? const Color(0xFFFF6B35) : accentColor,
+                size: 17,
+              ),
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text(
+                  game.partyPhaseLabel.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                    color: AppTheme.textPrimary,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ),
+              Text(
+                '$chaos%',
+                style: GoogleFonts.robotoMono(
+                  color: accentColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              minHeight: 7,
+              value: progress,
+              backgroundColor: Colors.white.withOpacity(0.08),
+              valueColor: AlwaysStoppedAnimation(
+                game.isHappyHour ? const Color(0xFFFF6B35) : accentColor,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              _PartyMiniStat(
+                icon: Icons.style_rounded,
+                label: '${game.questionsPlayed} cartes',
+              ),
+              const SizedBox(width: 8),
+              _PartyMiniStat(
+                icon: Icons.sports_bar_rounded,
+                label: '${game.totalSips} gor',
+              ),
+              const SizedBox(width: 8),
+              _PartyMiniStat(
+                icon: Icons.local_fire_department_rounded,
+                label: '${game.totalLoserScore} looser',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PartyMiniStat extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _PartyMiniStat({
+    required this.icon,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        height: 28,
+        padding: const EdgeInsets.symmetric(horizontal: 7),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.055),
+          borderRadius: BorderRadius.circular(9),
+          border: Border.all(color: Colors.white.withOpacity(0.08)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 13, color: AppTheme.textSecondary),
+            const SizedBox(width: 5),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  color: AppTheme.textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PartyEventToast extends StatelessWidget {
+  final String message;
+  final Color accentColor;
+
+  const _PartyEventToast({
+    super.key,
+    required this.message,
+    required this.accentColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 7),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              accentColor.withOpacity(0.22),
+              const Color(0xFFFF6B35).withOpacity(0.11),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(color: accentColor.withOpacity(0.24)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.bolt_rounded, color: accentColor, size: 15),
+            const SizedBox(width: 7),
+            Expanded(
+              child: Text(
+                message,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                  color: AppTheme.textPrimary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

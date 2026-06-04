@@ -22,6 +22,9 @@ class GameProvider extends ChangeNotifier {
   // Stats
   Map<String, int> _playerSips = {};
   Map<String, int> _playerLoserScores = {};
+  int _questionsPlayed = 0;
+  String? _lastPartyEvent;
+  int _partyEventSerial = 0;
 
   // Logic
   List<QuestionData> _availableQuestions = [];
@@ -75,6 +78,37 @@ class GameProvider extends ChangeNotifier {
   Map<String, int> get playerSips => _playerSips;
   Map<String, int> get playerLoserScores =>
       Map.unmodifiable(_playerLoserScores);
+  int get questionsPlayed => _questionsPlayed;
+  int get partyEventSerial => _partyEventSerial;
+  String? get lastPartyEvent => _lastPartyEvent;
+  int get totalSips =>
+      _playerSips.values.fold<int>(0, (sum, value) => sum + value);
+  int get totalLoserScore => _playerLoserScores.values
+      .fold<int>(0, (sum, value) => sum + max(0, value));
+  int get partyChaosScore {
+    final raw = (totalSips * 2) +
+        (_questionsPlayed * 3) +
+        (totalLoserScore * 7) +
+        _gameDuration.inMinutes;
+    return raw.clamp(0, 100).toInt();
+  }
+
+  String get partyPhaseLabel {
+    if (_currentMode == null) return 'Bar fermé';
+    if (_isHappyHour) return 'Happy hour';
+    final chaos = partyChaosScore;
+    if (chaos >= 82) return 'Chaos au bar';
+    if (chaos >= 60) return 'Dernier service';
+    if (chaos >= 38) return 'La table chauffe';
+    if (chaos >= 16) return 'Service lancé';
+    return 'Mise en route';
+  }
+
+  String get partyProgressLabel {
+    if (_currentMode == null) return 'Aucune partie';
+    return 'Carte $_questionsPlayed · $totalSips gor · $totalLoserScore looser';
+  }
+
   bool get hasLoserScores =>
       _playerLoserScores.values.any((score) => score > 0);
   List<String> get devilCallParticipants {
@@ -128,6 +162,8 @@ class GameProvider extends ChangeNotifier {
     _historyIndex = 0;
     _playerSips = {};
     _playerLoserScores = {};
+    _questionsPlayed = 0;
+    _setPartyEvent('Service ouvert: ${mode.displayName}');
 
     // Central Glass Initialization
     // Reduce frequency: roughly half the players, min 2, max 5
@@ -232,6 +268,15 @@ class GameProvider extends ChangeNotifier {
 
     // Update stats
     _updateStats(formattedText);
+    _questionsPlayed++;
+
+    if (_questionsPlayed == 5) {
+      _setPartyEvent('La table commence à chauffer');
+    } else if (_questionsPlayed == 12) {
+      _setPartyEvent('Le bar passe en mode soirée');
+    } else if (_questionsPlayed == 22) {
+      _setPartyEvent('Dernier service en approche');
+    }
 
     _currentQuestionHistory
         .add(PlayedCard(text: formattedText, type: selected.type));
@@ -316,6 +361,7 @@ class GameProvider extends ChangeNotifier {
   void _triggerHappyHour() {
     _isHappyHour = true;
     _sipMultiplier = 2; // DOUBLE SIPS!
+    _setPartyEvent('Happy hour: toutes les gorgées comptent double');
     notifyListeners();
 
     // Auto-end after 45 seconds (Adjusted for better flow)
@@ -366,6 +412,10 @@ class GameProvider extends ChangeNotifier {
       _playerLoserScores[player] = (_playerLoserScores[player] ?? 0) + 1;
     }
 
+    final names = targets.take(2).join(', ');
+    final suffix = targets.length > 2 ? ' +${targets.length - 2}' : '';
+    _setPartyEvent('$names$suffix signe le pacte looser');
+
     nextQuestion();
   }
 
@@ -384,6 +434,7 @@ class GameProvider extends ChangeNotifier {
       _playerLoserScores[player] = max(0, currentScore + delta);
     }
 
+    _setPartyEvent('Appel du diable terminé: ${stopOrder.last} purifié');
     notifyListeners();
   }
 
@@ -392,6 +443,9 @@ class GameProvider extends ChangeNotifier {
     _gameDuration = Duration.zero;
     _isHappyHour = false;
     _sipMultiplier = 1;
+    _lastPartyEvent = null;
+    _partyEventSerial = 0;
+    _questionsPlayed = 0;
 
     _players.clear();
     _currentMode = null;
@@ -400,5 +454,10 @@ class GameProvider extends ChangeNotifier {
     _playerSips.clear();
     _playerLoserScores.clear();
     notifyListeners();
+  }
+
+  void _setPartyEvent(String message) {
+    _lastPartyEvent = message;
+    _partyEventSerial++;
   }
 }

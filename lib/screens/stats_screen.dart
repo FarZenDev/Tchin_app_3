@@ -97,6 +97,8 @@ class StatsScreen extends StatelessWidget {
         .toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     final topLoser = loserRows.isEmpty ? null : loserRows.first;
+    final chaosScore = game.partyChaosScore;
+    final partyPhaseLabel = game.partyPhaseLabel;
     final ticketNumber = now.millisecondsSinceEpoch
         .toString()
         .substring(now.millisecondsSinceEpoch.toString().length - 6);
@@ -116,6 +118,8 @@ class StatsScreen extends StatelessWidget {
                 totalSips: totalSips,
                 totalLoser: totalLoser,
                 playerCount: game.players.length,
+                phaseLabel: partyPhaseLabel,
+                chaosScore: chaosScore,
               ),
               const SizedBox(height: 14),
               _ReceiptPaper(
@@ -130,12 +134,16 @@ class StatsScreen extends StatelessWidget {
                 topLoser: topLoser,
                 totalSips: totalSips,
                 totalLoser: totalLoser,
+                questionsPlayed: game.questionsPlayed,
+                phaseLabel: partyPhaseLabel,
+                chaosScore: chaosScore,
               ),
               const SizedBox(height: 18),
               if (game.hasLoserScores) ...[
-                GradientButton(
-                  text: "Appel du diable",
-                  icon: Icons.local_fire_department_rounded,
+                _DevilCallTeaser(
+                  loserRows: loserRows,
+                  totalLoser: totalLoser,
+                  chaosScore: chaosScore,
                   onPressed: () => _launchDevilCall(context),
                 ),
                 const SizedBox(height: 12),
@@ -193,11 +201,15 @@ class _ReceiptHero extends StatelessWidget {
   final int totalSips;
   final int totalLoser;
   final int playerCount;
+  final String phaseLabel;
+  final int chaosScore;
 
   const _ReceiptHero({
     required this.totalSips,
     required this.totalLoser,
     required this.playerCount,
+    required this.phaseLabel,
+    required this.chaosScore,
   });
 
   @override
@@ -254,7 +266,217 @@ class _ReceiptHero extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
+          const SizedBox(height: 4),
+          Text(
+            '${phaseLabel.toUpperCase()}  •  CHAOS $chaosScore%',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              color: const Color(0xFFFFC46B),
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _DevilCallTeaser extends StatelessWidget {
+  final List<MapEntry<String, int>> loserRows;
+  final int totalLoser;
+  final int chaosScore;
+  final VoidCallback onPressed;
+
+  const _DevilCallTeaser({
+    required this.loserRows,
+    required this.totalLoser,
+    required this.chaosScore,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final topLoser = loserRows.isEmpty ? 'Aucun pacte' : loserRows.first.key;
+    final participantCount = loserRows.length;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF331017), Color(0xFF17080D), Color(0xFF24100A)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFFFC46B).withOpacity(0.32)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFF3D00).withOpacity(0.18),
+            blurRadius: 26,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const RadialGradient(
+                    colors: [
+                      Color(0xFFFFE45E),
+                      Color(0xFFFF6B35),
+                      Color(0xFF5C0D12),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFFF3D00).withOpacity(0.34),
+                      blurRadius: 22,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: DevilLaughAnimation(
+                    size: 42,
+                    frameDuration: Duration(milliseconds: 420),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'PACTE DISPONIBLE',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.inter(
+                        color: const Color(0xFFFFC46B),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    Text(
+                      'Appel du diable',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.bebasNeue(
+                        color: Colors.white,
+                        fontSize: 32,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    Text(
+                      '$topLoser mene la dette du comptoir',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.inter(
+                        color: AppTheme.textSecondary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 13),
+          Row(
+            children: [
+              _DevilTeaserStat(
+                label: 'JOUEURS',
+                value: participantCount.toString(),
+              ),
+              const SizedBox(width: 8),
+              _DevilTeaserStat(
+                label: 'DETTE',
+                value: totalLoser.toString(),
+              ),
+              const SizedBox(width: 8),
+              _DevilTeaserStat(
+                label: 'CHAOS',
+                value: '$chaosScore%',
+              ),
+            ],
+          ),
+          const SizedBox(height: 13),
+          Text(
+            'Lance le defi: les premiers qui arretent prennent la dette, les derniers la nettoient.',
+            style: GoogleFonts.inter(
+              color: AppTheme.textSecondary,
+              fontSize: 12,
+              height: 1.28,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 13),
+          GradientButton(
+            text: "Lancer l'appel",
+            icon: Icons.local_fire_department_rounded,
+            onPressed: onPressed,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DevilTeaserStat extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _DevilTeaserStat({
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.26),
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(color: Colors.white.withOpacity(0.08)),
+        ),
+        child: Column(
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                color: AppTheme.textMuted,
+                fontSize: 9,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.8,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.robotoMono(
+                color: const Color(0xFFFFE45E),
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -272,6 +494,9 @@ class _ReceiptPaper extends StatelessWidget {
   final MapEntry<String, int>? topLoser;
   final int totalSips;
   final int totalLoser;
+  final int questionsPlayed;
+  final String phaseLabel;
+  final int chaosScore;
 
   const _ReceiptPaper({
     required this.ticketNumber,
@@ -285,6 +510,9 @@ class _ReceiptPaper extends StatelessWidget {
     required this.topLoser,
     required this.totalSips,
     required this.totalLoser,
+    required this.questionsPlayed,
+    required this.phaseLabel,
+    required this.chaosScore,
   });
 
   @override
@@ -323,6 +551,9 @@ class _ReceiptPaper extends StatelessWidget {
                   modeLabel: modeLabel,
                   durationLabel: durationLabel,
                   playerCount: players.length,
+                  questionsPlayed: questionsPlayed,
+                  phaseLabel: phaseLabel,
+                  chaosScore: chaosScore,
                 ),
                 const _ReceiptDivider(height: 24),
                 if (players.isEmpty)
@@ -460,11 +691,17 @@ class _ReceiptMetaGrid extends StatelessWidget {
   final String modeLabel;
   final String durationLabel;
   final int playerCount;
+  final int questionsPlayed;
+  final String phaseLabel;
+  final int chaosScore;
 
   const _ReceiptMetaGrid({
     required this.modeLabel,
     required this.durationLabel,
     required this.playerCount,
+    required this.questionsPlayed,
+    required this.phaseLabel,
+    required this.chaosScore,
   });
 
   @override
@@ -481,19 +718,46 @@ class _ReceiptMetaGrid extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
-        child: Row(
+        child: Column(
           children: [
-            Expanded(
-              child: _ReceiptMetaItem(label: 'MODE', value: modeLabel),
+            Row(
+              children: [
+                Expanded(
+                  child: _ReceiptMetaItem(label: 'MODE', value: modeLabel),
+                ),
+                Expanded(
+                  child: _ReceiptMetaItem(label: 'DUREE', value: durationLabel),
+                ),
+                Expanded(
+                  child: _ReceiptMetaItem(
+                    label: 'JOUEURS',
+                    value: playerCount.toString(),
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: _ReceiptMetaItem(label: 'DUREE', value: durationLabel),
-            ),
-            Expanded(
-              child: _ReceiptMetaItem(
-                label: 'JOUEURS',
-                value: playerCount.toString(),
-              ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: _ReceiptMetaItem(
+                    label: 'CARTES',
+                    value: questionsPlayed.toString(),
+                  ),
+                ),
+                Expanded(
+                  child: _ReceiptMetaItem(
+                    label: 'AMBIANCE',
+                    value: phaseLabel,
+                  ),
+                ),
+                Expanded(
+                  child: _ReceiptMetaItem(
+                    label: 'CHAOS',
+                    value: '$chaosScore%',
+                  ),
+                ),
+              ],
             ),
           ],
         ),

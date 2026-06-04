@@ -25,10 +25,10 @@ Le code de monétisation est implémenté, mais vous devez configurer vos propre
 | --- | --- | --- |
 | Android | App ID | `ca-app-pub-5050258385752502~9507153068` |
 | Android | Bannière | `ca-app-pub-5050258385752502/4285930219` |
-| Android | Interstitiel | ID de test Google, à remplacer |
+| Android | Interstitiel | `ca-app-pub-5050258385752502/5184764678` |
 | iOS | App ID | `ca-app-pub-5050258385752502~4198986064` |
 | iOS | Bannière | `ca-app-pub-5050258385752502/4533342221` |
-| iOS | Interstitiel | ID de test Google, à remplacer |
+| iOS | Interstitiel | `ca-app-pub-5050258385752502/1437091359` |
 
 ### Remplacer les IDs de test
 Ouvrez `lib/services/ad_service.dart` et remplacez :

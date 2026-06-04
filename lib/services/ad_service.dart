@@ -12,16 +12,15 @@ class AdService {
 
   static const Duration _minimumInterstitialInterval = Duration(minutes: 2);
 
-  // Production banner IDs are configured. Interstitial IDs stay on Google test
-  // IDs until the Android and iOS interstitial ad units are created in AdMob.
+  // Production AdMob IDs configured for Android and iOS.
   static const String _androidBannerAdUnitId =
       'ca-app-pub-5050258385752502/4285930219';
   static const String _iosBannerAdUnitId =
       'ca-app-pub-5050258385752502/4533342221';
   static const String _androidInterstitialAdUnitId =
-      'ca-app-pub-3940256099942544/1033173712';
+      'ca-app-pub-5050258385752502/5184764678';
   static const String _iosInterstitialAdUnitId =
-      'ca-app-pub-3940256099942544/4411468910';
+      'ca-app-pub-5050258385752502/1437091359';
 
   static bool get supportsAdsPlatform {
     return !kIsWeb &&

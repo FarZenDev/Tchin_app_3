@@ -16,11 +16,15 @@ class StatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final game = Provider.of<GameProvider>(context);
-    final sortedPlayers = game.playerSips.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    final loserEntries = game.playerLoserScores.entries
+    final loserPlayers = game.playerLoserScores.entries
         .where((entry) => entry.value > 0)
-        .toList()
+        .map((entry) => entry.key)
+        .toSet();
+    final playerRows = Map<String, int>.from(game.playerSips);
+    for (final player in loserPlayers) {
+      playerRows.putIfAbsent(player, () => 0);
+    }
+    final sortedPlayers = playerRows.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
     int totalSips = sortedPlayers.fold(0, (sum, item) => sum + item.value);
@@ -91,7 +95,7 @@ class StatsScreen extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  entry.key.toUpperCase(),
+                                  '${entry.key.toUpperCase()}${loserPlayers.contains(entry.key) ? ' (LOOSER)' : ''}',
                                   style: GoogleFonts.courierPrime(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -122,45 +126,6 @@ class StatsScreen extends StatelessWidget {
                           ),
                         );
                       }),
-
-                      if (game.hasLoserScores) ...[
-                        const Divider(
-                            color: Colors.black, thickness: 2, height: 30),
-                        Text("PACTE DU DIABLE",
-                            style: GoogleFonts.courierPrime(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
-                        const SizedBox(height: 6),
-                        ...loserEntries.map((entry) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 3),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    entry.key.toUpperCase(),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.courierPrime(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87),
-                                  ),
-                                ),
-                                Text(
-                                  "+${entry.value} LOOSER",
-                                  style: GoogleFonts.courierPrime(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: const Color(0xFF9B1C1C)),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      ],
 
                       const Divider(
                           color: Colors.black, thickness: 2, height: 30),

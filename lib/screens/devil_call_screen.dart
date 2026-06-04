@@ -80,7 +80,7 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
         showBubbles: true,
         child: Center(
           child: Text(
-            'Aucun score looser a purifier.',
+            'Aucun pacte looser a purifier.',
             textAlign: TextAlign.center,
             style: GoogleFonts.bebasNeue(
               color: Colors.white,
@@ -135,11 +135,7 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
                 isActive: stoppedAt == null,
                 stoppedAt: stoppedAt == null ? null : _formatTime(stoppedAt),
                 rank: rank,
-                delta: rank == null
-                    ? null
-                    : context
-                        .read<GameProvider>()
-                        .devilCallDeltaForRank(rank, _players.length),
+                totalPlayers: _players.length,
                 onTap: () => _stopPlayer(player),
               );
             },
@@ -267,9 +263,12 @@ class _DevilSummonIntroState extends State<_DevilSummonIntro>
                         offset: Offset(0, 22 - (_controller.value * 34)),
                         child: Transform.rotate(
                           angle: wobble * 0.08,
-                          child: const Text(
-                            '😈',
-                            style: TextStyle(fontSize: 104),
+                          child: Image.asset(
+                            'assets/devil_mascot_laugh.png',
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.contain,
+                            filterQuality: FilterQuality.medium,
                           ),
                         ),
                       ),
@@ -378,7 +377,7 @@ class _RulePanel extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Tape un joueur quand il arrete. Le premier prend des points looser, les derniers nettoient leur score.',
+            'Tape un joueur quand il arrete. Le premier garde le pacte looser, les derniers peuvent le purifier.',
             style: GoogleFonts.inter(
               color: AppTheme.textSecondary,
               fontSize: 12,
@@ -396,7 +395,7 @@ class _HellPlayerTile extends StatelessWidget {
   final bool isActive;
   final String? stoppedAt;
   final int? rank;
-  final int? delta;
+  final int totalPlayers;
   final VoidCallback onTap;
 
   const _HellPlayerTile({
@@ -404,17 +403,13 @@ class _HellPlayerTile extends StatelessWidget {
     required this.isActive,
     required this.stoppedAt,
     required this.rank,
-    required this.delta,
+    required this.totalPlayers,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final deltaText = delta == null
-        ? null
-        : delta! > 0
-            ? '+$delta looser'
-            : '$delta looser';
+    final verdict = rank == null ? null : _verdictForRank(rank!, totalPlayers);
 
     return AnimatedScale(
       duration: const Duration(milliseconds: 180),
@@ -468,7 +463,7 @@ class _HellPlayerTile extends StatelessWidget {
                     Text(
                       isActive
                           ? 'boit encore'
-                          : '#${rank! + 1} arrete a $stoppedAt',
+                          : '${_rankText(rank!, totalPlayers)} a $stoppedAt',
                       style: GoogleFonts.inter(
                         color: AppTheme.textSecondary,
                         fontSize: 12,
@@ -478,11 +473,11 @@ class _HellPlayerTile extends StatelessWidget {
                   ],
                 ),
               ),
-              if (deltaText != null)
+              if (verdict != null)
                 Text(
-                  deltaText,
+                  verdict,
                   style: GoogleFonts.bebasNeue(
-                    color: delta! > 0
+                    color: rank == 0
                         ? const Color(0xFFFF6B35)
                         : const Color(0xFF7BD88F),
                     fontSize: 22,
@@ -493,6 +488,18 @@ class _HellPlayerTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _rankText(int rank, int totalPlayers) {
+    if (rank == 0) return 'premier arret';
+    if (rank == totalPlayers - 1) return 'dernier debout';
+    return 'arret valide';
+  }
+
+  String _verdictForRank(int rank, int totalPlayers) {
+    if (rank == 0) return 'PACTE';
+    if (rank == totalPlayers - 1) return 'PURIFIE';
+    return 'SAUVE';
   }
 }
 
@@ -507,7 +514,6 @@ class _ResultPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final game = context.read<GameProvider>();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
@@ -528,8 +534,11 @@ class _ResultPanel extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           ...stopOrder.asMap().entries.map((entry) {
-            final delta = game.devilCallDeltaForRank(entry.key, totalPlayers);
-            final deltaText = delta > 0 ? '+$delta' : '$delta';
+            final verdict = entry.key == 0
+                ? 'PACTE'
+                : entry.key == totalPlayers - 1
+                    ? 'PURIFIE'
+                    : 'SAUVE';
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 2),
               child: Row(
@@ -544,9 +553,9 @@ class _ResultPanel extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$deltaText looser',
+                    verdict,
                     style: GoogleFonts.inter(
-                      color: delta > 0
+                      color: entry.key == 0
                           ? const Color(0xFFFF6B35)
                           : const Color(0xFF7BD88F),
                       fontWeight: FontWeight.w900,

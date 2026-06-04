@@ -779,7 +779,13 @@ class _DevilSkipOverlay extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('😈', style: TextStyle(fontSize: 58)),
+              Image.asset(
+                'assets/devil_mascot.png',
+                width: 78,
+                height: 78,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.medium,
+              ),
               Text(
                 'PACTE SIGNE',
                 style: GoogleFonts.bebasNeue(
@@ -790,7 +796,7 @@ class _DevilSkipOverlay extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                '+1 LOOSER',
+                '(LOOSER)',
                 style: GoogleFonts.inter(
                   color: const Color(0xFFFFF3C4),
                   fontSize: 12,

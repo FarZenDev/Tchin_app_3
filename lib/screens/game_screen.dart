@@ -447,7 +447,7 @@ class _QuestionCardContent extends StatelessWidget {
       },
       child: Column(
         key: ValueKey(
-          '${game.currentQuestionText}-${game.currentQuestionType}',
+          '${game.currentQuestionDisplayText}-${game.currentQuestionType}',
         ),
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -455,7 +455,7 @@ class _QuestionCardContent extends StatelessWidget {
             flex: 5,
             child: Center(
               child: AutoSizeText(
-                game.currentQuestionText,
+                game.currentQuestionDisplayText,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.bebasNeue(
                   fontSize: 36,

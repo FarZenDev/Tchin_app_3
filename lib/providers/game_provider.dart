@@ -46,6 +46,20 @@ class GameProvider extends ChangeNotifier {
           ? _currentQuestionHistory[_historyIndex].text
           : "Prêt ?";
 
+  String get currentQuestionDisplayText {
+    var text = currentQuestionText;
+    final playersWithLoserScore = _players
+        .where((player) => (_playerLoserScores[player] ?? 0) > 0)
+        .toList()
+      ..sort((a, b) => b.length.compareTo(a.length));
+
+    for (final player in playersWithLoserScore) {
+      text = text.replaceAll(player, '$player (LOOSER)');
+    }
+
+    return text;
+  }
+
   QuestionType get currentQuestionType =>
       _historyIndex >= 0 && _historyIndex < _currentQuestionHistory.length
           ? _currentQuestionHistory[_historyIndex].type

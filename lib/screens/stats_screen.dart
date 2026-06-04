@@ -88,6 +88,10 @@ class StatsScreen extends StatelessWidget {
                                     color: Colors.black))),
 
                       ...sortedPlayers.map((entry) {
+                        final loserScore =
+                            game.playerLoserScores[entry.key] ?? 0;
+                        final loserLabel =
+                            loserScore > 0 ? ' (LOOSER $loserScore)' : '';
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Row(
@@ -95,7 +99,7 @@ class StatsScreen extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  '${entry.key.toUpperCase()}${loserPlayers.contains(entry.key) ? ' (LOOSER)' : ''}',
+                                  '${entry.key.toUpperCase()}$loserLabel',
                                   style: GoogleFonts.courierPrime(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -114,7 +118,7 @@ class StatsScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black87),
                                   ),
-                                  const SizedBox(width: 4),
+                                  const SizedBox(width: 3),
                                   Text(
                                     "GOR",
                                     style: GoogleFonts.courierPrime(

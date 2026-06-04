@@ -101,10 +101,14 @@ class AdService {
   Future<bool> showInterstitialIfReady({
     bool isPremium = false,
     BuildContext? context,
+    bool ignoreFrequencyCap = false,
   }) async {
     if (isPremium) return false;
     if (supportsDesktopAdPreview) {
-      return _showDesktopInterstitialPreview(context);
+      return _showDesktopInterstitialPreview(
+        context,
+        ignoreFrequencyCap: ignoreFrequencyCap,
+      );
     }
 
     if (!canRequestAds) {
@@ -113,7 +117,8 @@ class AdService {
     }
 
     final lastShownAt = _lastInterstitialShownAt;
-    if (lastShownAt != null &&
+    if (!ignoreFrequencyCap &&
+        lastShownAt != null &&
         DateTime.now().difference(lastShownAt) < _minimumInterstitialInterval) {
       return false;
     }
@@ -164,11 +169,15 @@ class AdService {
     }
   }
 
-  Future<bool> _showDesktopInterstitialPreview(BuildContext? context) async {
+  Future<bool> _showDesktopInterstitialPreview(
+    BuildContext? context, {
+    bool ignoreFrequencyCap = false,
+  }) async {
     if (context == null) return false;
 
     final lastShownAt = _lastInterstitialShownAt;
-    if (lastShownAt != null &&
+    if (!ignoreFrequencyCap &&
+        lastShownAt != null &&
         DateTime.now().difference(lastShownAt) < _minimumInterstitialInterval) {
       return false;
     }

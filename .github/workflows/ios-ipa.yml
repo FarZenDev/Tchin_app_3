@@ -39,20 +39,23 @@ jobs:
       - name: Package unsigned IPA
         run: |
           IPA_DIR="build/ios/ipa"
+          LATEST_DIR="outputs/ios/latest"
           PAYLOAD_DIR="$IPA_DIR/Payload"
           APP_PATH="build/ios/iphoneos/Runner.app"
           IPA_PATH="$IPA_DIR/tchin_app_3-unsigned.ipa"
+          LATEST_IPA_PATH="$LATEST_DIR/tchin_app_3.ipa"
 
           test -d "$APP_PATH"
-          rm -rf "$IPA_DIR"
-          mkdir -p "$PAYLOAD_DIR"
+          rm -rf "$IPA_DIR" "$LATEST_DIR"
+          mkdir -p "$PAYLOAD_DIR" "$LATEST_DIR"
           cp -R "$APP_PATH" "$PAYLOAD_DIR/"
           (cd "$IPA_DIR" && zip -qry "$(basename "$IPA_PATH")" Payload)
-          ls -lh "$IPA_PATH"
+          cp "$IPA_PATH" "$LATEST_IPA_PATH"
+          ls -lh "$IPA_PATH" "$LATEST_IPA_PATH"
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tchin-app-3-ios-unsigned-ipa
-          path: build/ios/ipa/tchin_app_3-unsigned.ipa
+          name: tchin-app-3-ios-latest
+          path: outputs/ios/latest/tchin_app_3.ipa
           if-no-files-found: error

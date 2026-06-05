@@ -44,6 +44,16 @@ flutter build windows
 
 Les dossiers generes comme `build/`, `.dart_tool/` et les logs Flutter ne sont pas versionnes.
 
+## IPA iOS
+
+Le workflow GitHub Actions `iOS IPA` genere toujours l'IPA au meme emplacement :
+
+- dossier : `outputs/ios/latest/`
+- fichier : `tchin_app_3.ipa`
+- artifact GitHub : `tchin-app-3-ios-latest`
+
+Quand une nouvelle update est build, le fichier garde donc le meme chemin dans l'artifact.
+
 ## Structure
 
 - `lib/` : code Dart principal de l'application.

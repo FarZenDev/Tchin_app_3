@@ -928,7 +928,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🔥 {player1}, nomme ton choix le plus honteux pour un plan secret. Réponse ou shot.",
+              "⚖️ Procès de la honte : {player1}, la table t'accuse d'être le plus gros danger en after. Défends-toi en 20 secondes ou bois 6.",
           players: 1),
       QuestionData(
           text:
@@ -936,7 +936,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🍆 {player1}, as-tu déjà envoyé un nude que tu regrettes ? Contexte ou 6 gorgées.",
+              "🔞 {player1}, quelle est la pire chose que tu as faite par désir et que tu regrettes vraiment ? Réponse ou cul sec.",
           players: 1),
       QuestionData(
           text:
@@ -944,11 +944,11 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "☠️ {player1}, qui ici finirait le plus probablement dans un scandale de groupe WhatsApp ? Il boit 4.",
+              "☠️ {player1}, qui ici finirait le plus probablement dans un scandale de groupe WhatsApp ? Il boit 4 et se justifie.",
           players: 1),
       QuestionData(
           text:
-              "👻 {player1}, as-tu déjà ghosté après avoir chauffé quelqu'un ? Réponse ou shot.",
+              "👻 {player1}, as-tu déjà ghosté quelqu'un après lui avoir fait croire que c'était sérieux ? Réponse ou shot.",
           players: 1),
       QuestionData(
           text:
@@ -956,11 +956,11 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "📱 {player1}, montre seulement le prénom de ton dernier contact bloqué ou bois 5.",
+              "📱 Choix impossible : {player1}, tu préfères que tes parents lisent tes DM ou que ton ex voie ton historique de recherche ? Explique ou bois 5.",
           players: 1),
       QuestionData(
           text:
-              "🤥 {player1}, raconte une fois où tu as manipulé quelqu'un ou bois cul sec.",
+              "🤥 {player1}, raconte le mensonge le plus sale que tu as dit pour séduire, fuir ou obtenir quelque chose. Refus = cul sec.",
           players: 1),
       QuestionData(
           text:
@@ -968,15 +968,15 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🍑 {player1}, body count : donne le chiffre ou bois 6 gorgées.",
+              "🧾 {player1}, la table choisit ton procès : sexe, drogue, argent ou mensonge. Tu réponds ou cul sec.",
           players: 1),
       QuestionData(
           text:
-              "🧾 {player1}, pire chose faite bourré : verdict de la table ou cul sec.",
+              "💬 {player1}, donne le type de message qui te ferait supprimer toute une conversation ou bois 6.",
           players: 1),
       QuestionData(
           text:
-              "🧠 {player1}, qui ici a le plus gros ego sexuel selon toi ? Cette personne boit 4.",
+              "🧠 {player1}, qui ici a le plus gros ego sexuel selon toi ? Cette personne boit 4 et peut nier en public.",
           players: 1),
       QuestionData(
           text:
@@ -984,11 +984,11 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🚫 {player1}, cite une limite morale que tu as déjà franchie ou bois 6.",
+              "🚫 {player1}, cite une limite morale que tu as déjà franchie en soirée ou bois 6.",
           players: 1),
       QuestionData(
           text:
-              "💬 {player1}, décris ton dernier message honteux sans le lire. Si la table trouve ça nul, 5 gorgées.",
+              "🔥 Balance quelqu'un : qui ici serait le plus capable de mentir pour coucher avec quelqu'un ? Il boit 5 et plaide coupable ou innocent.",
           players: 1),
       QuestionData(
           text:
@@ -1003,11 +1003,12 @@ class AppData {
               "💔 {player1}, as-tu déjà couché avec quelqu'un par ego, vengeance ou ennui ? Réponse ou 6.",
           players: 1),
       QuestionData(
-          text: "😈 {player1}, révèle ton pire crush secret ou bois cul sec.",
+          text:
+              "😈 {player1}, choisis sexe, drogue ou mensonge. La table pose une question sur le thème. Réponse ou shot.",
           players: 1),
       QuestionData(
           text:
-              "🧨 {player1}, {player2} te pose une question sexuelle directe. Réponds ou bois 5.",
+              "🧨 {player1}, {player2} te pose une question sexuelle directe mais non graphique. Réponds ou bois 5.",
           players: 2),
       QuestionData(
           text:
@@ -1023,7 +1024,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "📸 {player1}, as-tu déjà gardé une photo compromettante ? Réponse ou 5.",
+              "📸 {player1}, as-tu déjà gardé une photo compromettante trop longtemps ? Réponse ou 5.",
           players: 1),
       QuestionData(
           text:
@@ -1031,7 +1032,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🥃 {player1}, cul sec si tu as déjà menti sur ton nombre de conquêtes. Sinon distribue 4.",
+              "👁️ {player1}, qui ici aurait les DM les plus dangereux à lire ? Il ou elle boit 4.",
           players: 1),
       QuestionData(
           text:
@@ -1039,11 +1040,11 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "👁️ {player1}, qui ici a le plus de secrets sexuels selon toi ? Il ou elle boit 4.",
+              "⚖️ Tribunal du bar : {player1} est accusé d'avoir déjà été une mauvaise fréquentation. La table donne une preuve ou boit 2 chacun.",
           players: 1),
       QuestionData(
           text:
-              "📵 {player1}, montre seulement le prénom de ton dernier message hot ou bois cul sec.",
+              "🧨 Choix impossible : {player1}, tu préfères révéler ton pire mensonge amoureux ou ta pire honte d'argent ? Réponse ou 6.",
           players: 1),
       QuestionData(
           text:
@@ -1059,7 +1060,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🍺 {player1}, bois 1 gorgée pour chaque ex que tu éviterais dans la rue.",
+              "📱 {player1}, si on ouvrait ton téléphone 30 secondes, quelle appli ferait le plus de dégâts ? Réponse ou cul sec.",
           players: 1),
       QuestionData(
           text:
@@ -1087,7 +1088,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "⚡ {player1}, {player2} et {player3}, votez pour le plus borderline. Il boit cul sec.",
+              "⚡ {player1}, {player2} et {player3}, votez pour le plus borderline. Il boit cul sec et doit accepter le verdict.",
           players: 3),
       QuestionData(
           text:
@@ -1095,7 +1096,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "💀 {player1}, la table choisit une vérité interdite. Si tu esquives, shot + 2 gorgées.",
+              "💀 Vérité sale : {player1}, quelle est la chose que tu as faite en soirée et que tu n'aurais jamais racontée sobre ? Réponse ou 7.",
           players: 1),
       QuestionData(
           text:
@@ -1111,7 +1112,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "📉 {player1}, fais le bilan financier de tes pires décisions de soirée ou bois 5.",
+              "💣 Balance quelqu'un : qui ici pourrait détruire un couple juste par ennui ? Il boit 4 et peut contre-attaquer.",
           players: 1),
       QuestionData(
           text:
@@ -1127,12 +1128,8 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "📱 {player1}, si on ouvrait ton téléphone 30 secondes, quelle appli ferait le plus de dégâts ? Réponse ou cul sec.",
-          players: 1),
-      QuestionData(
-          text:
-              "😈 {player1}, choisis sexe, drogue ou mensonge. La table pose une question sur le thème. Réponse ou shot.",
-          players: 1),
+              "⚖️ Procès express : {player1}, {player2} choisit ton chef d'accusation entre sexe, drogue ou mensonge. Tu réponds ou shot.",
+          players: 2),
       QuestionData(
           text:
               "🥀 {player1}, as-tu déjà gardé quelqu'un sous le coude juste pour ton ego ? Réponse ou 6.",
@@ -1140,10 +1137,6 @@ class AppData {
       QuestionData(
           text:
               "🔥 {player1}, quel flirt te ferait perdre toute crédibilité devant la table ? Réponse ou 5.",
-          players: 1),
-      QuestionData(
-          text:
-              "👁️ {player1}, qui ici aurait les DM les plus dangereux à lire ? Il ou elle boit 4.",
           players: 1),
       QuestionData(
           text:
@@ -1155,11 +1148,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "💬 {player1}, donne une phrase que tu regrettes d'avoir envoyée ou bois 5.",
-          players: 1),
-      QuestionData(
-          text:
-              "⚡ {player1}, {player2} choisit une catégorie taboue. Tu donnes une vérité ou 6 gorgées.",
+              "⚔️ Duel sale : {player1} et {player2}, chacun choisit pour l'autre une catégorie entre sexe, drogue, argent ou mensonge. Réponse ou 5.",
           players: 2),
       QuestionData(
           text:
@@ -1195,11 +1184,11 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🧾 {player1}, la table choisit ton procès : sexe, drogue, argent ou mensonge. Tu réponds ou cul sec.",
+              "🧾 {player1}, crée ton dossier judiciaire imaginaire : une accusation sexe, une accusation mensonge, une accusation soirée. Si c'est nul, bois 6.",
           players: 1),
       QuestionData(
           text:
-              "💬 {player1}, donne le type de message qui te ferait supprimer toute une conversation ou bois 6.",
+              "💬 {player1}, quel message de toi pourrait faire dire à la table ah ouais t'es dangereux ? Réponse ou 6.",
           players: 1),
       QuestionData(
           text:
@@ -1214,7 +1203,40 @@ class AppData {
               "🏁 Verdict noir : {player1}, la table te pose une dernière question sans filtre. Réponse ou 7 gorgées.",
           players: 1),
       QuestionData(
-          text: "🍷 Le verre du milieu... La tension monte.",
+          text:
+              "🎭 {player1}, qui ici aurait le plus gros dossier si son ex parlait ? Cette personne boit 4 et donne le titre du dossier.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧨 Choix impossible : {player1}, tu préfères avouer ton pire DM à ton crush ou ta pire soirée à ta famille ? Choisis ou bois 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "⚖️ La table juge {player1} : toxique par jalousie, par désir ou par ego ? Verdict majoritaire = 5 gorgées.",
+          players: 1),
+      QuestionData(
+          text:
+              "💬 {player1}, donne la phrase la plus manipulatrice qu'on pourrait t'entendre dire. Refus = cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "☠️ {player1}, qui ici ferait le plus confiance à la mauvaise personne pour un plan foireux ? Il boit 4 et accuse quelqu'un.",
+          players: 1),
+      QuestionData(
+          text:
+              "🕳️ {player1}, raconte une fois où tu as joué double jeu. Pas de noms, mais assez pour que la table comprenne ou bois 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "🔞 {player1}, quelle vérité sexuelle ferait changer l'ambiance si tu la disais maintenant ? Réponse soft ou 7 gorgées.",
+          players: 1),
+      QuestionData(
+          text:
+              "💊 {player1}, quelle règle de soirée tu as déjà ignorée alors que tu savais que c'était une mauvaise idée ? Réponse ou 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "🍷 Le verre du milieu... La table choisit le thème interdit avant de le lancer.",
           players: 1,
           type: QuestionType.centralGlass),
     ],

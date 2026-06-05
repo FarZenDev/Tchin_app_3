@@ -16,88 +16,89 @@ class AppData {
   static const Map<String, List<QuestionData>> allQuestions = {
     'classic': [
       QuestionData(
-          text: "🍻 {player1}, distribue 4 gorgées à la table.", players: 1),
-      QuestionData(
           text:
-              "🎤 {player1}, lance un refrain. Ceux qui ne chantent pas boivent 2 gorgées.",
+              "🍻 {player1}, invente un cri de guerre nul. Toute la table le répète ou boit 2 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "👑 {player1}, tu deviens patron du bar pendant 1 tour. Toute contestation vaut 2 gorgées.",
+              "📣 {player1}, fais une annonce officielle comme si la soirée était un conseil municipal. Si personne n'applaudit, bois 3 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🧾 {player1}, choisis le client du soir. Il boit 3 gorgées et peut en redistribuer 1.",
+              "🧾 {player1}, donne un faux ticket de caisse à {player2} : 2 gorgées pour mauvaise attitude.",
+          players: 2),
+      QuestionData(
+          text:
+              "🧦 {player1}, choisis le joueur qui a la dégaine la plus chaussette perdue. Il boit 2 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🍺 {player1}, bois 2 gorgées puis invente un toast que tout le monde répète.",
+              "🎤 {player1}, lis ta prochaine phrase comme une bande-annonce dramatique. Si tu oublies, bois 2 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🎲 {player1}, lance un dé. Tu bois la moitié du score arrondi au dessus.",
+              "🪑 {player1}, fais une déclaration d'amour à ta chaise. Si la table n'est pas émue, bois 3 gorgées.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧃 {player1}, crée le nom d'un cocktail horrible pour {player2}. S'il est trop faible, tu bois 2.",
+          players: 2),
+      QuestionData(
+          text:
+              "🚨 Tous ceux qui ont déjà dit je suis pas bourré boivent 2 gorgées.",
+          players: 1),
+      QuestionData(
+          text:
+              "🎲 {player1}, lance le dé. Le score devient ton niveau de honte et tes gorgées.",
           players: 1,
           type: QuestionType.dice),
       QuestionData(
           text:
-              "🪙 {player1}, pile tu distribues 5 gorgées, face tu bois 3 gorgées.",
+              "👑 {player1}, tu deviens ministre des verres. Tu peux donner 1 gorgée à trois joueurs.",
           players: 1),
       QuestionData(
           text:
-              "🚨 Tout le monde pose son verre. Le dernier à le faire boit 2 gorgées.",
+              "🧠 {player1}, cite 3 excuses nulles pour ne pas répondre à un message. Échec = 3 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🎭 {player1}, imite {player2}. Si la table devine, {player2} boit 2 gorgées, sinon tu bois.",
+              "🍟 {player1}, le dernier qui a mangé un truc gras boit 2 gorgées avec toi.",
+          players: 1),
+      QuestionData(
+          text:
+              "📱 {player1}, pose ton téléphone sur la table comme un objet sacré. Celui qui le touche avant ton prochain tour boit 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🎭 {player1}, imite {player2} qui commande un verre beaucoup trop sérieusement. Le perdant du rire boit 2.",
           players: 2),
       QuestionData(
           text:
-              "🤝 {player1}, fais un compliment honnête à {player2}. Les deux trinquent.",
+              "🧢 {player1}, donne un surnom de fin de soirée à {player2}. Jusqu'au prochain tour, tout oubli vaut 1 gorgée.",
           players: 2),
       QuestionData(
           text:
-              "🃏 {player1}, choisis une règle simple valable jusqu'à ton prochain tour.",
+              "🥂 {player1}, fais un toast à un objet de la pièce. Si quelqu'un rigole, il boit 1.",
           players: 1),
       QuestionData(
           text:
-              "🍸 {player1}, cite 3 cocktails en 10 secondes ou bois 3 gorgées.",
+              "🔁 {player1}, inverse le sens du jeu et parle comme un GPS pendant 1 tour. Erreur = 2 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "📸 {player1} et {player2}, prenez une photo de table ou buvez chacun 2 gorgées.",
-          players: 2),
-      QuestionData(
-          text:
-              "🎯 {player1}, désigne la personne la plus en forme ce soir. Elle distribue 3 gorgées.",
+              "🕺 {player1}, fais 4 secondes de danse de victoire pour une raison inventée ou bois 3.",
           players: 1),
       QuestionData(
           text:
-              "🥂 {player1}, {player2} et {player3}, trinquez ensemble. Le dernier verre levé boit 2 gorgées.",
-          players: 3),
-      QuestionData(
-          text: "🧠 {player1}, raconte une anecdote drôle ou bois 2 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🚫 {player1}, tu n'as plus le droit de dire le prénom de {player2} pendant 2 tours.",
-          players: 2),
-      QuestionData(
-          text: "🕺 {player1}, fais 5 secondes de danse ou bois 3 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🍟 {player1}, celui qui a mangé le plus récemment boit 2 gorgées avec toi.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧊 {player1}, garde ton sérieux pendant 15 secondes. Si tu ris, bois 2 gorgées.",
+              "🍺 {player1}, distribue 5 gorgées en expliquant chaque gorgée comme une sanction administrative.",
           players: 1),
       QuestionData(
           text: "🎡 {player1}, tourne la Roue de la Fortune.",
           players: 1,
           type: QuestionType.wheel),
       QuestionData(
-          text: "Morpion ! ❌⭕ {player1} défie quelqu'un en 1v1.",
+          text:
+              "Morpion ! ❌⭕ {player1} défie quelqu'un. Le perdant boit 3 gorgées.",
           players: 1,
           type: QuestionType.ticTacToe),
       QuestionData(
@@ -105,378 +106,412 @@ class AppData {
           players: 1,
           type: QuestionType.slotMachine),
       QuestionData(
-          text: "🔁 {player1}, échange ta prochaine pénalité avec {player2}.",
+          text:
+              "🪙 {player1}, pile tu bois 3, face tu fais boire {player2} 3. Si la pièce tombe mal, tout le monde boit 1.",
           players: 2),
       QuestionData(
           text:
-              "🏁 Dernier service soft : tout le monde boit 1 gorgée, {player1} en distribue 2.",
+              "🧊 {player1}, reste immobile 10 secondes comme si tu venais de comprendre ta vie. Si tu bouges, bois 2.",
           players: 1),
       QuestionData(
           text:
-              "🧢 {player1}, invente un surnom de soirée pour {player2}. S'il refuse, il boit 2.",
+              "🏆 La table vote pour le joueur qui a la meilleure tête de lendemain difficile. Il distribue 4 gorgées.",
+          players: 1),
+      QuestionData(
+          text:
+              "🎁 {player1}, donne une immunité ridicule à {player2} : il peut éviter une gorgée en disant pardon patron.",
           players: 2),
       QuestionData(
           text:
-              "🍋 {player1}, cite 3 choses jaunes en 8 secondes ou bois 2 gorgées.",
+              "🗣️ {player1}, raconte une anecdote en remplaçant un mot par bloup. Si tu oublies, bois 2.",
           players: 1),
       QuestionData(
           text:
-              "🕰️ {player1}, le joueur arrivé le plus tard boit 2 gorgées avec toi.",
+              "🚫 Interdiction de dire soirée pendant 2 tours. {player1} surveille, chaque erreur vaut 1 gorgée.",
           players: 1),
       QuestionData(
           text:
-              "📣 {player1}, fais une annonce officielle de soirée ou bois 2 gorgées.",
+              "🎯 {player1}, désigne celui qui ferait le pire influenceur alcoolisé. Il boit 3 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🔄 {player1}, inverse le sens de jeu et donne 1 gorgée au joueur suivant.",
-          players: 1),
-      QuestionData(
-          text: "👟 {player1}, ceux qui portent des baskets boivent 1 gorgée.",
+              "🛎️ {player1}, appelle le prochain joueur monsieur ou madame le problème. Si tu oublies, bois 2.",
           players: 1),
       QuestionData(
           text:
-              "🧩 {player1}, fais deviner un film sans parler. Échec = 3 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🥇 {player1}, la table vote pour le meilleur rire. Le gagnant distribue 3.",
-          players: 1),
-      QuestionData(
-          text:
-              "🍹 {player1}, choisis un joueur qui doit parler avec un accent pendant 1 tour.",
-          players: 1),
-      QuestionData(
-          text: "🎁 {player1}, offre une immunité d'une gorgée à {player2}.",
+              "🥇 {player1}, invente une médaille débile pour {player2}. Il boit 2 s'il la refuse.",
           players: 2),
+      QuestionData(
+          text:
+              "🍋 {player1}, cite 3 trucs qui sentent la défaite. Échec = 3 gorgées.",
+          players: 1),
+      QuestionData(
+          text:
+              "📸 {player1} et {player2}, prenez une pose de couverture d'album raté ou buvez chacun 2.",
+          players: 2),
+      QuestionData(
+          text:
+              "🧩 {player1}, fais deviner un métier sans parler. Si personne ne trouve, bois 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🏁 Dernier service soft : tout le monde boit 1 gorgée, {player1} donne un surnom au total de la table.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧯 {player1}, invente une excuse pour expliquer pourquoi {player2} a l'air coupable. Le moins crédible boit 2.",
+          players: 2),
+      QuestionData(
+          text:
+              "🥄 {player1}, choisis un joueur qui a l'énergie d'une petite cuillère triste. Il boit 2.",
+          players: 1),
+      QuestionData(
+          text:
+              "📺 {player1}, présente {player2} comme candidat d'une émission nulle. Si la table zappe, bois 3.",
+          players: 2),
+      QuestionData(
+          text:
+              "🧼 {player1}, tout le monde vote pour celui qui a la meilleure tête de pub pour lessive. Il distribue 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🚕 {player1}, raconte ton dernier trajet gênant comme une enquête policière ou bois 2.",
+          players: 1),
     ],
     'hard': [
       QuestionData(
-          text: "🔥 {player1}, raconte une vérité gênante ou bois 4 gorgées.",
+          text:
+              "🔥 {player1}, raconte une vérité honteuse avec une voix de présentateur télé ou bois 5 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🥃 {player1}, cul sec ou distribue 7 gorgées en regardant les joueurs dans les yeux.",
+              "🥃 {player1}, cul sec ou fais ton autoportrait moral en 10 secondes devant la table.",
           players: 1),
       QuestionData(
           text:
-              "🧨 {player1}, la table vote : tu bois 5 gorgées ou {player2} en boit 4.",
+              "📵 {player1}, téléphone face visible jusqu'à ton prochain tour. Si tu refuses, 6 gorgées.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧨 {player1}, la table choisit ton nouveau prénom de soirée. Refus = shot.",
+          players: 1),
+      QuestionData(
+          text:
+              "👀 {player1}, donne le plus gros défaut de soirée de {player2}. Si c'est trop gentil, tu bois 4.",
           players: 2),
       QuestionData(
           text:
-              "👀 {player1}, dis le plus gros défaut de soirée de {player2} ou bois 4 gorgées.",
-          players: 2),
-      QuestionData(
-          text:
-              "📱 {player1}, montre ta dernière photo enregistrée ou bois 5 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "⚖️ Tribunal du bar : {player1}, {player2} et {player3} votent pour le pire menteur. Il boit 4 gorgées.",
+              "⚖️ Tribunal débile : {player1}, {player2} et {player3} votent pour le plus mythomane. Il boit 5.",
           players: 3),
       QuestionData(
           text:
-              "🎯 {player1}, désigne la personne qui va craquer en premier ce soir. Elle boit 3 gorgées.",
+              "🪓 {player1}, coupe la parole au prochain joueur avec une phrase dramatique. Si tu rates, bois 3.",
           players: 1),
       QuestionData(
           text:
-              "🚫 {player1}, mot interdit : choisis un mot courant. Chaque erreur vaut 2 gorgées.",
+              "🧾 {player1}, facture imaginaire : 2 gorgées pour manque de charisme, à donner à quelqu'un.",
           players: 1),
       QuestionData(
           text:
-              "🧊 {player1}, garde un visage neutre pendant que la table te provoque 20 secondes ou bois 3.",
-          players: 1),
-      QuestionData(
-          text: "🍺 {player1}, bois 1 gorgée par joueur autour de la table.",
+              "🔒 {player1}, tu n'as plus le droit de toucher ton verre avec ta main dominante. Erreur = 3 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🧾 Addition salée : {player1}, choisis quelqu'un qui prend 3 gorgées maintenant et 2 au prochain tour.",
+              "🧠 {player1}, avoue une décision vraiment nulle de ces 30 derniers jours ou bois 5.",
           players: 1),
       QuestionData(
           text:
-              "💥 Carte choc : {player1}, accepte la prochaine pénalité sans négocier ou bois 6 gorgées.",
+              "🚪 {player1}, sors 5 secondes. La table décide ta peine entre 2 et 6 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🥶 {player1}, avoue un message que tu regrettes ou bois 4 gorgées.",
+              "🎭 {player1}, plaide coupable pour un crime de soirée inventé. Si c'est nul, bois 4.",
           players: 1),
       QuestionData(
           text:
-              "🗣️ {player1}, laisse {player2} te poser une question directe. Réponds ou bois 5.",
+              "🥶 {player1}, lis une phrase banale comme si tu venais de perdre un procès. Si personne ne rit, bois 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🍺 {player1}, bois 1 gorgée par personne qui pense que tu mens trop bien.",
+          players: 1),
+      QuestionData(
+          text:
+              "💬 {player1}, {player2} te pose une question qui pique. Réponse ou 5 gorgées.",
           players: 2),
       QuestionData(
           text:
-              "🍻 {player1} et {player2}, duel de regard. Le premier qui rit boit 4 gorgées.",
-          players: 2),
-      QuestionData(
-          text: "🪑 Tout le monde se lève. Le dernier assis boit 3 gorgées.",
+              "🏴 {player1}, désigne le plus fourbe de la table. Il boit 4 et peut t'en rendre 1.",
           players: 1),
       QuestionData(
           text:
-              "👑 {player1}, donne un ordre de table. Celui qui refuse boit 3 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🎲 {player1}, lance le dé : pair tu distribues le score, impair tu le bois.",
+              "🎲 {player1}, lance le dé : pair tu distribues, impair tu bois, 6 = tu choisis quelqu'un pour un shot virtuel.",
           players: 1,
           type: QuestionType.dice),
       QuestionData(
           text:
-              "🕯️ {player1}, confession du comptoir : raconte ta pire excuse ou bois 4 gorgées.",
+              "🧃 {player1}, mélange deux boissons raisonnables. Tu bois 3 gorgées du résultat avec un air fier.",
           players: 1),
       QuestionData(
           text:
-              "😬 {player1}, choisis : appeler quelqu'un par un surnom humiliant pendant 2 tours ou boire 5.",
+              "🕯️ {player1}, confession du comptoir : raconte une excuse pathétique que tu as déjà utilisée ou bois 5.",
           players: 1),
       QuestionData(
           text:
-              "🔒 {player1}, ne touche plus ton verre jusqu'à ton prochain tour. Si tu oublies, cul sec.",
+              "🚨 {player1}, la table choisit une phrase que tu devras dire avant chaque gorgée pendant 2 tours.",
           players: 1),
       QuestionData(
           text:
-              "🧃 {player1}, mélange deux boissons non dangereuses. Tu bois 3 gorgées du résultat.",
-          players: 1),
-      QuestionData(
-          text:
-              "🚨 {player1}, la table choisit un défi vocal. Si tu refuses, shot.",
-          players: 1),
-      QuestionData(
-          text:
-              "🃏 {player1}, pioche mentale : choisis un joueur qui perd son prochain droit de réponse.",
-          players: 1),
-      QuestionData(
-          text:
-              "🏁 Dernier avertissement : {player1}, bois 6 gorgées ou donne 2 gorgées à trois joueurs.",
-          players: 1),
-      QuestionData(
-          text:
-              "🪓 {player1}, coupe la parole au prochain joueur. S'il proteste, il boit 3.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧯 {player1}, raconte ta pire tentative de sauver une soirée ou bois 4.",
-          players: 1),
-      QuestionData(
-          text:
-              "📵 {player1}, pose ton téléphone face visible jusqu'à ton prochain tour ou bois 5.",
-          players: 1),
-      QuestionData(
-          text:
-              "🎭 {player1}, fais semblant de plaider coupable devant la table. Mauvaise prestation = 4 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧠 {player1}, cite une mauvaise décision récente ou bois 5 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "⚡ {player1}, {player2} choisit un mot. Si tu l'utilises avant 2 tours, cul sec.",
+              "😬 {player1}, appelle {player2} chef jusqu'à ton prochain tour. Oubli = 2 gorgées.",
           players: 2),
       QuestionData(
           text:
-              "🥃 {player1}, shot ou donne une vérité gênante sur ton dernier week-end.",
+              "📱 {player1}, montre seulement le nom de ton dernier message reçu ou bois 4.",
           players: 1),
       QuestionData(
           text:
-              "🚪 {player1}, sors de la pièce 5 secondes. La table décide entre 2 et 6 gorgées pour toi.",
+              "🧯 {player1}, raconte la pire fois où tu as essayé de sauver une ambiance ou bois 4.",
           players: 1),
       QuestionData(
           text:
-              "💬 {player1}, laisse {player2} choisir une question oui/non. Si tu mens, 6 gorgées.",
+              "👑 {player1}, donne un ordre absurde à la table. Celui qui refuse boit 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🪑 Tout le monde se lève. Le dernier assis boit 3 et doit dire je suis lent mais stable.",
+          players: 1),
+      QuestionData(
+          text:
+              "🗣️ {player1}, fais une déclaration publique à ton verre. Si le verre ne répond pas, bois 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🥃 {player1}, shot ou avoue un truc que tu fais seulement quand personne ne regarde.",
+          players: 1),
+      QuestionData(
+          text:
+              "💥 Carte choc : {player1}, accepte la prochaine pénalité sans négocier ou bois 6 maintenant.",
+          players: 1),
+      QuestionData(
+          text:
+              "🎯 {player1}, désigne la personne qui va envoyer le pire message ce soir. Elle boit 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🔁 {player1}, échange ton verre de main jusqu'au prochain tour. Erreur = 3 gorgées.",
+          players: 1),
+      QuestionData(
+          text:
+              "🏁 Dernier avertissement : {player1}, bois 6 ou donne 2 gorgées à trois joueurs avec une excuse bidon.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧻 {player1}, la table te donne une mission ridicule. Refus = 5 gorgées, exécution nulle = 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "💼 {player1}, licencie officiellement {player2} de la soirée. Il boit 4 et peut faire appel.",
           players: 2),
       QuestionData(
           text:
-              "🧾 {player1}, addition punitive : bois 3 maintenant, puis 1 à ton prochain tour.",
+              "📉 {player1}, annonce le bilan catastrophique de ta vie amoureuse. Si c'est trop vague, bois 5.",
           players: 1),
       QuestionData(
           text:
-              "🔁 {player1}, échange ton verre de main jusqu'à ton prochain tour. Erreur = 3 gorgées.",
+              "🎬 {player1}, joue ta dernière mauvaise décision en ralenti. Si personne ne comprend, bois 4.",
           players: 1),
       QuestionData(
           text:
-              "🏴 {player1}, désigne le joueur le plus fourbe. Il boit 4 et peut en rendre 1.",
+              "🪦 {player1}, fais l'éloge funèbre de ta dignité. Si c'est court, bois 5.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧨 {player1}, avoue un truc que tu as déjà nié avec trop de confiance ou bois 6.",
           players: 1),
     ],
     'duo': [
       QuestionData(
           text:
-              "👥 {player1} et {player2}, buvez 3 gorgées en même temps sans vous regarder.",
+              "👥 {player1} et {player2}, inventez une poignée de main en 10 secondes ou buvez chacun 2.",
           players: 2),
       QuestionData(
           text:
-              "🎭 {player1} raconte une histoire fausse. {player2} a 20 secondes pour trouver le mensonge. Le perdant boit 3.",
+              "🎭 {player1} accuse {player2} d'un crime débile. {player2} doit se défendre ou boire 3.",
           players: 2),
       QuestionData(
           text:
-              "🤝 {player1} et {player2}, pacte de verre : si l'un boit au prochain tour, l'autre boit 1.",
+              "🤝 {player1} et {player2}, pacte de honte : si l'un boit au prochain tour, l'autre dit je l'assume et boit 1.",
           players: 2),
       QuestionData(
           text:
-              "👀 {player1} et {player2}, duel de regard. Le premier qui cligne exagérément boit 2.",
+              "👀 {player1} et {player2}, duel de regard en pensant à une facture impayée. Le premier qui rit boit 3.",
           players: 2),
       QuestionData(
           text:
-              "🎤 {player1} chante une phrase, {player2} doit continuer. Échec = 2 gorgées chacun.",
+              "🎤 {player1} chante une phrase nulle, {player2} doit faire les percussions de bouche. Échec = 2 chacun.",
           players: 2),
       QuestionData(
           text:
-              "🧠 {player1}, devine le dernier achat inutile de {player2}. Mauvaise réponse = 2 gorgées.",
+              "🧠 {player1}, devine le dernier achat inutile de {player2}. Mauvais = 2 gorgées.",
           players: 2),
       QuestionData(
           text:
-              "🍺 {player1} et {player2}, inventez un geste secret. Celui qui l'oublie avant votre prochain tour boit 2.",
+              "🍺 {player1} et {player2}, créez une règle secrète. Le premier qui l'oublie boit 3.",
           players: 2),
       QuestionData(
           text:
-              "📸 {player1} et {player2}, refaites une pose de photo de soirée gênante ou buvez chacun 2.",
+              "📸 {player1} et {player2}, posez comme une affiche de film catastrophique ou buvez chacun 2.",
           players: 2),
       QuestionData(
           text:
-              "🧾 Duo de caisse : {player1} donne 2 gorgées à {player2}, puis {player2} en redistribue 2.",
+              "🧾 Duo de caisse : {player1} donne 2 gorgées à {player2}, puis {player2} invente le motif.",
           players: 2),
       QuestionData(
           text:
-              "🎯 {player1} défie {player2} sur une question de culture générale. Le perdant boit 3.",
+              "🎯 {player1} défie {player2} : qui peut citer le plus de mauvais plans de soirée ? Perdant boit 3.",
           players: 2),
       QuestionData(
           text:
-              "🥂 {player1} et {player2}, trinquez sans parler. Le premier qui parle boit 2.",
+              "🥂 {player1} et {player2}, trinquez sans parler. Le premier qui fait un bruit gênant boit 2.",
           players: 2),
       QuestionData(
           text:
-              "🔁 {player1} et {player2}, échangez vos rôles de prochaine pénalité.",
+              "🔁 {player1} et {player2}, échangez vos rôles : l'un commande, l'autre obéit pendant 1 tour.",
           players: 2),
       QuestionData(
           text:
-              "😏 {player1}, donne une qualité et un défaut de {player2}. Si la table trouve ça faux, tu bois 3.",
+              "😏 {player1}, donne à {player2} un compliment et une insulte déguisée. Si c'est trop gentil, bois 3.",
           players: 2),
       QuestionData(
           text:
-              "🪙 {player1} choisit pile ou face. {player2} lance. Perdant boit 3 gorgées.",
+              "🪙 {player1} choisit pile ou face. {player2} lance. Perdant boit 3 et félicite l'autre.",
           players: 2),
       QuestionData(
           text:
-              "🧊 {player1} et {player2}, restez sérieux 15 secondes. Ceux qui rient boivent 2.",
+              "🧊 {player1} et {player2}, restez sérieux pendant que la table choisit vos nouveaux métiers imaginaires. Rire = 2.",
           players: 2),
       QuestionData(
           text:
-              "💬 {player1}, envoie un compliment honnête à {player2} à voix haute ou bois 2.",
+              "💬 {player1}, donne un conseil amoureux catastrophique à {player2}. Si c'est utilisable, vous buvez chacun 2.",
           players: 2),
       QuestionData(
           text:
-              "🍻 {player1} et {player2}, chacun choisit une personne qui boit 2 gorgées.",
+              "🍻 {player1} et {player2}, chacun choisit une victime pour 2 gorgées. Si vous choisissez la même, vous buvez aussi.",
           players: 2),
       QuestionData(
           text:
-              "🚫 {player1} et {player2}, vous ne pouvez plus dire oui pendant 2 tours.",
+              "🚫 {player1} et {player2}, interdiction de dire oui pendant 2 tours. Chaque erreur = 2.",
           players: 2),
       QuestionData(
           text:
-              "🎲 Duo dés : {player1} lance, {player2} boit la moitié du score.",
+              "🎲 Duo dés : {player1} lance, {player2} boit la moitié du score et invente une raison.",
           players: 2,
           type: QuestionType.dice),
       QuestionData(
           text:
-              "🧨 {player1} choisit une question embarrassante pour {player2}. Réponse ou 4 gorgées.",
+              "🧨 {player1}, donne une question gênante à {player2}. Réponse ou 4 gorgées.",
           players: 2),
       QuestionData(
           text:
-              "🏆 {player1} et {player2}, la table vote pour le meilleur binôme. Les autres boivent 1.",
+              "🏆 {player1} et {player2}, la table vote pour le binôme le plus instable. Perdants boivent 3 chacun.",
           players: 2),
       QuestionData(
           text:
-              "🔥 {player1} et {player2}, duel final : le premier qui touche son téléphone boit cul sec.",
+              "🔥 {player1} et {player2}, dites chacun une vérité sur l'autre. La plus molle boit 3.",
           players: 2),
       QuestionData(
           text:
-              "🔐 {player1} donne un secret soft à {player2}. Si {player2} rit, il boit 3.",
+              "🔐 {player1} raconte un secret nul à {player2}. Si {player2} trouve ça triste, il boit 3.",
           players: 2),
       QuestionData(
           text:
-              "🧾 {player1} et {player2}, addition commune : chacun boit 2 puis donne 1 à quelqu'un.",
+              "🎵 {player1} choisit une chanson. {player2} doit donner l'artiste ou chanter le refrain et boire 2.",
           players: 2),
       QuestionData(
           text:
-              "🎵 {player1} choisit une chanson. {player2} doit donner l'artiste ou boire 3.",
+              "👑 {player1} nomme {player2} bras droit du chaos. Vous distribuez 4 gorgées ensemble.",
           players: 2),
       QuestionData(
           text:
-              "👑 {player1} nomme {player2} bras droit. Vous distribuez 4 gorgées ensemble.",
+              "🪙 {player1} choisit la punition, {player2} choisit la cible : 3 gorgées avec motif absurde.",
           players: 2),
       QuestionData(
           text:
-              "🧊 {player1} et {player2}, poignée de main inventée en 10 secondes ou 2 gorgées chacun.",
+              "🏁 {player1} et {player2}, faux couple en dispute sur une télécommande. Le moins convaincant boit 3.",
           players: 2),
       QuestionData(
           text:
-              "🍻 {player1} boit 2, {player2} doit trouver une excuse crédible. Mauvaise excuse = 2 aussi.",
+              "📞 {player1} laisse un faux vocal de rupture à {player2}. Si c'est trop propre, vous buvez chacun 2.",
           players: 2),
       QuestionData(
           text:
-              "🎯 {player1}, prédis le score du prochain dé de {player2}. Mauvais = tu bois 2, bon = il boit 3.",
-          players: 2,
-          type: QuestionType.dice),
-      QuestionData(
-          text:
-              "📸 {player1} décrit une photo imaginaire de {player2}. Si la table valide, {player2} boit 2.",
+              "🧽 {player1} et {player2}, inventez une pub pour nettoyer la honte de la soirée. Perdants du cringe boivent 3.",
           players: 2),
       QuestionData(
           text:
-              "🪙 {player1} choisit la punition, {player2} choisit la cible : 3 gorgées.",
+              "🍝 {player1} accuse {player2} d'avoir une énergie de plat réchauffé. {player2} répond ou boit 3.",
           players: 2),
       QuestionData(
           text:
-              "🔥 {player1} et {player2}, dites chacun une vérité sur l'autre. La plus faible boit 3.",
+              "🛒 {player1} et {player2}, faites semblant de vous disputer au rayon des mauvaises décisions. La table vote.",
+          players: 2),
+      QuestionData(
+          text:
+              "🎓 {player1} donne un diplôme honteux à {player2}. S'il refuse la cérémonie, il boit 3.",
+          players: 2),
+      QuestionData(
+          text:
+              "🪞 {player1} et {player2}, chacun imite la façon de mentir de l'autre. Le moins drôle boit 3.",
           players: 2),
     ],
     'bar': [
       QuestionData(
           text:
-              "🍸 {player1}, invente un cocktail ridicule et donne-lui un nom. Échec = 3 gorgées.",
+              "🍸 {player1}, invente un cocktail avec un nom honteux. La table note, moins de 7/10 = 3 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🎤 {player1}, fais une annonce de barman à la table ou bois 3 gorgées.",
+              "🎤 {player1}, fais une annonce de barman comme si le bar était en crise nationale. Si c'est plat, bois 3.",
           players: 1),
       QuestionData(
           text:
-              "🥃 {player1}, shot ou désigne deux joueurs qui boivent 3 gorgées.",
+              "🥃 {player1}, shot virtuel ou désigne deux joueurs qui doivent commander avec une voix ridicule.",
           players: 1),
       QuestionData(
           text:
-              "🍺 Happy comptoir : {player1}, distribue 1 gorgée à chaque personne qui a déjà commandé ce soir.",
+              "🍺 Happy comptoir : {player1}, distribue 1 gorgée à chaque personne qui a déjà dit j'arrive alors qu'elle partait.",
           players: 1),
       QuestionData(
           text:
-              "🧾 Note du barman : {player1}, choisis le client le plus bruyant. Il boit 3 gorgées.",
+              "🧾 Note du barman : {player1}, choisis le client le plus bruyant. Il boit 3 et baisse d'un ton.",
           players: 1),
       QuestionData(
           text:
-              "🎵 Jukebox : {player1}, lance un refrain. Si personne ne continue, tout le monde boit 2.",
+              "🎵 Jukebox cassé : {player1}, chante un refrain. Si quelqu'un connaît, il boit 1. Sinon tu bois 3.",
           players: 1),
       QuestionData(
           text:
-              "🥂 {player1}, {player2} et {player3}, toast express. Le moins convaincant boit 3.",
+              "🥂 {player1}, {player2} et {player3}, toast express. Le moins crédible boit 3.",
           players: 3),
       QuestionData(
           text:
-              "🚪 {player1}, raconte ta pire entrée en soirée ou bois 3 gorgées.",
-          players: 1),
-      QuestionData(
-          text: "🪑 Tabouret libre : le dernier joueur debout boit 2 gorgées.",
+              "🚪 {player1}, raconte ta pire entrée quelque part comme si c'était un exploit sportif ou bois 3.",
           players: 1),
       QuestionData(
           text:
-              "🍻 {player1} et {player2}, duel de cheers. La table choisit le gagnant, perdant boit 3.",
+              "🪑 Tabouret libre : le dernier debout boit 2 et annonce son licenciement imaginaire.",
+          players: 1),
+      QuestionData(
+          text:
+              "🍻 {player1} et {player2}, duel de santé. Le toast le plus nul boit 3.",
           players: 2),
       QuestionData(
           text:
-              "🎩 {player1}, fais un tour de magie nul. Si personne ne rigole, bois 3 gorgées.",
+              "🎩 {player1}, fais un tour de magie nul. Si personne ne dit incroyable, bois 3.",
           players: 1),
       QuestionData(
           text:
-              "🧃 {player1}, choisis un joueur qui doit parler comme un serveur chic pendant 1 tour.",
+              "🧃 {player1}, choisis un joueur qui doit parler comme un serveur trop chic pendant 1 tour.",
           players: 1),
       QuestionData(
           text:
@@ -484,31 +519,32 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🎲 {player1}, lance le dé du comptoir. Score 1-3 = tu bois, 4-6 = tu distribues.",
+              "🎲 {player1}, lance le dé du comptoir. 1-3 tu bois, 4-6 tu distribues en inventant les factures.",
           players: 1,
           type: QuestionType.dice),
       QuestionData(
           text:
-              "🧊 Service frais : {player1}, le joueur avec le verre le plus plein boit 3 gorgées.",
+              "🧊 Service frais : {player1}, le joueur avec le verre le plus plein boit 3 parce qu'il manque d'engagement.",
           players: 1),
       QuestionData(
           text:
-              "🍷 {player1}, choisis une règle de bar : pas de téléphone, pas de prénom ou pas de gros mots pendant 2 tours.",
-          players: 1),
-      QuestionData(
-          text: "🎭 {player1}, imite le client relou du bar ou bois 4 gorgées.",
+              "🍷 {player1}, règle de bar : plus personne ne peut dire verre pendant 2 tours. Erreur = 1 gorgée.",
           players: 1),
       QuestionData(
           text:
-              "💳 {player1}, addition surprise : bois 2 gorgées et donne 2 gorgées à {player2}.",
+              "🎭 {player1}, imite le client qui négocie une pinte à crédit ou bois 4.",
+          players: 1),
+      QuestionData(
+          text:
+              "💳 {player1}, addition surprise : bois 2 et donne 2 à {player2} pour frais de dossier.",
           players: 2),
       QuestionData(
           text:
-              "🚨 Dernier appel : tout le monde boit 1 gorgée, {player1} choisit qui en prend 2 de plus.",
+              "🚨 Dernier appel : tout le monde boit 1, {player1} choisit qui a l'air déjà fermé.",
           players: 1),
       QuestionData(
           text:
-              "🛎️ {player1}, sonne le service imaginaire. Le dernier à répondre santé boit 2.",
+              "🛎️ {player1}, sonne le service imaginaire. Le dernier à répondre patron boit 2.",
           players: 1),
       QuestionData(
           text: "🎰 {player1}, tente le Jackpot du bar.",
@@ -516,11 +552,11 @@ class AppData {
           type: QuestionType.slotMachine),
       QuestionData(
           text:
-              "🔥 {player1}, donne le titre de la soirée. Si la table refuse, bois 4 gorgées.",
+              "🔥 {player1}, donne un titre de soirée façon documentaire gênant. Si la table refuse, bois 4.",
           players: 1),
       QuestionData(
           text:
-              "👥 {player1}, {player2} et {player3}, créez une mini tournée. Chacun donne 2 gorgées à quelqu'un.",
+              "👥 {player1}, {player2} et {player3}, créez une mini tournée. Chacun donne 2 gorgées avec une excuse débile.",
           players: 3),
       QuestionData(
           text:
@@ -532,56 +568,49 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🧃 {player1}, choisis le joueur qui commande toujours le plus bizarre. Il boit 2.",
-          players: 1),
-      QuestionData(
-          text:
               "🎙️ {player1}, fais le videur pendant 1 tour. Le prochain qui râle boit 3.",
           players: 1),
       QuestionData(
           text:
-              "🍸 {player1}, donne un nom de cocktail à {player2}. S'il est nul, tu bois 3.",
+              "💳 {player1}, choisis un joueur qui a une dette imaginaire. Il boit 4 et remercie la compta.",
+          players: 1),
+      QuestionData(
+          text:
+              "🏆 {player1}, nomme le MVP du bar. Il distribue 5 gorgées en conférence de presse.",
+          players: 1),
+      QuestionData(
+          text:
+              "🪪 {player1}, contrôle d'identité du bar : choisis quelqu'un qui a une tête à oublier son code PIN. Il boit 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🍽️ {player1}, invente le plat du jour le plus dégoûtant possible. Si la table refuse de commander, bois 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "📢 {player1}, annonce que le bar ferme pour cause de malaise social. Le dernier à protester boit 2.",
+          players: 1),
+      QuestionData(
+          text:
+              "🎟️ {player1}, donne un ticket VIP imaginaire à {player2}. Il doit faire un discours ou boire 3.",
           players: 2),
       QuestionData(
           text:
-              "🧾 {player1}, la note tombe : le joueur à ta droite boit 2 et distribue 1.",
+              "🧯 {player1}, choisis le joueur qui mettrait le feu à l'ambiance en racontant trop longtemps sa vie. Il boit 4.",
           players: 1),
       QuestionData(
           text:
-              "🎵 {player1}, choisis une chanson de fermeture. Si personne ne la connaît, bois 4.",
-          players: 1),
-      QuestionData(
-          text:
-              "🥃 {player1}, raconte ton pire shot ou prends 1 shot virtuel = 2 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🚬 {player1}, pause comptoir : ceux qui ont quitté la table depuis le début boivent 2.",
-          players: 1),
-      QuestionData(
-          text:
-              "🍻 {player1}, {player2} et {player3}, chacun donne une règle de bar. La table garde la meilleure.",
-          players: 3),
-      QuestionData(
-          text:
-              "🛎️ {player1}, service raté : le dernier qui tape deux fois sur la table boit 2.",
-          players: 1),
-      QuestionData(
-          text:
-              "💳 {player1}, choisis un joueur qui a une dette imaginaire. Il boit 4.",
-          players: 1),
-      QuestionData(
-          text: "🏆 {player1}, nomme le MVP du bar. Il distribue 5 gorgées.",
+              "🧾 {player1}, facture de honte : chaque joueur donne une raison de te faire boire. Tu prends les 2 meilleures.",
           players: 1),
     ],
     'chill': [
       QuestionData(
           text:
-              "😌 {player1}, raconte ton meilleur souvenir de soirée. Ceux qui sourient boivent 1.",
+              "😌 {player1}, raconte ton meilleur souvenir de soirée comme un vieux sage fatigué. Si c'est trop court, bois 1.",
           players: 1),
       QuestionData(
           text:
-              "🍔 {player1}, donne ton plat de fin de soirée idéal. Ceux qui valident trinquent.",
+              "🍔 {player1}, donne ton plat de fin de soirée idéal. Ceux qui jugent boivent 1.",
           players: 1),
       QuestionData(
           text:
@@ -589,27 +618,27 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🛋️ Pause canapé : le dernier installé confortablement boit 2 gorgées.",
+              "🛋️ Pause canapé : le dernier installé comme une larve sociale boit 2 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🤝 {player1}, donne un compliment sincère à {player2}. Les deux boivent 1.",
+              "🤝 {player1}, donne un compliment sincère à {player2}, mais avec une voix de message vocal gênant.",
           players: 2),
       QuestionData(
           text:
-              "📸 {player1} et {player2}, prenez une photo sympa ou buvez chacun 1.",
+              "📸 {player1} et {player2}, prenez une photo sympa mais beaucoup trop sérieuse ou buvez chacun 1.",
           players: 2),
       QuestionData(
           text:
-              "🎭 {player1}, mime une habitude de soirée. {player2} doit deviner.",
+              "🎭 {player1}, mime ton énergie actuelle. {player2} doit deviner ou boire 1.",
           players: 2),
       QuestionData(
           text:
-              "🕯️ {player1}, raconte un petit moment gênant mais drôle. Ceux qui ont vécu pareil boivent 1.",
+              "🕯️ {player1}, raconte un moment gênant mais mignon. Ceux qui ont pire boivent 1.",
           players: 1),
       QuestionData(
           text:
-              "🍿 {player1}, recommande un film. Ceux qui ne l'ont jamais vu boivent 1.",
+              "🍿 {player1}, recommande un film. Ceux qui disent je l'ai vu mais ne savent plus l'histoire boivent 1.",
           players: 1),
       QuestionData(
           text:
@@ -617,97 +646,102 @@ class AppData {
           players: 2),
       QuestionData(
           text:
-              "☕ {player1}, choisis le joueur le plus posé. Il distribue 3 gorgées.",
+              "☕ {player1}, choisis le joueur le plus posé. Il distribue 3 gorgées comme un conseiller municipal.",
           players: 1),
       QuestionData(
           text:
-              "🌙 {player1}, raconte une soirée qui a fini beaucoup trop tard ou bois 2.",
-          players: 1),
-      QuestionData(
-          text: "🧠 {player1}, donne une anecdote que personne ici ne connaît.",
+              "🌙 {player1}, raconte une soirée qui a fini trop tard et trop bêtement ou bois 2.",
           players: 1),
       QuestionData(
           text:
-              "🍪 {player1}, si tu as grignoté depuis le début, bois 1 et distribue 1.",
+              "🍪 {player1}, si tu as grignoté depuis le début, bois 1 et distribue 1 avec honte.",
           players: 1),
       QuestionData(
           text:
-              "🤫 {player1}, fais deviner ton humeur avec un seul mot. Mauvaise réponse de la table = tout le monde boit 1.",
-          players: 1),
-      QuestionData(
-          text: "🥂 {player1}, porte un toast gentil à {player2}.", players: 2),
-      QuestionData(
-          text:
-              "🎲 {player1}, lance le dé chill : 1-2 tu bois 1, 3-4 tu distribues 1, 5-6 tout le monde trinque.",
-          players: 1,
-          type: QuestionType.dice),
-      QuestionData(
-          text:
-              "🧊 {player1}, cite une qualité cachée de la personne à ta gauche.",
-          players: 1),
-      QuestionData(
-          text: "🎁 {player1}, offre une immunité d'une gorgée à quelqu'un.",
+              "🤫 {player1}, fais deviner ton humeur avec un seul mot nul. Mauvaise réponse = tout le monde boit 1.",
           players: 1),
       QuestionData(
           text:
-              "🏁 Fin douce : tout le monde boit 1 gorgée et dit son meilleur moment de la partie.",
-          players: 1),
-      QuestionData(
-          text:
-              "🌤️ {player1}, raconte un petit plaisir honteux. Ceux qui partagent boivent 1.",
-          players: 1),
-      QuestionData(
-          text:
-              "📚 {player1}, recommande une série. Ceux qui l'ont abandonnée boivent 1.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧦 {player1}, le joueur avec les chaussettes les plus visibles boit 1.",
-          players: 1),
-      QuestionData(
-          text:
-              "🎨 {player1}, décris la soirée en une couleur. La table vote, perdant boit 1.",
-          players: 1),
-      QuestionData(
-          text:
-              "🫶 {player1}, choisis quelqu'un qui mérite une pause. Il saute sa prochaine gorgée.",
-          players: 1),
-      QuestionData(
-          text:
-              "🍵 {player1}, raconte ton rituel de lendemain de soirée ou bois 1.",
-          players: 1),
-      QuestionData(
-          text:
-              "🎲 {player1}, dé chill bonus : 1-3 tu bois 1, 4-6 tu donnes 1.",
-          players: 1,
-          type: QuestionType.dice),
-      QuestionData(
-          text:
-              "💬 {player1}, donne une question légère à {player2}. Réponse ou 1 gorgée.",
+              "🥂 {player1}, porte un toast gentil à {player2}, mais comme si tu étais à un mariage raté.",
           players: 2),
+      QuestionData(
+          text:
+              "🎲 {player1}, dé chill : 1-2 tu bois 1, 3-4 tu distribues 1, 5-6 tout le monde trinque.",
+          players: 1,
+          type: QuestionType.dice),
+      QuestionData(
+          text:
+              "🎁 {player1}, offre une immunité d'une gorgée à quelqu'un qui a l'air mentalement en travaux.",
+          players: 1),
+      QuestionData(
+          text:
+              "🏁 Fin douce : tout le monde boit 1 et donne une note à l'ambiance comme dans un hôtel.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧺 {player1}, raconte une petite honte de vie quotidienne. Ceux qui ont déjà fait pire boivent 1.",
+          players: 1),
+      QuestionData(
+          text:
+              "🛌 {player1}, mime ton réveil après une soirée ratée. Si la table compatit, distribue 2.",
+          players: 1),
+      QuestionData(
+          text:
+              "📚 {player1}, donne un titre de livre à la soirée. Le titre le plus nul de la table boit 1.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧘 {player1}, respire comme quelqu'un qui a tout compris à la vie. Si tu ris, bois 1.",
+          players: 1),
+      QuestionData(
+          text:
+              "🎨 {player1}, décris {player2} en trois couleurs absurdes. {player2} choisit qui boit 1.",
+          players: 2),
+      QuestionData(
+          text:
+              "🧁 {player1}, donne un compliment beaucoup trop spécifique à quelqu'un. S'il rougit, il boit 1.",
+          players: 1),
+      QuestionData(
+          text:
+              "🪩 {player1}, raconte ton meilleur faux souvenir de boîte de nuit. La table décide si tu bois 2.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧦 {player1}, ceux qui ont déjà dormi habillés après une soirée boivent 1.",
+          players: 1),
+      QuestionData(
+          text:
+              "🫶 {player1}, sauve quelqu'un d'une gorgée en lui donnant un conseil nul.",
+          players: 1),
+      QuestionData(
+          text:
+              "🏖️ {player1}, raconte une excuse de vacances inventée. Si on y croit, distribue 2.",
+          players: 1),
     ],
     'hot': [
       QuestionData(
           text:
-              "🔥 {player1}, donne ton plus gros red flag en flirt ou bois 3 gorgées.",
+              "🔥 {player1}, donne ton red flag en flirt comme si tu vendais un produit nul ou bois 3.",
           players: 1),
       QuestionData(
           text:
-              "💋 {player1}, raconte ton pire message de drague ou bois 4 gorgées.",
+              "💋 {player1}, raconte ton pire message de drague en mode lecture dramatique ou bois 4.",
           players: 1),
       QuestionData(
-          text: "😏 {player1}, donne une note de flirt à {player2} ou bois 3.",
+          text:
+              "😏 {player1}, donne une note de flirt à {player2}. Si c'est lâche, bois 3.",
           players: 2),
       QuestionData(
           text:
-              "🕯️ {player1} et {player2}, regard intense 15 secondes. Le premier qui rit boit 3.",
+              "🕯️ {player1} et {player2}, regard intense 15 secondes. Le premier qui sourit boit 3.",
           players: 2),
       QuestionData(
           text:
-              "📱 {player1}, lis le dernier message un peu ambigu que tu as reçu ou bois 4.",
+              "📱 {player1}, décris ton dernier message ambigu sans nommer la personne ou bois 4.",
           players: 1),
       QuestionData(
-          text: "🍑 {player1}, cite ton type physique en soirée ou bois 3.",
+          text:
+              "🍑 {player1}, cite ton type physique en version beaucoup trop précise ou bois 3.",
           players: 1),
       QuestionData(
           text:
@@ -715,10 +749,11 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "💌 {player1}, qui ici aurait le plus de chance de te séduire en 5 minutes ? Réponds ou bois 4.",
+              "💌 {player1}, qui ici aurait le plus de chance de te séduire en parlant seulement de météo ? Réponds ou bois 4.",
           players: 1),
       QuestionData(
-          text: "🔥 {player1}, raconte ton date le plus gênant ou bois 4.",
+          text:
+              "🔥 {player1}, raconte ton date le plus gênant comme un fait divers ou bois 4.",
           players: 1),
       QuestionData(
           text:
@@ -726,78 +761,18 @@ class AppData {
           players: 2),
       QuestionData(
           text:
-              "🍷 {player1}, dis si tu préfères charme, humour ou audace. Ceux qui ne sont pas d'accord boivent 1.",
-          players: 1),
-      QuestionData(
-          text:
-              "👀 {player1}, qui ici a le regard le plus dangereux ? Cette personne boit 2.",
+              "👀 {player1}, qui ici a le regard le plus dangereux ? Cette personne boit 2 et assume.",
           players: 1),
       QuestionData(
           text: "🧨 {player1}, avoue ton pire faux pas en date ou bois 5.",
           players: 1),
       QuestionData(
           text:
-              "💄 {player1}, choisis le joueur qui aurait le meilleur profil de dating app. Il distribue 3.",
+              "💄 {player1}, choisis le meilleur profil dating app de la table. Il distribue 3.",
           players: 1),
       QuestionData(
           text:
-              "🎭 {player1}, fais une imitation de flirt catastrophique ou bois 3.",
-          players: 1),
-      QuestionData(
-          text:
-              "🥂 {player1} et {player2}, inventez un toast beaucoup trop charmeur ou buvez chacun 2.",
-          players: 2),
-      QuestionData(
-          text:
-              "🔒 {player1}, réponds : jaloux ou pas jaloux ? Si la table ne te croit pas, bois 3.",
-          players: 1),
-      QuestionData(
-          text: "📸 {player1}, décris ta photo de profil idéale ou bois 2.",
-          players: 1),
-      QuestionData(
-          text:
-              "🃏 {player1}, donne une vérité hot mais pas physique. Refus = 4 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🎲 {player1}, lance le dé hot. Le score devient les gorgées à distribuer à une personne qui te plaît.",
-          players: 1,
-          type: QuestionType.dice),
-      QuestionData(
-          text:
-              "🏁 Dernier regard : {player1}, choisis quelqu'un. Vous buvez chacun 2 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🔥 {player1}, quelle est la qualité la plus attirante chez {player2} ? Réponse ou 3 gorgées.",
-          players: 2),
-      QuestionData(
-          text:
-              "💌 {player1}, avoue le dernier compliment qui t'a vraiment touché ou bois 2.",
-          players: 1),
-      QuestionData(
-          text:
-              "🫣 {player1}, quelle situation de flirt te rend ridicule ? Réponse ou 3.",
-          players: 1),
-      QuestionData(
-          text:
-              "🔥 {player1}, qui ici a le plus de charisme quand il parle ? Il distribue 3.",
-          players: 1),
-      QuestionData(
-          text:
-              "📱 {player1}, ton dernier emoji envoyé est ton mood flirt. Explique ou bois 3.",
-          players: 1),
-      QuestionData(
-          text:
-              "🍷 {player1}, raconte une phrase de date qui t'a refroidi ou bois 3.",
-          players: 1),
-      QuestionData(
-          text:
-              "😈 {player1}, donne un green flag et un red flag de {player2}. Refus = 4.",
-          players: 2),
-      QuestionData(
-          text:
-              "🎭 {player1}, joue une scène de rencontre catastrophique. Si la table rit, distribue 3.",
+              "🎭 {player1}, joue une scène de flirt catastrophique. Si la table rit, distribue 3.",
           players: 1),
       QuestionData(
           text:
@@ -809,13 +784,56 @@ class AppData {
           players: 1),
       QuestionData(
           text:
+              "📸 {player1}, décris ta photo de profil idéale comme si tu étais ton propre agent ou bois 2.",
+          players: 1),
+      QuestionData(
+          text:
               "🏁 {player1}, dernière tension : donne ton avis le plus honnête sur le charme de la table ou bois 5.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧾 {player1}, fais le bilan de ton historique de flirt comme un comptable triste ou bois 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "💅 {player1}, qui ici aurait le meilleur profil de dragueur raté mais attachant ? Il boit 2.",
+          players: 1),
+      QuestionData(
+          text:
+              "📞 {player1}, invente un message vocal de lendemain de date catastrophique ou bois 4.",
+          players: 1),
+      QuestionData(
+          text:
+              "🍓 {player1}, donne la phrase de flirt la plus gênante possible à {player2}. S'il rit, il boit 2.",
+          players: 2),
+      QuestionData(
+          text:
+              "🪞 {player1}, avoue ton plus gros défaut quand tu veux plaire ou bois 4.",
+          players: 1),
+      QuestionData(
+          text:
+              "🎬 {player1}, joue la scène où tu essaies d'être mystérieux et tu échoues. Si c'est trop vrai, bois 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧨 {player1}, dis qui ici pourrait te faire perdre tes moyens avec une seule phrase. Réponse ou 4.",
+          players: 1),
+      QuestionData(
+          text:
+              "💬 {player1}, donne ton pire conseil de séduction. La table choisit qui boit 3.",
+          players: 1),
+      QuestionData(
+          text:
+              "🕯️ {player1} et {player2}, faux dîner romantique en 15 secondes. Le moins investi boit 3.",
+          players: 2),
+      QuestionData(
+          text:
+              "🔥 {player1}, qui ici serait le plus dangereux en date parce qu'il parle trop ? Il boit 3.",
           players: 1),
     ],
     'express': [
       QuestionData(
-          text:
-              "⚡ {player1}, cite 3 marques de voiture en 5 secondes ou bois 2.",
+          text: "⚡ {player1}, cite 3 excuses nulles en 5 secondes ou bois 2.",
           players: 1),
       QuestionData(
           text:
@@ -824,7 +842,8 @@ class AppData {
       QuestionData(
           text: "📢 Le dernier qui crie TCHIN boit 3 gorgées.", players: 1),
       QuestionData(
-          text: "🍺 {player1}, bois 2 gorgées le plus vite possible.",
+          text:
+              "🍺 {player1}, bois 2 gorgées le plus vite possible, mais avec dignité.",
           players: 1),
       QuestionData(
           text: "🤚 Le dernier qui lève la main boit 2 gorgées.", players: 1),
@@ -839,21 +858,11 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🚀 {player1}, fais rire {player2} en 10 secondes. Le perdant boit 2.",
+              "🚀 {player1}, fais rire {player2} en 10 secondes. Perdant boit 2.",
           players: 2),
       QuestionData(
           text:
-              "🍺 Service rapide : le premier qui dit le prénom de {player1} distribue 3 gorgées.",
-          players: 1),
-      QuestionData(
-          text: "🎯 {player1}, donne 5 prénoms en 8 secondes ou bois 3.",
-          players: 1),
-      QuestionData(
-          text: "🧠 {player1}, cite 3 applis sans réfléchir ou bois 2.",
-          players: 1),
-      QuestionData(
-          text:
-              "🎲 {player1}, lance le dé express. Score pair = tu bois 2, impair = tu distribues 2.",
+              "🎲 {player1}, dé express : pair tu bois 2, impair tu distribues 2.",
           players: 1,
           type: QuestionType.dice),
       QuestionData(
@@ -864,25 +873,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🍻 {player1}, choisis vite : boire 3 ou faire boire {player2} 2.",
-          players: 2),
-      QuestionData(
-          text:
               "🗣️ {player1}, dis une phrase sans la lettre A. Erreur = 2 gorgées.",
-          players: 1),
-      QuestionData(
-          text: "🔁 {player1}, inverse le sens du jeu et bois 1.", players: 1),
-      QuestionData(text: "🔥 Dernier à applaudir boit 2 gorgées.", players: 1),
-      QuestionData(
-          text:
-              "🏁 Sprint final : tout le monde boit 1, {player1} distribue 2.",
-          players: 1),
-      QuestionData(
-          text: "⚡ {player1}, cite 3 réseaux sociaux en 4 secondes ou bois 2.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧃 {player1}, nomme 3 boissons sans alcool en 5 secondes ou bois 2.",
           players: 1),
       QuestionData(
           text: "🎵 Le dernier qui fredonne quelque chose boit 2 gorgées.",
@@ -892,65 +883,80 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🧠 {player1}, cite 4 marques de vêtements en 7 secondes ou bois 2.",
-          players: 1),
-      QuestionData(text: "🏃 Dernier debout boit 2 gorgées.", players: 1),
-      QuestionData(
-          text: "🎯 {player1}, pointe un objet noir en 2 secondes ou bois 2.",
-          players: 1),
-      QuestionData(
-          text:
-              "🍺 {player1}, choisis rapidement gauche ou droite. Le joueur de ce côté boit 2.",
-          players: 1),
-      QuestionData(
-          text:
-              "🔁 Tout le monde change de place mentalement : le prochain qui oublie le sens boit 2.",
-          players: 1),
-      QuestionData(
-          text:
               "🏁 Flash : {player1}, donne 1 gorgée à deux personnes en moins de 5 secondes.",
+          players: 1),
+      QuestionData(
+          text:
+              "⚡ {player1}, cite 3 choses qu'on regrette à 3h du matin en 5 secondes ou bois 2.",
+          players: 1),
+      QuestionData(
+          text: "🎤 Dernier à dire je suis une erreur administrative boit 2.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧠 {player1}, cite 4 excuses pour partir sans dire au revoir ou bois 3.",
+          players: 1),
+      QuestionData(
+          text: "📣 Tout le monde dit santé patron. Le dernier boit 2.",
+          players: 1),
+      QuestionData(
+          text: "🧦 {player1}, trouve un objet mou en 5 secondes ou bois 2.",
+          players: 1),
+      QuestionData(
+          text:
+              "🚀 {player1}, donne un surnom nul à {player2} en 3 secondes ou bois 2.",
+          players: 2),
+      QuestionData(
+          text:
+              "🎲 {player1}, lance le dé express honteux. Si tu fais 1, cul sec symbolique = 5 gorgées.",
+          players: 1,
+          type: QuestionType.dice),
+      QuestionData(text: "🪑 Dernier à toucher sa chaise boit 2.", players: 1),
+      QuestionData(
+          text:
+              "🥤 {player1}, cite 3 boissons décevantes en 4 secondes ou bois 2.",
+          players: 1),
+      QuestionData(
+          text:
+              "🏁 Turbo honte : {player1}, distribue 3 gorgées avant que la table compte à 5.",
           players: 1),
     ],
     'borderline': [
       QuestionData(
           text:
-              "💀 {player1}, avoue le plus gros mensonge que tu as déjà dit en couple ou bois cul sec.",
+              "💀 {player1}, si tes DM passaient sur écran géant, quel serait le titre du scandale ? Réponse ou cul sec.",
           players: 1),
       QuestionData(
           text:
-              "🔥 {player1}, qui ici serait ton choix le plus honteux pour un plan secret ? Réponds ou shot.",
+              "🔥 {player1}, nomme ton choix le plus honteux pour un plan secret. Réponse ou shot.",
           players: 1),
       QuestionData(
           text:
-              "🧨 {player1}, raconte une anecdote de drogue ou de soirée illégale. Refus = 5 gorgées.",
+              "💊 {player1}, raconte une anecdote de drogue ou d'after illégal sans donner de nom. Refus = 6 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "🍆 {player1}, as-tu déjà envoyé un nude regrettable ? Raconte le contexte ou bois 5.",
+              "🍆 {player1}, as-tu déjà envoyé un nude que tu regrettes ? Contexte ou 6 gorgées.",
           players: 1),
       QuestionData(
           text:
-              "💊 {player1}, quelle est la substance la plus risquée que tu as déjà prise ou failli prendre ? Réponse ou cul sec.",
+              "🥀 {player1}, as-tu déjà trompé quelqu'un ou couvert quelqu'un qui trompait ? Réponse ou cul sec.",
           players: 1),
       QuestionData(
           text:
-              "🥀 {player1}, as-tu déjà trompé quelqu'un ou aidé quelqu'un à tromper ? Réponse ou 6 gorgées.",
+              "☠️ {player1}, qui ici finirait le plus probablement dans un scandale de groupe WhatsApp ? Il boit 4.",
           players: 1),
       QuestionData(
           text:
-              "☠️ {player1}, qui ici aurait le plus de chances de finir en garde à vue en soirée ? Il boit 4.",
+              "👻 {player1}, as-tu déjà ghosté après avoir chauffé quelqu'un ? Réponse ou shot.",
           players: 1),
       QuestionData(
           text:
-              "👻 {player1}, as-tu déjà ghosté quelqu'un après avoir couché avec ? Raconte ou shot.",
+              "🖤 {player1}, donne ton fantasme le plus tabou en version non détaillée ou bois 6.",
           players: 1),
       QuestionData(
           text:
-              "🖤 {player1}, donne ton fantasme le plus tabou en version courte ou bois 6 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "📱 {player1}, montre le nom de ton dernier contact bloqué ou bois 5 gorgées.",
+              "📱 {player1}, montre seulement le prénom de ton dernier contact bloqué ou bois 5.",
           players: 1),
       QuestionData(
           text:
@@ -958,7 +964,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "💸 {player1}, as-tu déjà menti sur l'argent, une dette ou un paiement ? Réponse ou 4 gorgées.",
+              "💸 {player1}, as-tu déjà menti sur l'argent, une dette ou un paiement ? Réponse ou 5.",
           players: 1),
       QuestionData(
           text:
@@ -966,15 +972,15 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🧾 {player1}, quelle est la pire chose que tu as faite bourré ? Refus = cul sec.",
+              "🧾 {player1}, pire chose faite bourré : verdict de la table ou cul sec.",
           players: 1),
       QuestionData(
           text:
-              "🧠 {player1}, qui ici a le plus gros ego sexuel selon toi ? Cette personne boit 3.",
+              "🧠 {player1}, qui ici a le plus gros ego sexuel selon toi ? Cette personne boit 4.",
           players: 1),
       QuestionData(
           text:
-              "👀 {player1}, as-tu déjà eu envie de quelqu'un déjà pris ? Réponse ou 5 gorgées.",
+              "👀 {player1}, as-tu déjà voulu quelqu'un déjà pris ? Réponse ou 5 gorgées.",
           players: 1),
       QuestionData(
           text:
@@ -982,7 +988,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "💬 {player1}, lis le dernier message très embarrassant que tu as envoyé ou bois cul sec.",
+              "💬 {player1}, décris ton dernier message honteux sans le lire. Si la table trouve ça nul, 5 gorgées.",
           players: 1),
       QuestionData(
           text:
@@ -990,15 +996,14 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🧪 {player1}, as-tu déjà mélangé alcool et drogue ? Raconte la conséquence ou bois 5.",
+              "🧪 {player1}, as-tu déjà mélangé alcool et substance ? Raconte la conséquence ou bois 5.",
           players: 1),
       QuestionData(
           text:
-              "💔 {player1}, as-tu déjà couché avec quelqu'un par vengeance, jalousie ou ego ? Réponse ou 6.",
+              "💔 {player1}, as-tu déjà couché avec quelqu'un par ego, vengeance ou ennui ? Réponse ou 6.",
           players: 1),
       QuestionData(
-          text:
-              "😈 {player1}, choisis entre révéler ton pire crush secret ou boire cul sec.",
+          text: "😈 {player1}, révèle ton pire crush secret ou bois cul sec.",
           players: 1),
       QuestionData(
           text:
@@ -1018,11 +1023,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🧟 {player1}, as-tu déjà menti sur ton état pour continuer une soirée ? Réponse ou 4.",
-          players: 1),
-      QuestionData(
-          text:
-              "📸 {player1}, as-tu déjà gardé une photo compromettante ? Réponse ou 5 gorgées.",
+              "📸 {player1}, as-tu déjà gardé une photo compromettante ? Réponse ou 5.",
           players: 1),
       QuestionData(
           text:
@@ -1030,23 +1031,15 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "💣 {player1}, nomme une personne ici que tu ne laisserais jamais sortir avec ton ex. Elle boit 3.",
-          players: 1),
-      QuestionData(
-          text:
               "🥃 {player1}, cul sec si tu as déjà menti sur ton nombre de conquêtes. Sinon distribue 4.",
           players: 1),
       QuestionData(
           text:
-              "💊 {player1}, raconte une fois où quelqu'un a trop abusé en soirée. Refus = 4 gorgées.",
+              "💊 {player1}, raconte une fois où quelqu'un a trop abusé en soirée. Refus = 5.",
           players: 1),
       QuestionData(
           text:
               "👁️ {player1}, qui ici a le plus de secrets sexuels selon toi ? Il ou elle boit 4.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧛 {player1}, as-tu déjà profité d'une situation pour obtenir quelque chose ? Réponse ou 6.",
           players: 1),
       QuestionData(
           text:
@@ -1058,7 +1051,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🔥 {player1}, {player2} doit deviner ton plus gros vice. S'il a tort, il boit 4, sinon tu bois 4.",
+              "🔥 {player1}, {player2} devine ton plus gros vice. S'il a tort, il boit 4, sinon tu bois 4.",
           players: 2),
       QuestionData(
           text:
@@ -1074,7 +1067,7 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "🧊 {player1}, la table choisit une question taboue. Tu réponds ou tu bois 6.",
+              "🧊 {player1}, la table choisit une question taboue. Tu réponds ou bois 6.",
           players: 1),
       QuestionData(
           text:
@@ -1094,122 +1087,11 @@ class AppData {
           players: 1),
       QuestionData(
           text:
-              "⚡ {player1}, {player2} et {player3}, chacun vote pour le plus borderline. Il boit cul sec.",
+              "⚡ {player1}, {player2} et {player3}, votez pour le plus borderline. Il boit cul sec.",
           players: 3),
       QuestionData(
           text:
               "🧨 {player1}, raconte ta pire décision prise après 2h du matin ou bois 6.",
-          players: 1),
-      QuestionData(
-          text:
-              "💀 {player1}, si la table lisait tes DM, quel serait le thème du scandale ? Réponse ou cul sec.",
-          players: 1),
-      QuestionData(
-          text:
-              "🏁 Sentence finale : {player1}, réponds à une question taboue choisie par la table ou bois shot + 3 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🕷️ {player1}, as-tu déjà flirté avec quelqu'un uniquement par intérêt ? Réponse ou 6 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "💀 {player1}, quelle personne de ton passé ne doit surtout pas entendre parler de cette soirée ? Réponse ou cul sec.",
-          players: 1),
-      QuestionData(
-          text:
-              "💊 {player1}, as-tu déjà menti sur une consommation pour éviter un jugement ? Réponse ou shot.",
-          players: 1),
-      QuestionData(
-          text:
-              "🔞 {player1}, as-tu déjà regretté immédiatement après avoir couché avec quelqu'un ? Réponse ou 6.",
-          players: 1),
-      QuestionData(
-          text:
-              "📱 {player1}, quel type de message supprimé te ferait le plus peur ? Réponse ou 5.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧨 {player1}, avoue une fois où tu as joué avec les sentiments de quelqu'un ou bois cul sec.",
-          players: 1),
-      QuestionData(
-          text:
-              "🍆 {player1}, as-tu déjà menti sur tes performances sexuelles ? Réponse ou 5 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "☠️ {player1}, qui ici aurait le casier judiciaire fictif le plus long ? Il boit 4.",
-          players: 1),
-      QuestionData(
-          text:
-              "🫥 {player1}, raconte une honte que tu n'as jamais assumée à tes amis ou bois shot.",
-          players: 1),
-      QuestionData(
-          text:
-              "💉 {player1}, connais-tu quelqu'un qui a déjà dérapé à cause d'une drogue ? Raconte sans nom ou bois 5.",
-          players: 1),
-      QuestionData(
-          text:
-              "💔 {player1}, as-tu déjà gardé quelqu'un sous le coude ? Réponse ou 6 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "🔥 {player1}, quelle est ta pensée la plus toxique en relation ? Réponse ou cul sec.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧾 {player1}, la table choisit entre sexe, drogue ou argent. Tu réponds à une question sur le thème ou shot.",
-          players: 1),
-      QuestionData(
-          text:
-              "😈 {player1}, {player2} choisit un secret à moitié avoué. Tu complètes ou 5 gorgées.",
-          players: 2),
-      QuestionData(
-          text:
-              "🖤 {player1}, qui ici serait le plus capable de mentir sans trembler ? Il boit 4.",
-          players: 1),
-      QuestionData(
-          text:
-              "📸 {player1}, as-tu déjà demandé ou reçu une photo très privée ? Réponse ou 6.",
-          players: 1),
-      QuestionData(
-          text:
-              "🥃 {player1}, cul sec si tu as déjà menti pour éviter de revoir quelqu'un.",
-          players: 1),
-      QuestionData(
-          text:
-              "🚨 {player1}, raconte une soirée où quelqu'un aurait dû rentrer plus tôt ou bois 4.",
-          players: 1),
-      QuestionData(
-          text:
-              "💣 {player1}, nomme la personne ici qui ferait le pire ex. Elle boit 3 et peut répondre.",
-          players: 1),
-      QuestionData(
-          text:
-              "🔒 {player1}, as-tu déjà caché une relation ou un flirt ? Réponse ou shot.",
-          players: 1),
-      QuestionData(
-          text:
-              "🧪 {player1}, quelle limite tu ne franchirais plus jamais en soirée ? Réponse ou 5.",
-          players: 1),
-      QuestionData(
-          text:
-              "👁️ {player1}, qui ici a la vie privée la plus dangereuse à fouiller ? Il boit 4.",
-          players: 1),
-      QuestionData(
-          text: "🕳️ {player1}, avoue une jalousie honteuse ou bois 6 gorgées.",
-          players: 1),
-      QuestionData(
-          text:
-              "💬 {player1}, donne une vérité que tu n'écrirais jamais par message ou cul sec.",
-          players: 1),
-      QuestionData(
-          text:
-              "⚡ {player1}, {player2} et {player3}, votez pour le plus gros danger en after. Il boit 5.",
-          players: 3),
-      QuestionData(
-          text:
-              "🧨 {player1}, as-tu déjà ruiné une relation pour une attirance ? Réponse ou 6.",
           players: 1),
       QuestionData(
           text:
@@ -1218,6 +1100,118 @@ class AppData {
       QuestionData(
           text:
               "🏁 Pacte noir : {player1}, choisis quelqu'un qui doit répondre à une question taboue ou boire cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧨 {player1}, avoue la fois où tu as été le plus pathétique par désir ou bois cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "💊 {player1}, quelle soirée a failli devenir un vrai problème à cause d'une consommation ? Réponse ou 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "📉 {player1}, fais le bilan financier de tes pires décisions de soirée ou bois 5.",
+          players: 1),
+      QuestionData(
+          text:
+              "🔞 {player1}, as-tu déjà eu honte juste après un moment intime ? Réponse ou shot.",
+          players: 1),
+      QuestionData(
+          text:
+              "💣 {player1}, qui ici mentirait le mieux à son partenaire ? Il boit 4 et peut accuser quelqu'un.",
+          players: 1),
+      QuestionData(
+          text:
+              "🕳️ {player1}, quelle partie de ton historique internet mérite un avocat ? Réponse ou 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "📱 {player1}, si on ouvrait ton téléphone 30 secondes, quelle appli ferait le plus de dégâts ? Réponse ou cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "😈 {player1}, choisis sexe, drogue ou mensonge. La table pose une question sur le thème. Réponse ou shot.",
+          players: 1),
+      QuestionData(
+          text:
+              "🥀 {player1}, as-tu déjà gardé quelqu'un sous le coude juste pour ton ego ? Réponse ou 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "🔥 {player1}, quel flirt te ferait perdre toute crédibilité devant la table ? Réponse ou 5.",
+          players: 1),
+      QuestionData(
+          text:
+              "👁️ {player1}, qui ici aurait les DM les plus dangereux à lire ? Il ou elle boit 4.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧾 {player1}, facture de l'enfer : raconte une dette morale que tu dois à quelqu'un ou bois 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "💔 {player1}, as-tu déjà fait semblant d'être attaché pour obtenir quelque chose ? Réponse ou cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "💬 {player1}, donne une phrase que tu regrettes d'avoir envoyée ou bois 5.",
+          players: 1),
+      QuestionData(
+          text:
+              "⚡ {player1}, {player2} choisit une catégorie taboue. Tu donnes une vérité ou 6 gorgées.",
+          players: 2),
+      QuestionData(
+          text:
+              "🧨 {player1}, raconte ton plus gros mensonge de fin de soirée ou bois cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "💊 {player1}, as-tu déjà minimisé une consommation pour ne pas inquiéter quelqu'un ? Réponse ou 5.",
+          players: 1),
+      QuestionData(
+          text:
+              "🔞 {player1}, quelle est la question sexuelle que tu redoutes le plus ici ? La table peut la poser ou tu bois 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "📱 {player1}, quel contact ne doit jamais voir ton état ce soir ? Réponse ou shot.",
+          players: 1),
+      QuestionData(
+          text:
+              "💸 {player1}, as-tu déjà dépensé une somme honteuse pour impressionner quelqu'un ? Réponse ou 5.",
+          players: 1),
+      QuestionData(
+          text:
+              "🕳️ {player1}, avoue une pensée jalouse vraiment sale ou bois cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "🔥 {player1}, qui ici pourrait te faire prendre une décision regrettable ? Réponse ou 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "☠️ {player1}, quel est le pire truc que tu as déjà couvert pour un pote ? Réponse ou shot.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧾 {player1}, la table choisit ton procès : sexe, drogue, argent ou mensonge. Tu réponds ou cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "💬 {player1}, donne le type de message qui te ferait supprimer toute une conversation ou bois 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "😈 {player1}, fais boire 5 gorgées à la personne qui cache le plus gros dossier selon toi.",
+          players: 1),
+      QuestionData(
+          text:
+              "⚔️ {player1}, {player2} choisit entre ta pire honte sexuelle ou ta pire honte d'argent. Réponse ou shot.",
+          players: 2),
+      QuestionData(
+          text:
+              "🏁 Verdict noir : {player1}, la table te pose une dernière question sans filtre. Réponse ou 7 gorgées.",
           players: 1),
       QuestionData(
           text: "🍷 Le verre du milieu... La tension monte.",

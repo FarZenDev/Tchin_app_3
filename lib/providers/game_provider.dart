@@ -252,6 +252,16 @@ class GameProvider extends ChangeNotifier {
   List<PartyReceipt> get receiptHistory => List.unmodifiable(_receiptHistory);
   bool get receiptHistoryLoaded => _receiptHistoryLoaded;
 
+  PartyReceipt ensureCurrentReceipt() {
+    _gameTimer?.cancel();
+    _happyHourTimer?.cancel();
+    _isHappyHour = false;
+    _sipMultiplier = 1;
+    _sealCurrentReceipt();
+    notifyListeners();
+    return _currentReceipt!;
+  }
+
   // Stats Getters
   Map<String, int> get playerSips => _playerSips;
   Map<String, int> get playerLoserScores =>

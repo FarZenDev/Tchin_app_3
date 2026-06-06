@@ -30,8 +30,11 @@ class _StatsScreenState extends State<StatsScreen> {
   void initState() {
     super.initState();
     final game = context.read<GameProvider>();
-    _fallbackReceipt =
-        widget.receipt ?? game.currentReceipt ?? PartyReceipt.fromGame(game);
+    _fallbackReceipt = widget.receipt ??
+        game.currentReceipt ??
+        (game.isGameOver
+            ? game.ensureCurrentReceipt()
+            : PartyReceipt.fromGame(game));
   }
 
   Future<void> _launchDevilCall(BuildContext context) async {
@@ -153,6 +156,7 @@ class _StatsScreenState extends State<StatsScreen> {
                     text: "Retour au menu",
                     icon: Icons.home,
                     onPressed: () async {
+                      game.ensureCurrentReceipt();
                       final premium = context.read<PremiumProvider>();
                       await context.read<AdService>().showInterstitialIfReady(
                             isPremium: premium.isPremium,
@@ -168,6 +172,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   const SizedBox(height: 10),
                   TextButton(
                     onPressed: () {
+                      game.ensureCurrentReceipt();
                       game.resetGame();
                       Navigator.of(context).popUntil(ModalRoute.withName('/'));
                     },

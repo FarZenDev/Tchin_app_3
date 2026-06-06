@@ -10,6 +10,7 @@ import '../widgets/gradient_button.dart';
 import '../theme/app_theme.dart';
 import '../widgets/beer_background.dart';
 import '../widgets/ad_banner_slot.dart';
+import 'asset_preview_screen.dart';
 import 'receipt_history_screen.dart';
 
 class PlayerEntryScreen extends StatefulWidget {
@@ -56,6 +57,35 @@ class _PlayerEntryScreenState extends State<PlayerEntryScreen> {
               },
               icon: const Icon(
                 Icons.receipt_long_rounded,
+                color: Colors.white54,
+                size: 22,
+              ),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white.withOpacity(0.06),
+                fixedSize: const Size(40, 40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 0,
+            left: 48,
+            child: IconButton(
+              tooltip: 'Aperçu design',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AssetPreviewScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.palette_rounded,
                 color: Colors.white54,
                 size: 22,
               ),

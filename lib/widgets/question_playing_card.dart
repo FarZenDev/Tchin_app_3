@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../models/question_model.dart';
 import '../theme/app_theme.dart';
@@ -47,6 +46,7 @@ class QuestionPlayingCard extends StatelessWidget {
                   return _CardDealTransition(
                     animation: animation,
                     accentColor: accentColor,
+                    modeLabel: modeLabel,
                     isBorderline: isBorderline,
                     child: child,
                   );
@@ -68,6 +68,82 @@ class QuestionPlayingCard extends StatelessWidget {
       },
     );
   }
+}
+
+class _CardVisual {
+  final String modeName;
+  final Color accent;
+  final IconData icon;
+  final TchinCardDesignVariant variant;
+
+  const _CardVisual({
+    required this.modeName,
+    required this.accent,
+    required this.icon,
+    required this.variant,
+  });
+}
+
+_CardVisual _visualForMode(
+  String modeLabel,
+  Color accentColor,
+  bool isBorderline,
+) {
+  final label = modeLabel.toLowerCase();
+  if (isBorderline || label.contains('borderline')) {
+    return _CardVisual(
+      modeName: 'Borderline',
+      accent: accentColor,
+      icon: Icons.local_fire_department_rounded,
+      variant: TchinCardDesignVariant.ticket,
+    );
+  }
+  if (label.contains('duo')) {
+    return _CardVisual(
+      modeName: 'Duo',
+      accent: accentColor,
+      icon: Icons.groups_rounded,
+      variant: TchinCardDesignVariant.ticket,
+    );
+  }
+  if (label.contains('bar')) {
+    return _CardVisual(
+      modeName: 'Bar',
+      accent: accentColor,
+      icon: Icons.local_bar_rounded,
+      variant: TchinCardDesignVariant.ticket,
+    );
+  }
+  if (label.contains('chill')) {
+    return _CardVisual(
+      modeName: 'Chill',
+      accent: accentColor,
+      icon: Icons.spa_rounded,
+      variant: TchinCardDesignVariant.comptoir,
+    );
+  }
+  if (label.contains('hot')) {
+    return _CardVisual(
+      modeName: 'Hot',
+      accent: accentColor,
+      icon: Icons.local_fire_department_rounded,
+      variant: TchinCardDesignVariant.comptoir,
+    );
+  }
+  if (label.contains('express')) {
+    return _CardVisual(
+      modeName: 'Express',
+      accent: accentColor,
+      icon: Icons.bolt_rounded,
+      variant: TchinCardDesignVariant.comptoir,
+    );
+  }
+  return _CardVisual(
+    modeName: 'Classique',
+    accent: accentColor,
+    icon: Icons.sports_bar_rounded,
+    variant: TchinCardDesignVariant.comptoir,
+  );
 }
 
 class _CardDeck extends StatelessWidget {
@@ -106,6 +182,7 @@ class _CardDeck extends StatelessWidget {
               accentColor: isBorderline
                   ? const Color(0xFFFF3D3D).withOpacity(0.88)
                   : accentColor.withOpacity(0.82),
+              modeLabel: modeLabel,
               isBorderline: isBorderline,
             ),
           ),
@@ -121,6 +198,7 @@ class _CardDeck extends StatelessWidget {
               accentColor: isBorderline
                   ? const Color(0xFF5A1212).withOpacity(0.86)
                   : AppTheme.secondary.withOpacity(0.72),
+              modeLabel: modeLabel,
               isBorderline: isBorderline,
             ),
           ),
@@ -143,12 +221,14 @@ class _CardDeck extends StatelessWidget {
 class _CardDealTransition extends StatelessWidget {
   final Animation<double> animation;
   final Color accentColor;
+  final String modeLabel;
   final bool isBorderline;
   final Widget child;
 
   const _CardDealTransition({
     required this.animation,
     required this.accentColor,
+    required this.modeLabel,
     required this.isBorderline,
     required this.child,
   });
@@ -225,6 +305,7 @@ class _CardDealTransition extends StatelessWidget {
                     child: showBack
                         ? _CardBack(
                             accentColor: accentColor,
+                            modeLabel: modeLabel,
                             isBorderline: isBorderline,
                           )
                         : child,
@@ -339,6 +420,7 @@ class _CardFront extends StatelessWidget {
       builder: (context, constraints) {
         final isCompact = constraints.maxWidth < 330;
         final radius = isCompact ? 22.0 : 26.0;
+        final visual = _visualForMode(modeLabel, accentColor, isBorderline);
         final horizontalPadding = isCompact ? 34.0 : 48.0;
         final topPadding = isCompact ? 68.0 : 78.0;
         final bottomPadding = isCompact ? 60.0 : 72.0;
@@ -362,128 +444,17 @@ class _CardFront extends StatelessWidget {
               ),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(radius),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: isBorderline
-                      ? const [
-                          Color(0xFFFFF0D7),
-                          Color(0xFFF4C7A5),
-                          Color(0xFFFFE4C0),
-                        ]
-                      : const [
-                          Color(0xFFFFF9EA),
-                          Color(0xFFF7E9C4),
-                          Color(0xFFFFF4D6),
-                        ],
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: RepaintBoundary(
-                      child: CustomPaint(
-                        painter: _CardFacePainter(
-                          accentColor: accentColor,
-                          isBorderline: isBorderline,
-                          intensity: intensity,
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (isBorderline)
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: RadialGradient(
-                              center: Alignment.topCenter,
-                              radius: 0.92,
-                              colors: [
-                                const Color(0xFFFF3D3D).withOpacity(0.14),
-                                Colors.transparent,
-                                const Color(0xFF250505).withOpacity(0.16),
-                              ],
-                              stops: const [0, 0.58, 1],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  Positioned.fill(
-                    child: Padding(
-                      padding: EdgeInsets.all(isCompact ? 11 : 14),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(isCompact ? 15 : 18),
-                          border: Border.all(
-                            color: isBorderline
-                                ? const Color(0xFF9B1717).withOpacity(0.48)
-                                : accentColor.withOpacity(0.34),
-                            width: isBorderline ? 1.9 : 1.6,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (isBorderline)
-                    Positioned(
-                      top: isCompact ? 20 : 24,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: TchinDevilSeal(size: isCompact ? 34 : 42),
-                      ),
-                    ),
-                  Positioned(
-                    left: isCompact ? 15 : 20,
-                    top: isCompact ? 14 : 18,
-                    child: _CardCorner(
-                      accentColor: accentColor,
-                      isCompact: isCompact,
-                    ),
-                  ),
-                  Positioned(
-                    right: isCompact ? 15 : 20,
-                    bottom: isCompact ? 14 : 18,
-                    child: Transform.rotate(
-                      angle: pi,
-                      child: _CardCorner(
-                        accentColor: accentColor,
-                        isCompact: isCompact,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: isCompact ? 26 : 32,
-                    right: isCompact ? 26 : 32,
-                    bottom: isCompact ? 16 : 20,
-                    child: _CardFooter(
-                      accentColor: accentColor,
-                      modeLabel: modeLabel,
-                      isBorderline: isBorderline,
-                      intensity: intensity,
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        horizontalPadding,
-                        topPadding,
-                        horizontalPadding,
-                        bottomPadding,
-                      ),
-                      child: child,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          child: TchinModeCardSurface(
+            modeName: visual.modeName,
+            accent: visual.accent,
+            icon: visual.icon,
+            variant: visual.variant,
+            isBorderline: isBorderline,
+            borderRadius: radius,
+            topPadding: topPadding,
+            horizontalPadding: horizontalPadding,
+            bottomPadding: bottomPadding,
+            child: child,
           ),
         );
       },
@@ -493,163 +464,26 @@ class _CardFront extends StatelessWidget {
 
 class _CardBack extends StatelessWidget {
   final Color accentColor;
+  final String modeLabel;
   final bool isBorderline;
 
   const _CardBack({
     required this.accentColor,
+    required this.modeLabel,
     this.isBorderline = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TchinCardBackAsset(
-      accent: accentColor,
+    final visual = _visualForMode(modeLabel, accentColor, isBorderline);
+    return TchinModeCardSurface(
+      modeName: visual.modeName,
+      accent: visual.accent,
+      icon: visual.icon,
+      variant: visual.variant,
+      isBack: true,
       isBorderline: isBorderline,
       borderRadius: 24,
-      markSize: 94,
     );
-  }
-}
-
-class _CardCorner extends StatelessWidget {
-  final Color accentColor;
-  final bool isCompact;
-
-  const _CardCorner({required this.accentColor, required this.isCompact});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          'T',
-          style: GoogleFonts.bebasNeue(
-            fontSize: isCompact ? 29 : 34,
-            height: 0.9,
-            color: accentColor,
-          ),
-        ),
-        Icon(Icons.local_bar, size: isCompact ? 18 : 21, color: accentColor),
-      ],
-    );
-  }
-}
-
-class _CardFooter extends StatelessWidget {
-  final Color accentColor;
-  final String modeLabel;
-  final bool isBorderline;
-  final BorderlineIntensity intensity;
-
-  const _CardFooter({
-    required this.accentColor,
-    required this.modeLabel,
-    required this.isBorderline,
-    required this.intensity,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final label = isBorderline
-        ? '${modeLabel.toUpperCase()} · ${intensity.displayName.toUpperCase()}'
-        : modeLabel.toUpperCase();
-
-    return Row(
-      children: [
-        Expanded(
-          child: Divider(color: accentColor.withOpacity(0.28), thickness: 1.2),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.inter(
-              color: isBorderline
-                  ? const Color(0xFF5F1010).withOpacity(0.72)
-                  : Colors.black.withOpacity(0.48),
-              fontSize: 10,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Divider(color: accentColor.withOpacity(0.28), thickness: 1.2),
-        ),
-      ],
-    );
-  }
-}
-
-class _CardFacePainter extends CustomPainter {
-  final Color accentColor;
-  final bool isBorderline;
-  final BorderlineIntensity intensity;
-
-  const _CardFacePainter({
-    required this.accentColor,
-    required this.isBorderline,
-    required this.intensity,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final watermark = Paint()
-      ..color = (isBorderline ? const Color(0xFF9B1717) : accentColor)
-          .withOpacity(isBorderline ? 0.08 : 0.055)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    final center = Offset(size.width / 2, size.height / 2);
-    canvas.drawCircle(center, size.width * 0.23, watermark);
-    canvas.drawCircle(center, size.width * 0.33, watermark);
-
-    final rayPaint = Paint()
-      ..color = (isBorderline ? const Color(0xFFFF3D3D) : accentColor)
-          .withOpacity(isBorderline ? 0.055 : 0.045)
-      ..strokeWidth = 1;
-    for (var i = 0; i < 18; i++) {
-      final angle = (2 * pi / 18) * i;
-      final start = Offset(
-        center.dx + cos(angle) * size.width * 0.12,
-        center.dy + sin(angle) * size.width * 0.12,
-      );
-      final end = Offset(
-        center.dx + cos(angle) * size.width * 0.38,
-        center.dy + sin(angle) * size.width * 0.38,
-      );
-      canvas.drawLine(start, end, rayPaint);
-    }
-
-    if (isBorderline) {
-      final smokePaint = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.2
-        ..strokeCap = StrokeCap.round
-        ..color = const Color(0xFF7A1010).withOpacity(0.09);
-
-      for (var i = 0; i < 4 + intensity.level; i++) {
-        final y = size.height * (0.18 + i * 0.13);
-        final path = Path()
-          ..moveTo(size.width * 0.08, y)
-          ..cubicTo(
-            size.width * 0.28,
-            y - 28,
-            size.width * 0.56,
-            y + 32,
-            size.width * 0.92,
-            y - 6,
-          );
-        canvas.drawPath(path, smokePaint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _CardFacePainter oldDelegate) {
-    return oldDelegate.accentColor != accentColor ||
-        oldDelegate.isBorderline != isBorderline ||
-        oldDelegate.intensity != intensity;
   }
 }

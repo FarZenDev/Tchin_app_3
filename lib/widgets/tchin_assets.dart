@@ -160,6 +160,153 @@ class TchinModeCardDesign extends StatelessWidget {
   }
 }
 
+class TchinModeCardSurface extends StatelessWidget {
+  final String modeName;
+  final Color accent;
+  final IconData icon;
+  final TchinCardDesignVariant variant;
+  final bool isBack;
+  final bool isBorderline;
+  final double borderRadius;
+  final double topPadding;
+  final double horizontalPadding;
+  final double bottomPadding;
+  final Widget? child;
+
+  const TchinModeCardSurface({
+    super.key,
+    required this.modeName,
+    required this.accent,
+    required this.icon,
+    required this.variant,
+    this.isBack = false,
+    this.isBorderline = false,
+    this.borderRadius = 24,
+    this.topPadding = 76,
+    this.horizontalPadding = 42,
+    this.bottomPadding = 66,
+    this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: CustomPaint(
+        painter: _TchinModeCardPainter(
+          accent: accent,
+          variant: variant,
+          isBack: isBack,
+          isBorderline: isBorderline,
+        ),
+        child: isBack ? _buildBack() : _buildFront(),
+      ),
+    );
+  }
+
+  Widget _buildBack() {
+    return Center(
+      child: Container(
+        width: 94,
+        height: 94,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.black.withValues(alpha: 0.22),
+          border: Border.all(color: accent.withValues(alpha: 0.68), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: accent.withValues(alpha: isBorderline ? 0.26 : 0.16),
+              blurRadius: 22,
+            ),
+          ],
+        ),
+        child: isBorderline
+            ? const TchinDevilSeal(size: 72)
+            : Icon(
+                icon,
+                color: accent.withValues(alpha: 0.92),
+                size: 44,
+              ),
+      ),
+    );
+  }
+
+  Widget _buildFront() {
+    final ink =
+        isBorderline ? const Color(0xFF2A0608) : const Color(0xFF25140C);
+    return Stack(
+      children: [
+        Positioned(
+          left: 16,
+          top: 16,
+          child: _TchinCornerMark(accent: accent, icon: icon, small: true),
+        ),
+        if (isBorderline)
+          const Positioned(
+            left: 0,
+            right: 0,
+            top: 20,
+            child: const Center(child: TchinDevilSeal(size: 36)),
+          ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: Transform.rotate(
+            angle: math.pi,
+            child: _TchinCornerMark(accent: accent, icon: icon, small: true),
+          ),
+        ),
+        Positioned(
+          left: 28,
+          right: 28,
+          bottom: 19,
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 1,
+                  color: accent.withValues(alpha: 0.35),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  modeName.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                    color: ink.withValues(alpha: 0.56),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  height: 1,
+                  color: accent.withValues(alpha: 0.35),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned.fill(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              horizontalPadding,
+              topPadding,
+              horizontalPadding,
+              bottomPadding,
+            ),
+            child: child ?? const SizedBox.shrink(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _TchinModeCardFrontContent extends StatelessWidget {
   final String modeName;
   final Color accent;

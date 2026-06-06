@@ -502,41 +502,11 @@ class _CardBack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: isBorderline
-              ? const [Color(0xFF1C0606), Color(0xFF671414), Color(0xFF100404)]
-              : const [Color(0xFF30160F), Color(0xFF6C2E12), Color(0xFF170B08)],
-        ),
-        border: Border.all(color: Colors.white.withOpacity(0.14), width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.28),
-            blurRadius: 24,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: CustomPaint(
-          painter: _CardBackPainter(
-            accentColor: accentColor,
-            isBorderline: isBorderline,
-          ),
-          child: Center(
-            child: TchinCardBackMark(
-              accent: accentColor,
-              isBorderline: isBorderline,
-              size: 94,
-            ),
-          ),
-        ),
-      ),
+    return TchinCardBackAsset(
+      accent: accentColor,
+      isBorderline: isBorderline,
+      borderRadius: 24,
+      markSize: 94,
     );
   }
 }
@@ -681,55 +651,5 @@ class _CardFacePainter extends CustomPainter {
     return oldDelegate.accentColor != accentColor ||
         oldDelegate.isBorderline != isBorderline ||
         oldDelegate.intensity != intensity;
-  }
-}
-
-class _CardBackPainter extends CustomPainter {
-  final Color accentColor;
-  final bool isBorderline;
-
-  const _CardBackPainter({
-    required this.accentColor,
-    required this.isBorderline,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final stripePaint = Paint()
-      ..color = Colors.white.withOpacity(isBorderline ? 0.055 : 0.045)
-      ..strokeWidth = isBorderline ? 9 : 7;
-    for (double x = -size.height; x < size.width; x += 26) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x + size.height, size.height),
-        stripePaint,
-      );
-    }
-
-    final borderPaint = Paint()
-      ..color = accentColor.withOpacity(isBorderline ? 0.52 : 0.35)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    final rect = Rect.fromLTWH(16, 16, size.width - 32, size.height - 32);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, const Radius.circular(16)),
-      borderPaint,
-    );
-
-    final innerPaint = Paint()
-      ..color = Colors.black.withOpacity(0.18)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-    final innerRect = Rect.fromLTWH(28, 28, size.width - 56, size.height - 56);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(innerRect, const Radius.circular(12)),
-      innerPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _CardBackPainter oldDelegate) {
-    return oldDelegate.accentColor != accentColor ||
-        oldDelegate.isBorderline != isBorderline;
   }
 }

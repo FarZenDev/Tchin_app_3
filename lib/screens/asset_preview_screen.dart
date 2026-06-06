@@ -56,7 +56,7 @@ class AssetPreviewScreen extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '3 recto verso par mode - assets propres, sans rendu IA',
+            'Signature, Nocturne, Ticket - recto verso par mode',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               color: AppTheme.textMuted,

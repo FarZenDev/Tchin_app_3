@@ -95,7 +95,7 @@ _CardVisual _visualForMode(
       modeName: 'Borderline',
       accent: accentColor,
       icon: Icons.local_fire_department_rounded,
-      variant: TchinCardDesignVariant.ticket,
+      variant: TchinCardDesignVariant.club,
     );
   }
   if (label.contains('duo')) {
@@ -103,7 +103,7 @@ _CardVisual _visualForMode(
       modeName: 'Duo',
       accent: accentColor,
       icon: Icons.groups_rounded,
-      variant: TchinCardDesignVariant.ticket,
+      variant: TchinCardDesignVariant.comptoir,
     );
   }
   if (label.contains('bar')) {
@@ -111,7 +111,7 @@ _CardVisual _visualForMode(
       modeName: 'Bar',
       accent: accentColor,
       icon: Icons.local_bar_rounded,
-      variant: TchinCardDesignVariant.ticket,
+      variant: TchinCardDesignVariant.club,
     );
   }
   if (label.contains('chill')) {
@@ -127,7 +127,7 @@ _CardVisual _visualForMode(
       modeName: 'Hot',
       accent: accentColor,
       icon: Icons.local_fire_department_rounded,
-      variant: TchinCardDesignVariant.comptoir,
+      variant: TchinCardDesignVariant.ticket,
     );
   }
   if (label.contains('express')) {

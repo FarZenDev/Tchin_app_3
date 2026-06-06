@@ -28,8 +28,8 @@ class TchinCardDesignPair extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final variantName = switch (variant) {
-      TchinCardDesignVariant.comptoir => 'Comptoir',
-      TchinCardDesignVariant.club => 'Club',
+      TchinCardDesignVariant.comptoir => 'Signature',
+      TchinCardDesignVariant.club => 'Nocturne',
       TchinCardDesignVariant.ticket => 'Ticket',
     };
 
@@ -120,13 +120,13 @@ class TchinModeCardDesign extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.32),
-              blurRadius: 18,
-              offset: const Offset(0, 10),
+              color: Colors.black.withValues(alpha: 0.42),
+              blurRadius: 20,
+              offset: const Offset(0, 12),
             ),
             BoxShadow(
-              color: accent.withValues(alpha: isBorderline ? 0.24 : 0.14),
-              blurRadius: 22,
+              color: accent.withValues(alpha: isBorderline ? 0.18 : 0.1),
+              blurRadius: 18,
             ),
           ],
         ),
@@ -206,27 +206,80 @@ class TchinModeCardSurface extends StatelessWidget {
 
   Widget _buildBack() {
     return Center(
-      child: Container(
-        width: 94,
-        height: 94,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 92,
+            height: 92,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black.withValues(alpha: 0.22),
+              border: Border.all(
+                color: accent.withValues(alpha: 0.66),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: accent.withValues(alpha: isBorderline ? 0.22 : 0.14),
+                  blurRadius: 20,
+                ),
+              ],
+            ),
+            child: isBorderline
+                ? const TchinDevilSeal(size: 70)
+                : Icon(
+                    icon,
+                    color: accent.withValues(alpha: 0.94),
+                    size: 43,
+                  ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            modeName.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.inter(
+              color: Colors.white.withValues(alpha: 0.74),
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _frontQuestionPanel() {
+    final panelColor = switch (variant) {
+      TchinCardDesignVariant.comptoir => const Color(0xFFFFF3D8),
+      TchinCardDesignVariant.club => const Color(0xFFFFEED1),
+      TchinCardDesignVariant.ticket => const Color(0xFFFFF8E8),
+    };
+
+    return Positioned(
+      left: math.max(18, horizontalPadding - 16),
+      right: math.max(18, horizontalPadding - 16),
+      top: math.max(46, topPadding - 20),
+      bottom: math.max(42, bottomPadding - 22),
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.black.withValues(alpha: 0.22),
-          border: Border.all(color: accent.withValues(alpha: 0.68), width: 1.5),
+          color: panelColor.withValues(
+              alpha: variant == TchinCardDesignVariant.club ? 0.96 : 0.76),
+          borderRadius: BorderRadius.circular(borderRadius * 0.58),
+          border: Border.all(
+            color: accent.withValues(alpha: isBorderline ? 0.26 : 0.18),
+            width: 1,
+          ),
           boxShadow: [
             BoxShadow(
-              color: accent.withValues(alpha: isBorderline ? 0.26 : 0.16),
-              blurRadius: 22,
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 14,
+              offset: const Offset(0, 7),
             ),
           ],
         ),
-        child: isBorderline
-            ? const TchinDevilSeal(size: 72)
-            : Icon(
-                icon,
-                color: accent.withValues(alpha: 0.92),
-                size: 44,
-              ),
       ),
     );
   }
@@ -236,6 +289,7 @@ class TchinModeCardSurface extends StatelessWidget {
         isBorderline ? const Color(0xFF2A0608) : const Color(0xFF25140C);
     return Stack(
       children: [
+        if (child != null) _frontQuestionPanel(),
         Positioned(
           left: 16,
           top: 16,
@@ -245,8 +299,8 @@ class TchinModeCardSurface extends StatelessWidget {
           const Positioned(
             left: 0,
             right: 0,
-            top: 20,
-            child: const Center(child: TchinDevilSeal(size: 36)),
+            top: 18,
+            child: Center(child: TchinDevilSeal(size: 34)),
           ),
         Positioned(
           right: 16,
@@ -344,12 +398,13 @@ class _TchinModeCardFrontContent extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
                 decoration: BoxDecoration(
                   color: _paperColor(variant),
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(17),
                   border: Border.all(
-                    color: accent.withValues(alpha: 0.24),
+                    color: accent.withValues(alpha: 0.28),
                     width: 1.2,
                   ),
                   boxShadow: [
@@ -364,11 +419,25 @@ class _TchinModeCardFrontContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 42,
-                      height: 3,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
-                        color: accent.withValues(alpha: 0.82),
                         borderRadius: BorderRadius.circular(99),
+                        color: accent.withValues(alpha: 0.12),
+                        border: Border.all(
+                          color: accent.withValues(alpha: 0.34),
+                        ),
+                      ),
+                      child: Text(
+                        'QUESTION',
+                        style: GoogleFonts.inter(
+                          color: accent,
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.8,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -378,6 +447,12 @@ class _TchinModeCardFrontContent extends StatelessWidget {
                       size: 32,
                     ),
                     const SizedBox(height: 14),
+                    Container(
+                      width: 52,
+                      height: 1,
+                      color: accent.withValues(alpha: 0.36),
+                    ),
+                    const SizedBox(height: 11),
                     for (final width in const [0.86, 0.66, 0.78])
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 3),
@@ -469,24 +544,80 @@ class _TchinCornerMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: small ? 32 : 42,
-      height: small ? 32 : 42,
-      decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: accent.withValues(alpha: 0.32)),
+    final size = small ? 36.0 : 46.0;
+    final iconSize = small ? 17.0 : 22.0;
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _TchinCornerMarkPainter(accent: accent),
+            ),
+          ),
+          Icon(icon, color: accent, size: iconSize),
+        ],
       ),
-      child: Icon(icon, color: accent, size: small ? 17 : 22),
     );
+  }
+}
+
+class _TchinCornerMarkPainter extends CustomPainter {
+  final Color accent;
+
+  const _TchinCornerMarkPainter({required this.accent});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = accent.withValues(alpha: 0.7)
+      ..strokeWidth = 1.4
+      ..strokeCap = StrokeCap.round;
+    final soft = Paint()
+      ..color = accent.withValues(alpha: 0.12)
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Offset.zero & size,
+        Radius.circular(size.width * 0.25),
+      ),
+      soft,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.18, size.height * 0.16),
+      Offset(size.width * 0.52, size.height * 0.16),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.18, size.height * 0.16),
+      Offset(size.width * 0.18, size.height * 0.5),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.48, size.height * 0.84),
+      Offset(size.width * 0.82, size.height * 0.84),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.82, size.height * 0.5),
+      Offset(size.width * 0.82, size.height * 0.84),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _TchinCornerMarkPainter oldDelegate) {
+    return oldDelegate.accent != accent;
   }
 }
 
 Color _paperColor(TchinCardDesignVariant variant) {
   return switch (variant) {
-    TchinCardDesignVariant.comptoir => const Color(0xFFFFF5D9),
-    TchinCardDesignVariant.club => const Color(0xFFFFEFD4),
-    TchinCardDesignVariant.ticket => const Color(0xFFFFF9E8),
+    TchinCardDesignVariant.comptoir => const Color(0xFFFFF4DB),
+    TchinCardDesignVariant.club => const Color(0xFFFFE9C6),
+    TchinCardDesignVariant.ticket => const Color(0xFFFFFAED),
   };
 }
 
@@ -518,6 +649,7 @@ class _TchinModeCardPainter extends CustomPainter {
     );
 
     _drawVariantTexture(canvas, size);
+    _drawSoftVignette(canvas, size);
     _drawFrame(canvas, size);
 
     if (!isBack) {
@@ -529,40 +661,58 @@ class _TchinModeCardPainter extends CustomPainter {
     if (isBack) {
       return switch (variant) {
         TchinCardDesignVariant.comptoir => [
-            Color.lerp(const Color(0xFF20100B), accent, 0.16)!,
-            Color.lerp(const Color(0xFF613018), accent, 0.18)!,
-            const Color(0xFF120706),
+            const Color(0xFF17100E),
+            Color.lerp(const Color(0xFF2A1710), accent, 0.2)!,
+            const Color(0xFF090709),
           ],
         TchinCardDesignVariant.club => [
-            const Color(0xFF100916),
-            Color.lerp(const Color(0xFF23112A), accent, 0.24)!,
-            const Color(0xFF08060B),
+            const Color(0xFF0E0B12),
+            Color.lerp(const Color(0xFF241019), accent, 0.25)!,
+            const Color(0xFF07060A),
           ],
         TchinCardDesignVariant.ticket => [
-            Color.lerp(const Color(0xFF2C150C), accent, 0.12)!,
-            const Color(0xFF4B2613),
-            const Color(0xFF140805),
+            const Color(0xFF1D100B),
+            Color.lerp(const Color(0xFF3A1C11), accent, 0.18)!,
+            const Color(0xFF0A0606),
           ],
       };
     }
 
     return switch (variant) {
       TchinCardDesignVariant.comptoir => [
-          const Color(0xFFFFF8E6),
-          const Color(0xFFF3DEB6),
-          const Color(0xFFFFF2D2),
+          const Color(0xFFFFF7E5),
+          const Color(0xFFEAC67D),
+          const Color(0xFFFFEFCB),
         ],
       TchinCardDesignVariant.club => [
-          const Color(0xFF21191D),
-          Color.lerp(const Color(0xFF2C211C), accent, 0.18)!,
-          const Color(0xFF171114),
+          const Color(0xFF151015),
+          Color.lerp(const Color(0xFF301319), accent, 0.26)!,
+          const Color(0xFF0B090D),
         ],
       TchinCardDesignVariant.ticket => [
-          const Color(0xFFFFF8E6),
-          const Color(0xFFF5E8CA),
-          const Color(0xFFFFF3D5),
+          const Color(0xFFFFFAEC),
+          const Color(0xFFEED8B4),
+          const Color(0xFFFFF1D5),
         ],
     };
+  }
+
+  void _drawSoftVignette(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = RadialGradient(
+          center: const Alignment(0, -0.12),
+          radius: 0.88,
+          colors: [
+            Colors.white.withValues(alpha: isBack ? 0.04 : 0.11),
+            Colors.transparent,
+            Colors.black.withValues(alpha: isBack ? 0.28 : 0.12),
+          ],
+          stops: const [0, 0.64, 1],
+        ).createShader(rect),
+    );
   }
 
   void _drawVariantTexture(Canvas canvas, Size size) {
@@ -578,91 +728,140 @@ class _TchinModeCardPainter extends CustomPainter {
 
   void _drawComptoirTexture(Canvas canvas, Size size) {
     final line = Paint()
-      ..color = (isBack ? Colors.white : accent)
-          .withValues(alpha: isBack ? 0.05 : 0.055)
-      ..strokeWidth = isBack ? 5 : 2.2
+      ..color = (isBack ? Colors.white : const Color(0xFF25140C))
+          .withValues(alpha: isBack ? 0.055 : 0.045)
+      ..strokeWidth = isBack ? 4.5 : 1.8
       ..strokeCap = StrokeCap.round;
-    for (double x = -size.height; x < size.width; x += isBack ? 22 : 30) {
+    for (double x = -size.height; x < size.width; x += isBack ? 24 : 36) {
       canvas.drawLine(Offset(x, 0), Offset(x + size.height, size.height), line);
     }
 
     final ring = Paint()
-      ..color = accent.withValues(alpha: isBack ? 0.2 : 0.11)
+      ..color = accent.withValues(alpha: isBack ? 0.24 : 0.12)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.3;
-    for (var i = 0; i < 4; i++) {
-      final center = Offset(
-        size.width * (0.22 + (i % 2) * 0.56),
-        size.height * (0.18 + i * 0.2),
-      );
-      canvas.drawCircle(center, size.width * 0.08, ring);
-    }
+      ..strokeWidth = isBack ? 1.8 : 1.2;
+    final stampCenter = Offset(size.width * 0.5, size.height * 0.5);
+    canvas.drawCircle(stampCenter, size.width * 0.23, ring);
+    canvas.drawCircle(stampCenter, size.width * 0.16, ring);
+
+    final bar = Paint()
+      ..color = accent.withValues(alpha: isBack ? 0.32 : 0.22)
+      ..strokeWidth = isBack ? 2.2 : 1.4
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(size.width * 0.22, size.height * 0.14),
+      Offset(size.width * 0.78, size.height * 0.14),
+      bar,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.22, size.height * 0.86),
+      Offset(size.width * 0.78, size.height * 0.86),
+      bar,
+    );
   }
 
   void _drawClubTexture(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final ray = Paint()
-      ..color = accent.withValues(alpha: isBack ? 0.18 : 0.08)
-      ..strokeWidth = isBack ? 2.6 : 1.6
-      ..strokeCap = StrokeCap.round;
-    for (var i = 0; i < 22; i++) {
-      final angle = (math.pi * 2 / 22) * i;
-      final startRadius = size.width * (isBack ? 0.18 : 0.34);
-      final endRadius = size.width * (isBack ? 0.74 : 0.56);
-      canvas.drawLine(
-        Offset(
-          center.dx + math.cos(angle) * startRadius,
-          center.dy + math.sin(angle) * startRadius,
+    final glow = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          accent.withValues(alpha: isBack ? 0.24 : 0.18),
+          Colors.transparent,
+        ],
+      ).createShader(
+        Rect.fromCircle(center: center, radius: size.width * 0.68),
+      );
+    canvas.drawCircle(center, size.width * 0.68, glow);
+
+    final ring = Paint()
+      ..color = accent.withValues(alpha: isBack ? 0.34 : 0.22)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4;
+    for (final scale in const [0.32, 0.46, 0.62]) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: center,
+            width: size.width * scale,
+            height: size.height * scale * 0.68,
+          ),
+          Radius.circular(size.width * 0.08),
         ),
-        Offset(
-          center.dx + math.cos(angle) * endRadius,
-          center.dy + math.sin(angle) * endRadius,
-        ),
-        ray,
+        ring,
       );
     }
 
-    final dot = Paint()
-      ..color = Colors.white.withValues(alpha: isBack ? 0.09 : 0.04);
-    for (var i = 0; i < 26; i++) {
-      final x = size.width * (0.1 + ((i * 37) % 81) / 100);
-      final y = size.height * (0.08 + ((i * 23) % 86) / 100);
-      canvas.drawCircle(Offset(x, y), 1.2 + (i % 3) * 0.6, dot);
+    final corner = Paint()
+      ..color = Colors.white.withValues(alpha: isBack ? 0.1 : 0.055)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+    final margin = size.width * 0.16;
+    final short = size.width * 0.15;
+    for (final point in [
+      Offset(margin, margin),
+      Offset(size.width - margin, margin),
+      Offset(margin, size.height - margin),
+      Offset(size.width - margin, size.height - margin),
+    ]) {
+      final xDir = point.dx < size.width / 2 ? 1.0 : -1.0;
+      final yDir = point.dy < size.height / 2 ? 1.0 : -1.0;
+      canvas.drawLine(point, point.translate(short * xDir, 0), corner);
+      canvas.drawLine(point, point.translate(0, short * yDir), corner);
     }
   }
 
   void _drawTicketTexture(Canvas canvas, Size size) {
-    final grain = Paint()
-      ..color = Colors.black.withValues(alpha: isBack ? 0.07 : 0.04)
-      ..strokeWidth = 1;
-    for (var i = 0; i < 18; i++) {
-      final y = size.height * (0.08 + i * 0.05);
+    final rule = Paint()
+      ..color = (isBack ? Colors.white : const Color(0xFF2C160D))
+          .withValues(alpha: isBack ? 0.045 : 0.04)
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round;
+    for (var i = 0; i < 12; i++) {
+      final y = size.height * (0.2 + i * 0.052);
       canvas.drawLine(
-        Offset(size.width * 0.08, y),
-        Offset(size.width * 0.92, y + ((i % 2) == 0 ? 0.8 : -0.8)),
-        grain,
+        Offset(size.width * 0.16, y),
+        Offset(size.width * 0.84, y),
+        rule,
       );
     }
 
-    final notch = Paint()
+    final perforation = Paint()
       ..color = isBack
           ? Colors.black.withValues(alpha: 0.22)
-          : const Color(0xFFFFF8E6).withValues(alpha: 0.86);
-    const count = 9;
+          : const Color(0xFFFFF6E4).withValues(alpha: 0.96);
+    const count = 10;
     for (var i = 0; i <= count; i++) {
       final x = size.width * (i / count);
-      canvas.drawCircle(Offset(x, 0), 5, notch);
-      canvas.drawCircle(Offset(x, size.height), 5, notch);
+      canvas.drawCircle(Offset(x, 0), 4.6, perforation);
+      canvas.drawCircle(Offset(x, size.height), 4.6, perforation);
     }
+
+    final side = Paint()
+      ..color = accent.withValues(alpha: isBack ? 0.28 : 0.18)
+      ..strokeWidth = 1.2
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(size.width * 0.12, size.height * 0.18),
+      Offset(size.width * 0.12, size.height * 0.82),
+      side,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.88, size.height * 0.18),
+      Offset(size.width * 0.88, size.height * 0.82),
+      side,
+    );
   }
 
   void _drawFrame(Canvas canvas, Size size) {
     final outer = Paint()
-      ..color = accent.withValues(alpha: isBack ? 0.54 : 0.42)
+      ..color = accent.withValues(alpha: isBack ? 0.58 : 0.5)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.6;
+      ..strokeWidth = isBack ? 1.6 : 1.35;
     final inner = Paint()
-      ..color = Colors.white.withValues(alpha: isBack ? 0.13 : 0.24)
+      ..color = (variant == TchinCardDesignVariant.club && !isBack
+              ? const Color(0xFFFFEDC9)
+              : Colors.white)
+          .withValues(alpha: isBack ? 0.13 : 0.34)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -684,8 +883,8 @@ class _TchinModeCardPainter extends CustomPainter {
 
   void _drawFrontSafeArea(Canvas canvas, Size size) {
     final topLine = Paint()
-      ..color = accent.withValues(alpha: isBorderline ? 0.36 : 0.22)
-      ..strokeWidth = 1.3
+      ..color = accent.withValues(alpha: isBorderline ? 0.34 : 0.24)
+      ..strokeWidth = 1.2
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(
       Offset(size.width * 0.22, size.height * 0.18),

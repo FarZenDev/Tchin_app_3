@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,6 +7,7 @@ import '../widgets/beer_background.dart';
 import '../widgets/clean_scroll_behavior.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/question_playing_card.dart';
+import '../widgets/tchin_assets.dart';
 
 class AssetPreviewScreen extends StatelessWidget {
   const AssetPreviewScreen({super.key});
@@ -245,19 +244,19 @@ class _AssetKitGrid extends StatelessWidget {
     const items = [
       _AssetKitItem(
         label: 'Dos carte',
-        child: _MiniCardBack(accent: AppTheme.primary),
+        child: TchinCardBackAsset(accent: AppTheme.primary),
       ),
       _AssetKitItem(
         label: 'Ticket',
-        child: _ReceiptAssetIcon(),
+        child: TchinReceiptGlyph(),
       ),
       _AssetKitItem(
         label: 'Gorgees',
-        child: _CounterAssetChip(value: '02'),
+        child: TchinCounterChip(value: '02'),
       ),
       _AssetKitItem(
         label: 'Diable',
-        child: _DevilSealAsset(),
+        child: TchinDevilSeal(),
       ),
     ];
 
@@ -314,244 +313,4 @@ class _AssetKitItem extends StatelessWidget {
       ),
     );
   }
-}
-
-class _MiniCardBack extends StatelessWidget {
-  final Color accent;
-
-  const _MiniCardBack({required this.accent});
-
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 0.68,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF25100B), Color(0xFF6C2E12), Color(0xFF160907)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          border: Border.all(color: accent.withValues(alpha: 0.4), width: 1.2),
-          boxShadow: [
-            BoxShadow(
-              color: accent.withValues(alpha: 0.18),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: CustomPaint(
-          painter: _MiniBackPatternPainter(accent: accent),
-          child: Icon(
-            Icons.sports_bar_rounded,
-            color: accent.withValues(alpha: 0.9),
-            size: 32,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MiniBackPatternPainter extends CustomPainter {
-  final Color accent;
-
-  const _MiniBackPatternPainter({required this.accent});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final stripe = Paint()
-      ..color = Colors.white.withValues(alpha: 0.04)
-      ..strokeWidth = 4;
-    for (var x = -size.height; x < size.width; x += 16) {
-      canvas.drawLine(
-          Offset(x, 0), Offset(x + size.height, size.height), stripe);
-    }
-
-    final border = Paint()
-      ..color = accent.withValues(alpha: 0.42)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.4;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(9, 9, size.width - 18, size.height - 18),
-        const Radius.circular(10),
-      ),
-      border,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _MiniBackPatternPainter oldDelegate) {
-    return oldDelegate.accent != accent;
-  }
-}
-
-class _ReceiptAssetIcon extends StatelessWidget {
-  const _ReceiptAssetIcon();
-
-  @override
-  Widget build(BuildContext context) {
-    return const CustomPaint(
-      size: Size(72, 92),
-      painter: _ReceiptAssetPainter(),
-    );
-  }
-}
-
-class _ReceiptAssetPainter extends CustomPainter {
-  const _ReceiptAssetPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paper = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0xFFFFF8E6), Color(0xFFF0E4C8)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ).createShader(Offset.zero & size);
-    final body = Path()
-      ..moveTo(8, 0)
-      ..lineTo(size.width - 8, 0)
-      ..lineTo(size.width - 8, size.height - 10);
-    for (var x = size.width - 8; x >= 8; x -= 10) {
-      body
-        ..lineTo(x - 5, size.height)
-        ..lineTo(x - 10, size.height - 10);
-    }
-    body
-      ..lineTo(8, 0)
-      ..close();
-    canvas.drawPath(body, paper);
-
-    final ink = Paint()
-      ..color = Colors.black.withValues(alpha: 0.72)
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
-    canvas.drawLine(const Offset(20, 24), Offset(size.width - 20, 24), ink);
-    canvas.drawLine(const Offset(18, 42), Offset(size.width - 16, 42), ink);
-    canvas.drawLine(const Offset(18, 57), Offset(size.width - 24, 57), ink);
-    canvas.drawLine(const Offset(18, 72), Offset(size.width - 18, 72), ink);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _CounterAssetChip extends StatelessWidget {
-  final String value;
-
-  const _CounterAssetChip({required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFFC46B), Color(0xFFFF7A2F)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFFF7A2F).withValues(alpha: 0.26),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.sports_bar_rounded,
-              color: Color(0xFF23100A), size: 18),
-          const SizedBox(width: 7),
-          Text(
-            value,
-            style: GoogleFonts.robotoMono(
-              color: const Color(0xFF23100A),
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DevilSealAsset extends StatelessWidget {
-  const _DevilSealAsset();
-
-  @override
-  Widget build(BuildContext context) {
-    return const CustomPaint(
-      size: Size(86, 86),
-      painter: _DevilSealPainter(),
-    );
-  }
-}
-
-class _DevilSealPainter extends CustomPainter {
-  const _DevilSealPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width * 0.38;
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..shader = const RadialGradient(
-          colors: [Color(0xFFFFD15D), Color(0xFFFF5C2E), Color(0xFF5C0D12)],
-        ).createShader(Rect.fromCircle(center: center, radius: radius)),
-    );
-
-    final face = Paint()..color = const Color(0xFF2B070A);
-    canvas.drawCircle(center, radius * 0.52, face);
-
-    final horn = Paint()..color = const Color(0xFFFFD15D);
-    final leftHorn = Path()
-      ..moveTo(center.dx - 18, center.dy - 15)
-      ..quadraticBezierTo(
-          center.dx - 27, center.dy - 32, center.dx - 7, center.dy - 22);
-    final rightHorn = Path()
-      ..moveTo(center.dx + 18, center.dy - 15)
-      ..quadraticBezierTo(
-          center.dx + 27, center.dy - 32, center.dx + 7, center.dy - 22);
-    canvas.drawPath(
-        leftHorn,
-        horn
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 5);
-    canvas.drawPath(rightHorn, horn);
-
-    final eye = Paint()..color = const Color(0xFFFFF3D0);
-    canvas.drawCircle(center.translate(-11, -2), 4.2, eye);
-    canvas.drawCircle(center.translate(11, -2), 4.2, eye);
-    final pupil = Paint()..color = const Color(0xFF2B070A);
-    canvas.drawCircle(center.translate(-10, -1), 1.8, pupil);
-    canvas.drawCircle(center.translate(10, -1), 1.8, pupil);
-
-    final mouth = Paint()
-      ..color = const Color(0xFFFFD15D)
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      Rect.fromCenter(center: center.translate(0, 8), width: 28, height: 18),
-      0.15,
-      math.pi - 0.3,
-      false,
-      mouth,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

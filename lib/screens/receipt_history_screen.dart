@@ -8,6 +8,7 @@ import '../widgets/ad_banner_slot.dart';
 import '../widgets/beer_background.dart';
 import '../widgets/clean_scroll_behavior.dart';
 import '../widgets/game_layout.dart';
+import '../widgets/tchin_assets.dart';
 import 'stats_screen.dart';
 
 class ReceiptHistoryScreen extends StatefulWidget {
@@ -143,11 +144,7 @@ class _EmptyHistory extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.receipt_long_rounded,
-              color: AppTheme.primary,
-              size: 38,
-            ),
+            const TchinReceiptGlyph(width: 42, height: 54),
             const SizedBox(height: 12),
             Text(
               "Aucun ticket pour l'instant",
@@ -214,10 +211,8 @@ class _HistoryTicketCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: AppTheme.primary.withOpacity(0.34)),
               ),
-              child: const Icon(
-                Icons.receipt_long_rounded,
-                color: AppTheme.primary,
-                size: 26,
+              child: const Center(
+                child: TchinReceiptGlyph(width: 27, height: 34),
               ),
             ),
             const SizedBox(width: 12),

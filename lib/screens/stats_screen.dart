@@ -10,6 +10,7 @@ import '../widgets/clean_scroll_behavior.dart';
 import '../widgets/devil_laugh_animation.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
+import '../widgets/tchin_assets.dart';
 import '../theme/app_theme.dart';
 import 'devil_call_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -245,10 +246,8 @@ class _ReceiptHero extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(
-              Icons.receipt_long_rounded,
-              color: Color(0xFFFFC46B),
-              size: 30,
+            child: const Center(
+              child: TchinReceiptGlyph(width: 28, height: 36),
             ),
           ),
           const SizedBox(height: 10),
@@ -663,7 +662,7 @@ class _ReceiptHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Icon(Icons.local_bar_rounded, color: Colors.black87, size: 34),
+        const TchinReceiptGlyph(width: 36, height: 44),
         const SizedBox(height: 8),
         Text(
           'LE TCHIN BAR',
@@ -882,26 +881,10 @@ class _ReceiptPlayerLine extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                sips.toString(),
-                style: GoogleFonts.courierPrime(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.black87,
-                ),
-              ),
-              Text(
-                'GOR',
-                style: GoogleFonts.courierPrime(
-                  fontSize: 10,
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+          TchinCounterChip(
+            value: sips.toString().padLeft(2, '0'),
+            label: 'gor',
+            compact: true,
           ),
         ],
       ),
@@ -935,16 +918,12 @@ class _ReceiptTotalLine extends StatelessWidget {
               ),
             ),
             Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
+              child: Align(
                 alignment: Alignment.centerRight,
-                child: Text(
-                  '$totalSips GORGEES',
-                  style: GoogleFonts.courierPrime(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.black,
-                  ),
+                child: TchinCounterChip(
+                  value: totalSips.toString().padLeft(2, '0'),
+                  label: 'gorgees',
+                  compact: true,
                 ),
               ),
             ),
@@ -955,20 +934,30 @@ class _ReceiptTotalLine extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'DETTE DU DIABLE',
-                style: GoogleFonts.courierPrime(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF7A1D16),
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const TchinDevilSeal(size: 20),
+                  const SizedBox(width: 5),
+                  Text(
+                    'DETTE DU DIABLE',
+                    style: GoogleFonts.courierPrime(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF7A1D16),
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                '$totalLoser POINT${totalLoser > 1 ? 'S' : ''}',
-                style: GoogleFonts.courierPrime(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  color: const Color(0xFF7A1D16),
+              Flexible(
+                child: Text(
+                  '$totalLoser POINT${totalLoser > 1 ? 'S' : ''}',
+                  textAlign: TextAlign.right,
+                  style: GoogleFonts.courierPrime(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    color: const Color(0xFF7A1D16),
+                  ),
                 ),
               ),
             ],

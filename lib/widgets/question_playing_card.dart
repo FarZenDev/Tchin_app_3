@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../models/question_model.dart';
 import '../theme/app_theme.dart';
+import 'tchin_assets.dart';
 
 class QuestionPlayingCard extends StatelessWidget {
   final Widget child;
@@ -430,6 +431,15 @@ class _CardFront extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (isBorderline)
+                    Positioned(
+                      top: isCompact ? 20 : 24,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: TchinDevilSeal(size: isCompact ? 34 : 42),
+                      ),
+                    ),
                   Positioned(
                     left: isCompact ? 15 : 20,
                     top: isCompact ? 14 : 18,
@@ -519,22 +529,10 @@ class _CardBack extends StatelessWidget {
             isBorderline: isBorderline,
           ),
           child: Center(
-            child: Container(
-              width: 92,
-              height: 92,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black.withOpacity(0.16),
-                border: Border.all(
-                  color: accentColor.withOpacity(0.62),
-                  width: 1.4,
-                ),
-              ),
-              child: Icon(
-                Icons.sports_bar,
-                color: accentColor.withOpacity(0.86),
-                size: 40,
-              ),
+            child: TchinCardBackMark(
+              accent: accentColor,
+              isBorderline: isBorderline,
+              size: 94,
             ),
           ),
         ),

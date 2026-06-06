@@ -19,6 +19,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../widgets/slot_machine.dart';
 import '../widgets/question_playing_card.dart';
 import '../widgets/devil_laugh_animation.dart';
+import '../widgets/tchin_assets.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -697,13 +698,9 @@ class _QuestionCardContent extends StatelessWidget {
           children: [
             const Text("Tu dois boire :"),
             const SizedBox(height: 10),
-            Text(
-              "$sips gorgée${sips > 1 ? 's' : ''} 🍺",
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepOrange,
-              ),
+            TchinCounterChip(
+              value: sips.toString().padLeft(2, '0'),
+              label: sips > 1 ? 'gorgees' : 'gorgee',
             ),
           ],
         ),
@@ -745,7 +742,7 @@ class _BorderlineQuestionBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.local_fire_department_rounded, color: color, size: 15),
+          const TchinDevilSeal(size: 20),
           const SizedBox(width: 6),
           Flexible(
             child: Text(

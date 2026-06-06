@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/game_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/clean_scroll_behavior.dart';
 import '../widgets/devil_laugh_animation.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
@@ -42,13 +43,10 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
     final game = context.read<GameProvider>();
     _players = game.devilCallParticipants;
     _startingLoserScores = game.playerLoserScores;
-    _timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
-      if (mounted && !_resultApplied) {
-        setState(() => _elapsed += const Duration(milliseconds: 250));
-      }
-    });
     Future.delayed(const Duration(milliseconds: 4200), () {
-      if (mounted) setState(() => _introDone = true);
+      if (!mounted) return;
+      setState(() => _introDone = true);
+      _startChallengeTimer();
     });
   }
 
@@ -78,6 +76,15 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
     if (_stopOrder.length == _players.length) {
       _finishChallenge();
     }
+  }
+
+  void _startChallengeTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
+      if (mounted && !_resultApplied) {
+        setState(() => _elapsed += const Duration(milliseconds: 250));
+      }
+    });
   }
 
   void _finishChallenge() {
@@ -168,42 +175,19 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
   }
 
   Widget _buildChallenge() {
-    return Stack(
-      key: const ValueKey('challenge'),
-      children: [
-        Column(
-          children: [
-            _RulePanel(
-              remaining: _players.length - _stopOrder.length,
-              total: _players.length,
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.only(bottom: 8),
-                itemCount: _players.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (context, index) {
-                  final player = _players[index];
-                  final stoppedAt = _stopTimes[player];
-                  final rank =
-                      stoppedAt == null ? null : _stopOrder.indexOf(player);
-
-                  return _HellPlayerTile(
-                    slotNumber: index + 1,
-                    name: player,
-                    loserScore: _startingLoserScores[player] ?? 0,
-                    isActive: stoppedAt == null,
-                    stoppedAt:
-                        stoppedAt == null ? null : _formatTime(stoppedAt),
-                    rank: rank,
-                    totalPlayers: _players.length,
-                    onTap: () => _stopPlayer(player),
-                  );
-                },
+    if (_resultApplied) {
+      return ScrollConfiguration(
+        key: const ValueKey('challenge-result'),
+        behavior: const CleanScrollBehavior(),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Column(
+            children: [
+              _RulePanel(
+                remaining: _players.length - _stopOrder.length,
+                total: _players.length,
               ),
-            ),
-            if (_resultApplied) ...[
               const SizedBox(height: 12),
               _ResultPanel(
                 stopOrder: _stopOrder,
@@ -216,6 +200,50 @@ class _DevilCallScreenState extends State<DevilCallScreen> {
                 onPressed: () => Navigator.pop(context),
               ),
             ],
+          ),
+        ),
+      );
+    }
+
+    return Stack(
+      key: const ValueKey('challenge'),
+      children: [
+        Column(
+          children: [
+            _RulePanel(
+              remaining: _players.length - _stopOrder.length,
+              total: _players.length,
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ScrollConfiguration(
+                behavior: const CleanScrollBehavior(),
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(bottom: 8),
+                  itemCount: _players.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final player = _players[index];
+                    final stoppedAt = _stopTimes[player];
+                    final rank =
+                        stoppedAt == null ? null : _stopOrder.indexOf(player);
+
+                    return _HellPlayerTile(
+                      slotNumber: index + 1,
+                      name: player,
+                      loserScore: _startingLoserScores[player] ?? 0,
+                      isActive: stoppedAt == null,
+                      stoppedAt:
+                          stoppedAt == null ? null : _formatTime(stoppedAt),
+                      rank: rank,
+                      totalPlayers: _players.length,
+                      onTap: () => _stopPlayer(player),
+                    );
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ],

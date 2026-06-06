@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/sound_service.dart';
 import '../models/question_model.dart';
 import '../data/questions_data.dart';
@@ -19,13 +21,156 @@ class PlayedCard {
   });
 }
 
+class PartyReceipt {
+  final String ticketNumber;
+  final DateTime endedAt;
+  final String modeLabel;
+  final Duration duration;
+  final List<String> players;
+  final Map<String, int> playerSips;
+  final Map<String, int> playerLoserScores;
+  final int questionsPlayed;
+  final String phaseLabel;
+  final int chaosScore;
+
+  const PartyReceipt({
+    required this.ticketNumber,
+    required this.endedAt,
+    required this.modeLabel,
+    required this.duration,
+    required this.players,
+    required this.playerSips,
+    required this.playerLoserScores,
+    required this.questionsPlayed,
+    required this.phaseLabel,
+    required this.chaosScore,
+  });
+
+  factory PartyReceipt.fromGame(
+    GameProvider game, {
+    PartyReceipt? previous,
+  }) {
+    final endedAt = previous?.endedAt ?? DateTime.now();
+    return PartyReceipt(
+      ticketNumber: previous?.ticketNumber ?? _makeTicketNumber(endedAt),
+      endedAt: endedAt,
+      modeLabel: game._currentMode?.displayName ?? 'Libre',
+      duration: game._gameDuration,
+      players: List<String>.from(game._players),
+      playerSips: Map<String, int>.from(game._playerSips),
+      playerLoserScores: Map<String, int>.from(game._playerLoserScores),
+      questionsPlayed: game._questionsPlayed,
+      phaseLabel: game.partyPhaseLabel,
+      chaosScore: game.partyChaosScore,
+    );
+  }
+
+  factory PartyReceipt.fromJson(Map<String, dynamic> json) {
+    return PartyReceipt(
+      ticketNumber: (json['ticketNumber'] as String?) ?? '000000',
+      endedAt: DateTime.tryParse((json['endedAt'] as String?) ?? '') ??
+          DateTime.fromMillisecondsSinceEpoch(0),
+      modeLabel: (json['modeLabel'] as String?) ?? 'Libre',
+      duration: Duration(milliseconds: _readInt(json['durationMs'])),
+      players:
+          ((json['players'] as List?) ?? const []).whereType<String>().toList(),
+      playerSips: _readIntMap(json['playerSips']),
+      playerLoserScores: _readIntMap(json['playerLoserScores']),
+      questionsPlayed: _readInt(json['questionsPlayed']),
+      phaseLabel: (json['phaseLabel'] as String?) ?? 'Bar ferme',
+      chaosScore: _readInt(json['chaosScore']).clamp(0, 100).toInt(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ticketNumber': ticketNumber,
+      'endedAt': endedAt.toIso8601String(),
+      'modeLabel': modeLabel,
+      'durationMs': duration.inMilliseconds,
+      'players': players,
+      'playerSips': playerSips,
+      'playerLoserScores': playerLoserScores,
+      'questionsPlayed': questionsPlayed,
+      'phaseLabel': phaseLabel,
+      'chaosScore': chaosScore,
+    };
+  }
+
+  int get playerCount => players.length;
+  int get totalSips =>
+      playerSips.values.fold<int>(0, (sum, value) => sum + value);
+  int get totalLoser => playerLoserScores.values.fold<int>(
+        0,
+        (sum, score) => sum + max(0, score),
+      );
+  bool get hasLoserScores => playerLoserScores.values.any((score) => score > 0);
+
+  List<MapEntry<String, int>> get sortedPlayers {
+    final rows = <String, int>{
+      for (final player in players) player: playerSips[player] ?? 0,
+    };
+    for (final entry in playerLoserScores.entries) {
+      rows.putIfAbsent(entry.key, () => playerSips[entry.key] ?? 0);
+    }
+    final sorted = rows.entries.toList()
+      ..sort((a, b) {
+        final sipCompare = b.value.compareTo(a.value);
+        if (sipCompare != 0) return sipCompare;
+        final loserCompare = (playerLoserScores[b.key] ?? 0)
+            .compareTo(playerLoserScores[a.key] ?? 0);
+        if (loserCompare != 0) return loserCompare;
+        return a.key.toLowerCase().compareTo(b.key.toLowerCase());
+      });
+    return sorted;
+  }
+
+  List<MapEntry<String, int>> get loserRows {
+    final rows = playerLoserScores.entries
+        .where((entry) => entry.value > 0)
+        .toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    return rows;
+  }
+
+  MapEntry<String, int>? get topDrinker =>
+      sortedPlayers.isEmpty ? null : sortedPlayers.first;
+  MapEntry<String, int>? get topLoser =>
+      loserRows.isEmpty ? null : loserRows.first;
+
+  static String _makeTicketNumber(DateTime date) {
+    final source = date.millisecondsSinceEpoch.toString();
+    return source.substring(source.length - 6);
+  }
+
+  static int _readInt(Object? value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  static Map<String, int> _readIntMap(Object? value) {
+    if (value is! Map) return {};
+    return value.map(
+      (key, rawValue) => MapEntry(key.toString(), _readInt(rawValue)),
+    );
+  }
+}
+
 class GameProvider extends ChangeNotifier {
+  static const _receiptHistoryPrefsKey = 'tchin_party_receipt_history_v1';
+  static const _maxReceiptHistory = 30;
+
   // Game State
   final List<String> _players = [];
   GameMode? _currentMode;
   List<PlayedCard> _currentQuestionHistory = [];
   int _historyIndex = -1;
   bool _isGameOver = false;
+  PartyReceipt? _currentReceipt;
+  final List<PartyReceipt> _receiptHistory = [];
+  bool _receiptHistoryLoaded = false;
+  bool _disposed = false;
 
   // Stats
   Map<String, int> _playerSips = {};
@@ -52,6 +197,10 @@ class GameProvider extends ChangeNotifier {
       players: 1,
       type: QuestionType.centralGlass,
       intensityOverride: BorderlineIntensity.sale);
+
+  GameProvider() {
+    unawaited(_loadReceiptHistory());
+  }
 
   // Getters
   List<String> get players => List.unmodifiable(_players);
@@ -99,6 +248,9 @@ class GameProvider extends ChangeNotifier {
   bool get isGameOver => _isGameOver;
   bool get canSkipWithDevil =>
       _currentMode != null && !isGameOver && _historyIndex > 0;
+  PartyReceipt? get currentReceipt => _currentReceipt;
+  List<PartyReceipt> get receiptHistory => List.unmodifiable(_receiptHistory);
+  bool get receiptHistoryLoaded => _receiptHistoryLoaded;
 
   // Stats Getters
   Map<String, int> get playerSips => _playerSips;
@@ -202,6 +354,7 @@ class GameProvider extends ChangeNotifier {
     ];
     _historyIndex = 0;
     _isGameOver = false;
+    _currentReceipt = null;
     _playerSips = {};
     _playerLoserScores = {};
     _questionsPlayed = 0;
@@ -438,6 +591,7 @@ class GameProvider extends ChangeNotifier {
       ),
     );
     _historyIndex++;
+    _sealCurrentReceipt();
   }
 
   String _formatQuestionText(QuestionData question) {
@@ -487,6 +641,7 @@ class GameProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    _disposed = true;
     _gameTimer?.cancel();
     _happyHourTimer?.cancel();
     super.dispose();
@@ -595,11 +750,15 @@ class GameProvider extends ChangeNotifier {
     }
 
     _setPartyEvent('Appel du diable terminé: ${stopOrder.last} purifié');
+    if (_currentReceipt != null || _isGameOver) {
+      _sealCurrentReceipt();
+    }
     notifyListeners();
   }
 
   void resetGame() {
     _gameTimer?.cancel();
+    _happyHourTimer?.cancel();
     _gameDuration = Duration.zero;
     _isHappyHour = false;
     _sipMultiplier = 1;
@@ -612,6 +771,7 @@ class GameProvider extends ChangeNotifier {
     _currentQuestionHistory.clear();
     _historyIndex = -1;
     _isGameOver = false;
+    _currentReceipt = null;
     _recentBorderlineTags.clear();
     _playerSips.clear();
     _playerLoserScores.clear();
@@ -621,5 +781,82 @@ class GameProvider extends ChangeNotifier {
   void _setPartyEvent(String message) {
     _lastPartyEvent = message;
     _partyEventSerial++;
+  }
+
+  Future<void> refreshReceiptHistory() => _loadReceiptHistory();
+
+  Future<void> _loadReceiptHistory() async {
+    if (_receiptHistoryLoaded) return;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (_disposed) return;
+      final raw = prefs.getString(_receiptHistoryPrefsKey);
+      final loaded = <PartyReceipt>[];
+      if (raw != null && raw.isNotEmpty) {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          for (final item in decoded) {
+            if (item is Map) {
+              loaded.add(PartyReceipt.fromJson(
+                Map<String, dynamic>.from(item),
+              ));
+            }
+          }
+        }
+      }
+
+      final byTicket = <String, PartyReceipt>{
+        for (final receipt in _receiptHistory) receipt.ticketNumber: receipt,
+      };
+      for (final receipt in loaded) {
+        byTicket.putIfAbsent(receipt.ticketNumber, () => receipt);
+      }
+
+      _receiptHistory
+        ..clear()
+        ..addAll(byTicket.values);
+      _sortAndTrimReceiptHistory();
+    } catch (_) {
+      // History is non-critical; a storage failure should not block the game.
+    }
+
+    if (_disposed) return;
+    _receiptHistoryLoaded = true;
+    notifyListeners();
+  }
+
+  void _sealCurrentReceipt() {
+    final receipt = PartyReceipt.fromGame(this, previous: _currentReceipt);
+    _currentReceipt = receipt;
+    _upsertReceiptHistory(receipt);
+  }
+
+  void _upsertReceiptHistory(PartyReceipt receipt) {
+    _receiptHistory.removeWhere(
+      (item) => item.ticketNumber == receipt.ticketNumber,
+    );
+    _receiptHistory.insert(0, receipt);
+    _sortAndTrimReceiptHistory();
+    unawaited(_saveReceiptHistory());
+  }
+
+  void _sortAndTrimReceiptHistory() {
+    _receiptHistory.sort((a, b) => b.endedAt.compareTo(a.endedAt));
+    if (_receiptHistory.length > _maxReceiptHistory) {
+      _receiptHistory.removeRange(_maxReceiptHistory, _receiptHistory.length);
+    }
+  }
+
+  Future<void> _saveReceiptHistory() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final payload = jsonEncode(
+        _receiptHistory.map((receipt) => receipt.toJson()).toList(),
+      );
+      await prefs.setString(_receiptHistoryPrefsKey, payload);
+    } catch (_) {
+      // Keep the in-memory history even if persistence fails.
+    }
   }
 }

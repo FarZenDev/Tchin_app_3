@@ -10,6 +10,7 @@ import '../widgets/gradient_button.dart';
 import '../theme/app_theme.dart';
 import '../widgets/beer_background.dart';
 import '../widgets/ad_banner_slot.dart';
+import 'receipt_history_screen.dart';
 
 class PlayerEntryScreen extends StatefulWidget {
   const PlayerEntryScreen({super.key});
@@ -39,6 +40,36 @@ class _PlayerEntryScreenState extends State<PlayerEntryScreen> {
       customBackground: const BeerBackground(),
       child: Stack(
         children: [
+          // ── Bouton Historique ─────────────────────────────────────────────
+          Positioned(
+            top: 0,
+            left: 0,
+            child: IconButton(
+              tooltip: 'Historique',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ReceiptHistoryScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.receipt_long_rounded,
+                color: Colors.white54,
+                size: 22,
+              ),
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white.withOpacity(0.06),
+                fixedSize: const Size(40, 40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                ),
+              ),
+            ),
+          ),
+
           // ── Bouton Premium ─────────────────────────────────────────────────
           Positioned(
             top: 0,

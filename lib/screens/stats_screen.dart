@@ -6,6 +6,7 @@ import '../providers/game_provider.dart';
 import '../providers/premium_provider.dart';
 import '../services/ad_service.dart';
 import '../widgets/ad_banner_slot.dart';
+import '../widgets/clean_scroll_behavior.dart';
 import '../widgets/devil_laugh_animation.dart';
 import '../widgets/game_layout.dart';
 import '../widgets/gradient_button.dart';
@@ -13,8 +14,25 @@ import '../theme/app_theme.dart';
 import 'devil_call_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class StatsScreen extends StatelessWidget {
-  const StatsScreen({super.key});
+class StatsScreen extends StatefulWidget {
+  final PartyReceipt? receipt;
+
+  const StatsScreen({super.key, this.receipt});
+
+  @override
+  State<StatsScreen> createState() => _StatsScreenState();
+}
+
+class _StatsScreenState extends State<StatsScreen> {
+  late final PartyReceipt _fallbackReceipt;
+
+  @override
+  void initState() {
+    super.initState();
+    final game = context.read<GameProvider>();
+    _fallbackReceipt =
+        widget.receipt ?? game.currentReceipt ?? PartyReceipt.fromGame(game);
+  }
 
   Future<void> _launchDevilCall(BuildContext context) async {
     showGeneralDialog(
@@ -70,38 +88,11 @@ class StatsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final game = Provider.of<GameProvider>(context);
-    final now = DateTime.now();
-    final playerRows = <String, int>{
-      for (final player in game.players) player: game.playerSips[player] ?? 0,
-    };
-    for (final entry in game.playerLoserScores.entries) {
-      playerRows.putIfAbsent(entry.key, () => game.playerSips[entry.key] ?? 0);
-    }
-    final sortedPlayers = playerRows.entries.toList()
-      ..sort((a, b) {
-        final sipCompare = b.value.compareTo(a.value);
-        if (sipCompare != 0) return sipCompare;
-        final loserCompare = (game.playerLoserScores[b.key] ?? 0)
-            .compareTo(game.playerLoserScores[a.key] ?? 0);
-        if (loserCompare != 0) return loserCompare;
-        return a.key.toLowerCase().compareTo(b.key.toLowerCase());
-      });
-
-    final totalSips = sortedPlayers.fold(0, (sum, item) => sum + item.value);
-    final totalLoser = game.playerLoserScores.values
-        .fold<int>(0, (sum, score) => sum + math.max(score, 0));
-    final topDrinker = sortedPlayers.isEmpty ? null : sortedPlayers.first;
-    final loserRows = game.playerLoserScores.entries
-        .where((entry) => entry.value > 0)
-        .toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    final topLoser = loserRows.isEmpty ? null : loserRows.first;
-    final chaosScore = game.partyChaosScore;
-    final partyPhaseLabel = game.partyPhaseLabel;
-    final ticketNumber = now.millisecondsSinceEpoch
-        .toString()
-        .substring(now.millisecondsSinceEpoch.toString().length - 6);
+    final game = context.watch<GameProvider>();
+    final isHistoryView = widget.receipt != null;
+    final receipt = widget.receipt ?? game.currentReceipt ?? _fallbackReceipt;
+    final sortedPlayers = receipt.sortedPlayers;
+    final loserRows = receipt.loserRows;
 
     return GameLayout(
       showBubbles: false,
@@ -110,71 +101,86 @@ class StatsScreen extends StatelessWidget {
       outerPadding: 10,
       framePadding: 14,
       child: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _ReceiptHero(
-                totalSips: totalSips,
-                totalLoser: totalLoser,
-                playerCount: game.players.length,
-                phaseLabel: partyPhaseLabel,
-                chaosScore: chaosScore,
-              ),
-              const SizedBox(height: 14),
-              _ReceiptPaper(
-                ticketNumber: ticketNumber,
-                dateLabel: _formatReceiptDate(now),
-                modeLabel: game.currentMode?.displayName ?? 'Libre',
-                durationLabel: _formatDuration(game.gameDuration),
-                players: sortedPlayers,
-                loserScores: game.playerLoserScores,
-                loserRows: loserRows,
-                topDrinker: topDrinker,
-                topLoser: topLoser,
-                totalSips: totalSips,
-                totalLoser: totalLoser,
-                questionsPlayed: game.questionsPlayed,
-                phaseLabel: partyPhaseLabel,
-                chaosScore: chaosScore,
-              ),
-              const SizedBox(height: 18),
-              if (game.hasLoserScores) ...[
-                _DevilCallTeaser(
-                  loserRows: loserRows,
-                  totalLoser: totalLoser,
-                  chaosScore: chaosScore,
-                  onPressed: () => _launchDevilCall(context),
+        child: ScrollConfiguration(
+          behavior: const CleanScrollBehavior(),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _ReceiptHero(
+                  totalSips: receipt.totalSips,
+                  totalLoser: receipt.totalLoser,
+                  playerCount: receipt.playerCount,
+                  phaseLabel: receipt.phaseLabel,
+                  chaosScore: receipt.chaosScore,
                 ),
-                const SizedBox(height: 12),
-              ],
-              GradientButton(
-                text: "Retour au menu",
-                icon: Icons.home,
-                onPressed: () async {
-                  final premium = context.read<PremiumProvider>();
-                  await context.read<AdService>().showInterstitialIfReady(
-                        isPremium: premium.isPremium,
-                        context: context,
-                        ignoreFrequencyCap: true,
-                      );
+                const SizedBox(height: 14),
+                _ReceiptPaper(
+                  ticketNumber: receipt.ticketNumber,
+                  dateLabel: _formatReceiptDate(receipt.endedAt),
+                  modeLabel: receipt.modeLabel,
+                  durationLabel: _formatDuration(receipt.duration),
+                  players: sortedPlayers,
+                  loserScores: receipt.playerLoserScores,
+                  loserRows: loserRows,
+                  topDrinker: receipt.topDrinker,
+                  topLoser: receipt.topLoser,
+                  totalSips: receipt.totalSips,
+                  totalLoser: receipt.totalLoser,
+                  questionsPlayed: receipt.questionsPlayed,
+                  phaseLabel: receipt.phaseLabel,
+                  chaosScore: receipt.chaosScore,
+                ),
+                const SizedBox(height: 18),
+                if (!isHistoryView && receipt.hasLoserScores) ...[
+                  _DevilCallTeaser(
+                    loserRows: loserRows,
+                    totalLoser: receipt.totalLoser,
+                    chaosScore: receipt.chaosScore,
+                    onPressed: () => _launchDevilCall(context),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                if (isHistoryView)
+                  GradientButton(
+                    text: "Retour",
+                    icon: Icons.arrow_back_rounded,
+                    onPressed: () => Navigator.pop(context),
+                  )
+                else ...[
+                  GradientButton(
+                    text: "Retour au menu",
+                    icon: Icons.home,
+                    onPressed: () async {
+                      final premium = context.read<PremiumProvider>();
+                      await context.read<AdService>().showInterstitialIfReady(
+                            isPremium: premium.isPremium,
+                            context: context,
+                            ignoreFrequencyCap: true,
+                          );
 
-                  if (!context.mounted) return;
-                  Navigator.of(context).popUntil(ModalRoute.withName('/mode'));
-                },
-              ),
-              const SizedBox(height: 10),
-              TextButton(
-                onPressed: () {
-                  game.resetGame();
-                  Navigator.of(context).popUntil(ModalRoute.withName('/'));
-                },
-                child: const Text("Nouvelle partie complète",
-                    style: TextStyle(color: AppTheme.textSecondary)),
-              ),
-              const SizedBox(height: 8),
-              const AdBannerSlot(),
-            ],
+                      if (!context.mounted) return;
+                      Navigator.of(context)
+                          .popUntil(ModalRoute.withName('/mode'));
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  TextButton(
+                    onPressed: () {
+                      game.resetGame();
+                      Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                    },
+                    child: const Text(
+                      "Nouvelle partie complète",
+                      style: TextStyle(color: AppTheme.textSecondary),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                const AdBannerSlot(),
+              ],
+            ),
           ),
         ),
       ),

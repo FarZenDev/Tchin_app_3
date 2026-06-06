@@ -254,7 +254,10 @@ class _GameScreenState extends State<GameScreen> {
                             '${game.currentQuestionText}-${game.currentQuestionType}-${game.isGameOver}',
                         isSpecial: game.currentQuestionType ==
                                 QuestionType.centralGlass ||
-                            game.isHappyHour,
+                            game.isHappyHour ||
+                            game.isBorderlineQuestion,
+                        isBorderline: game.isBorderlineQuestion,
+                        intensity: game.currentQuestionIntensity,
                         child: _QuestionCardContent(
                           accentColor: themeColor,
                           game: game,
@@ -684,6 +687,12 @@ class _QuestionCardContent extends StatelessWidget {
         ),
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          if (game.isBorderlineQuestion) ...[
+            _BorderlineQuestionBadge(
+              intensity: game.currentQuestionIntensity,
+            ),
+            const SizedBox(height: 12),
+          ],
           Flexible(
             flex: 5,
             child: Center(
@@ -693,7 +702,9 @@ class _QuestionCardContent extends StatelessWidget {
                 style: GoogleFonts.bebasNeue(
                   fontSize: 36,
                   height: 1.02,
-                  color: Colors.black87,
+                  color: game.isBorderlineQuestion
+                      ? const Color(0xFF220808)
+                      : Colors.black87,
                 ),
                 minFontSize: 20,
                 maxLines: 7,
@@ -861,6 +872,59 @@ class _QuestionCardContent extends StatelessWidget {
   }
 }
 
+class _BorderlineQuestionBadge extends StatelessWidget {
+  final BorderlineIntensity intensity;
+
+  const _BorderlineQuestionBadge({
+    required this.intensity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = switch (intensity) {
+      BorderlineIntensity.sale => const Color(0xFFB2471D),
+      BorderlineIntensity.tresSale => const Color(0xFFC62828),
+      BorderlineIntensity.aucunFiltre => const Color(0xFF7A0B0B),
+    };
+
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 190),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withOpacity(0.42)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.local_fire_department_rounded, color: color, size: 15),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              intensity.displayName.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.inter(
+                color: color,
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 220.ms).scale(
+          begin: const Offset(0.96, 0.96),
+          end: const Offset(1, 1),
+          duration: 260.ms,
+          curve: Curves.easeOutCubic,
+        );
+  }
+}
+
 class _GameOverContent extends StatelessWidget {
   final Color accentColor;
 
@@ -883,14 +947,7 @@ class _GameOverContent extends StatelessWidget {
           text: "Voir les résultats",
           icon: Icons.bar_chart,
           isSmall: true,
-          onPressed: () async {
-            final premium = context.read<PremiumProvider>();
-            await context.read<AdService>().showInterstitialIfReady(
-                  isPremium: premium.isPremium,
-                  context: context,
-                );
-
-            if (!context.mounted) return;
+          onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const StatsScreen()),

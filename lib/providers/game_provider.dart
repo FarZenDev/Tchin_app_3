@@ -8,8 +8,15 @@ import '../data/questions_data.dart';
 class PlayedCard {
   final String text;
   final QuestionType type;
+  final BorderlineIntensity intensity;
+  final List<QuestionTag> tags;
 
-  PlayedCard({required this.text, required this.type});
+  PlayedCard({
+    required this.text,
+    required this.type,
+    this.intensity = BorderlineIntensity.sale,
+    this.tags = const [],
+  });
 }
 
 class GameProvider extends ChangeNotifier {
@@ -18,6 +25,7 @@ class GameProvider extends ChangeNotifier {
   GameMode? _currentMode;
   List<PlayedCard> _currentQuestionHistory = [];
   int _historyIndex = -1;
+  bool _isGameOver = false;
 
   // Stats
   Map<String, int> _playerSips = {};
@@ -29,17 +37,21 @@ class GameProvider extends ChangeNotifier {
   // Logic
   List<QuestionData> _availableQuestions = [];
   List<QuestionData> _usedQuestions = [];
+  BorderlineIntensity _borderlineIntensity = BorderlineIntensity.tresSale;
+  final List<QuestionTag> _recentBorderlineTags = [];
 
   // Central Glass Logic
   int _poursRemaining = 0;
-  final QuestionData _pourQuestion = QuestionData(
+  final QuestionData _pourQuestion = const QuestionData(
       text: "🍷 {player1}, verse un peu de ton verre dans le verre du milieu.",
       players: 1,
-      type: QuestionType.centralGlass);
-  final QuestionData _drinkQuestion = QuestionData(
+      type: QuestionType.centralGlass,
+      intensityOverride: BorderlineIntensity.sale);
+  final QuestionData _drinkQuestion = const QuestionData(
       text: "👑 {player1}, le verre du milieu est pour toi ! Cul sec ! ☠️",
       players: 1,
-      type: QuestionType.centralGlass);
+      type: QuestionType.centralGlass,
+      intensityOverride: BorderlineIntensity.sale);
 
   // Getters
   List<String> get players => List.unmodifiable(_players);
@@ -68,9 +80,23 @@ class GameProvider extends ChangeNotifier {
           ? _currentQuestionHistory[_historyIndex].type
           : QuestionType.normal;
 
+  BorderlineIntensity get currentQuestionIntensity =>
+      _historyIndex >= 0 && _historyIndex < _currentQuestionHistory.length
+          ? _currentQuestionHistory[_historyIndex].intensity
+          : BorderlineIntensity.sale;
+
+  List<QuestionTag> get currentQuestionTags =>
+      _historyIndex >= 0 && _historyIndex < _currentQuestionHistory.length
+          ? List.unmodifiable(_currentQuestionHistory[_historyIndex].tags)
+          : const [];
+
+  BorderlineIntensity get borderlineIntensity => _borderlineIntensity;
+  bool get isBorderlineQuestion =>
+      _currentMode == GameMode.borderline && _historyIndex > 0 && !isGameOver;
+
   int get playerCount => _players.length;
   bool get canStartGame => _players.length >= 2;
-  bool get isGameOver => _currentMode != null && _availableQuestions.isEmpty;
+  bool get isGameOver => _isGameOver;
   bool get canSkipWithDevil =>
       _currentMode != null && !isGameOver && _historyIndex > 0;
 
@@ -140,10 +166,24 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setGameMode(GameMode mode) {
+  void setBorderlineIntensity(BorderlineIntensity intensity) {
+    _borderlineIntensity = intensity;
+    notifyListeners();
+  }
+
+  void setGameMode(
+    GameMode mode, {
+    BorderlineIntensity? borderlineIntensity,
+    bool playSound = true,
+  }) {
+    if (borderlineIntensity != null) {
+      _borderlineIntensity = borderlineIntensity;
+    }
     _currentMode = mode;
     _resetQuestionsForMode(mode);
-    SoundService.playBeerOpen();
+    if (playSound) {
+      SoundService.playBeerOpen();
+    }
     startGameTimer(); // Start timer!
     notifyListeners();
   }
@@ -154,12 +194,14 @@ class GameProvider extends ChangeNotifier {
     // Copy the list to avoid modifying the original data
     _availableQuestions = List.from(AppData.allQuestions[modeKey] ?? []);
     _usedQuestions = [];
+    _recentBorderlineTags.clear();
     _currentQuestionHistory = [
       PlayedCard(
           text: "Prêt à jouer ? Appuyez sur Suivant !",
           type: QuestionType.normal)
     ];
     _historyIndex = 0;
+    _isGameOver = false;
     _playerSips = {};
     _playerLoserScores = {};
     _questionsPlayed = 0;
@@ -196,57 +238,29 @@ class GameProvider extends ChangeNotifier {
   }
 
   void _generateNewQuestion() {
+    if (_isGameOver) return;
     if (_currentMode == null || _players.length < 2) return;
 
     // Filter applicable questions
-    final validQuestions =
+    final playerValidQuestions =
         _availableQuestions.where((q) => q.players <= _players.length).toList();
+    final validQuestions =
+        _questionsAllowedForCurrentMode(playerValidQuestions);
 
     if (validQuestions.isEmpty) {
       // Game Over
-      _gameTimer?.cancel();
-      _happyHourTimer?.cancel();
-      _isHappyHour = false;
-      _sipMultiplier = 1;
-      _currentQuestionHistory.add(PlayedCard(
-          text: "🏁 Fin de la partie ! Plus de questions.",
-          type: QuestionType.normal));
-      _historyIndex++;
+      _endGame();
       notifyListeners();
       return;
     }
 
-    // Weighted Random Logic (Simplified from JS)
-    // 60% chance for 1 player, 40% for multi-player if enough players
-    QuestionData selected;
     final random = Random();
-
-    final singlePlayerQuestions =
-        validQuestions.where((q) => q.players == 1).toList();
-    final multiPlayerQuestions =
-        validQuestions.where((q) => q.players > 1).toList();
-
-    // Attempt to pick a question
-    // Retry logic to avoid back-to-back Central Glass questions
-    int attempts = 0;
-    do {
-      if (multiPlayerQuestions.isNotEmpty && random.nextDouble() > 0.6) {
-        selected =
-            multiPlayerQuestions[random.nextInt(multiPlayerQuestions.length)];
-      } else if (singlePlayerQuestions.isNotEmpty) {
-        selected =
-            singlePlayerQuestions[random.nextInt(singlePlayerQuestions.length)];
-      } else {
-        selected = validQuestions[random.nextInt(validQuestions.length)];
-      }
-      attempts++;
-    } while (currentQuestionType == QuestionType.centralGlass &&
-        selected.type == QuestionType.centralGlass &&
-        attempts < 5);
+    final selected = _pickQuestion(validQuestions, random);
 
     // Process selection
     _availableQuestions.remove(selected);
     _usedQuestions.add(selected);
+    _rememberQuestionTags(selected);
 
     // Central Glass Logic Check
     if (selected == _pourQuestion) {
@@ -278,10 +292,152 @@ class GameProvider extends ChangeNotifier {
       _setPartyEvent('Dernier service en approche');
     }
 
-    _currentQuestionHistory
-        .add(PlayedCard(text: formattedText, type: selected.type));
+    _currentQuestionHistory.add(
+      PlayedCard(
+        text: formattedText,
+        type: selected.type,
+        intensity: selected.intensity,
+        tags: selected.tags,
+      ),
+    );
     _historyIndex++;
     notifyListeners();
+  }
+
+  List<QuestionData> _questionsAllowedForCurrentMode(
+    List<QuestionData> questions,
+  ) {
+    if (_currentMode != GameMode.borderline) return questions;
+
+    final filtered = questions.where((question) {
+      return question.type != QuestionType.normal ||
+          question.intensity.level <= _borderlineIntensity.level;
+    }).toList();
+
+    return filtered;
+  }
+
+  QuestionData _pickQuestion(List<QuestionData> validQuestions, Random random) {
+    var pool = _questionsAllowedForCurrentPace(validQuestions);
+    pool = _questionsAvoidingRecentTags(pool);
+
+    QuestionData selected;
+    int attempts = 0;
+    do {
+      selected = _pickWeightedQuestion(pool, random);
+      attempts++;
+    } while (currentQuestionType == QuestionType.centralGlass &&
+        selected.type == QuestionType.centralGlass &&
+        attempts < 6);
+
+    return selected;
+  }
+
+  List<QuestionData> _questionsAllowedForCurrentPace(
+    List<QuestionData> questions,
+  ) {
+    if (_currentMode != GameMode.borderline) return questions;
+
+    final pacedLimit = min(_borderlineIntensity.level, _borderlinePaceLimit);
+    final paced = questions.where((question) {
+      return question.type != QuestionType.normal ||
+          question.intensity.level <= pacedLimit;
+    }).toList();
+
+    return paced.isEmpty ? questions : paced;
+  }
+
+  int get _borderlinePaceLimit {
+    if (_questionsPlayed < 4) return 1;
+    if (_questionsPlayed < 11) return 2;
+    return 3;
+  }
+
+  List<QuestionData> _questionsAvoidingRecentTags(
+    List<QuestionData> questions,
+  ) {
+    if (_currentMode != GameMode.borderline || _recentBorderlineTags.isEmpty) {
+      return questions;
+    }
+
+    final strict = questions.where((question) {
+      if (question.tags.isEmpty || question.type != QuestionType.normal) {
+        return true;
+      }
+      return !question.tags.any(_recentBorderlineTags.contains);
+    }).toList();
+
+    if (strict.length >= min(5, questions.length)) return strict;
+
+    final lastPrimaryTag = _recentBorderlineTags.last;
+    final soft = questions.where((question) {
+      return question.tags.isEmpty || !question.tags.contains(lastPrimaryTag);
+    }).toList();
+
+    return soft.isEmpty ? questions : soft;
+  }
+
+  QuestionData _pickWeightedQuestion(
+    List<QuestionData> questions,
+    Random random,
+  ) {
+    if (_currentMode == GameMode.borderline) {
+      final interactive = questions
+          .where(
+            (question) =>
+                question.isInteractive && question.type == QuestionType.normal,
+          )
+          .toList();
+
+      if (interactive.isNotEmpty && random.nextDouble() < 0.62) {
+        return _pickByPlayerCount(interactive, random);
+      }
+    }
+
+    return _pickByPlayerCount(questions, random);
+  }
+
+  QuestionData _pickByPlayerCount(List<QuestionData> questions, Random random) {
+    final singlePlayerQuestions =
+        questions.where((q) => q.players == 1).toList();
+    final multiPlayerQuestions = questions.where((q) => q.players > 1).toList();
+
+    if (multiPlayerQuestions.isNotEmpty && random.nextDouble() > 0.6) {
+      return multiPlayerQuestions[random.nextInt(multiPlayerQuestions.length)];
+    }
+    if (singlePlayerQuestions.isNotEmpty) {
+      return singlePlayerQuestions[
+          random.nextInt(singlePlayerQuestions.length)];
+    }
+    return questions[random.nextInt(questions.length)];
+  }
+
+  void _rememberQuestionTags(QuestionData question) {
+    if (_currentMode != GameMode.borderline ||
+        question.type != QuestionType.normal ||
+        question.tags.isEmpty) {
+      return;
+    }
+
+    _recentBorderlineTags.addAll(question.tags.take(3));
+    while (_recentBorderlineTags.length > 8) {
+      _recentBorderlineTags.removeAt(0);
+    }
+  }
+
+  void _endGame() {
+    _gameTimer?.cancel();
+    _happyHourTimer?.cancel();
+    _isHappyHour = false;
+    _sipMultiplier = 1;
+    _isGameOver = true;
+    _currentQuestionHistory.add(
+      PlayedCard(
+        text: "🏁 Fin de la partie ! Plus de questions.",
+        type: QuestionType.normal,
+      ),
+    );
+    _historyIndex++;
   }
 
   String _formatQuestionText(QuestionData question) {
@@ -291,22 +447,26 @@ class GameProvider extends ChangeNotifier {
 
     // Replace {player1}
     if (text.contains("{player1}")) {
-      if (available.isEmpty)
+      if (available.isEmpty) {
         available = List.from(_players); // Should not happen with validation
+      }
       String p1 = available.removeAt(random.nextInt(available.length));
       text = text.replaceAll("{player1}", p1);
     }
 
     // Replace {player2}
     if (text.contains("{player2}")) {
-      if (available.isEmpty)
+      if (available.isEmpty) {
         available = List.from(_players); // Recycle if needed
+      }
       String p2 = available.removeAt(random.nextInt(available.length));
       text = text.replaceAll("{player2}", p2);
     }
     // Replace {player3}
     if (text.contains("{player3}")) {
-      if (available.isEmpty) available = List.from(_players);
+      if (available.isEmpty) {
+        available = List.from(_players);
+      }
       String p3 = available.removeAt(random.nextInt(available.length));
       text = text.replaceAll("{player3}", p3);
     }
@@ -378,9 +538,9 @@ class GameProvider extends ChangeNotifier {
     int sips = 0;
     if (text.toLowerCase().contains("cul sec")) {
       sips = 5;
-    } else if (text.toLowerCase().contains("shot"))
+    } else if (text.toLowerCase().contains("shot")) {
       sips = 2;
-    else {
+    } else {
       final highlightRegex = RegExp(r'(\d+) gorgée');
       final match = highlightRegex.firstMatch(text);
       if (match != null) {
@@ -451,6 +611,8 @@ class GameProvider extends ChangeNotifier {
     _currentMode = null;
     _currentQuestionHistory.clear();
     _historyIndex = -1;
+    _isGameOver = false;
+    _recentBorderlineTags.clear();
     _playerSips.clear();
     _playerLoserScores.clear();
     notifyListeners();

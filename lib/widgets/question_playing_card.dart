@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../models/question_model.dart';
 import '../theme/app_theme.dart';
 
 class QuestionPlayingCard extends StatelessWidget {
@@ -10,6 +11,8 @@ class QuestionPlayingCard extends StatelessWidget {
   final Color accentColor;
   final String modeLabel;
   final bool isSpecial;
+  final bool isBorderline;
+  final BorderlineIntensity intensity;
   final Object? animationKey;
 
   const QuestionPlayingCard({
@@ -18,6 +21,8 @@ class QuestionPlayingCard extends StatelessWidget {
     required this.accentColor,
     required this.modeLabel,
     this.isSpecial = false,
+    this.isBorderline = false,
+    this.intensity = BorderlineIntensity.sale,
     this.animationKey,
   });
 
@@ -41,6 +46,7 @@ class QuestionPlayingCard extends StatelessWidget {
                   return _CardDealTransition(
                     animation: animation,
                     accentColor: accentColor,
+                    isBorderline: isBorderline,
                     child: child,
                   );
                 },
@@ -49,6 +55,8 @@ class QuestionPlayingCard extends StatelessWidget {
                   accentColor: accentColor,
                   modeLabel: modeLabel,
                   isSpecial: isSpecial,
+                  isBorderline: isBorderline,
+                  intensity: intensity,
                   isCompact: isCompact,
                   child: child,
                 ),
@@ -66,6 +74,8 @@ class _CardDeck extends StatelessWidget {
   final Color accentColor;
   final String modeLabel;
   final bool isSpecial;
+  final bool isBorderline;
+  final BorderlineIntensity intensity;
   final bool isCompact;
 
   const _CardDeck({
@@ -74,6 +84,8 @@ class _CardDeck extends StatelessWidget {
     required this.accentColor,
     required this.modeLabel,
     required this.isSpecial,
+    required this.isBorderline,
+    required this.intensity,
     required this.isCompact,
   });
 
@@ -90,7 +102,10 @@ class _CardDeck extends StatelessWidget {
           child: Transform.rotate(
             angle: 0.075,
             child: _CardBack(
-              accentColor: accentColor.withOpacity(0.82),
+              accentColor: isBorderline
+                  ? const Color(0xFFFF3D3D).withOpacity(0.88)
+                  : accentColor.withOpacity(0.82),
+              isBorderline: isBorderline,
             ),
           ),
         ),
@@ -102,7 +117,10 @@ class _CardDeck extends StatelessWidget {
           child: Transform.rotate(
             angle: -0.06,
             child: _CardBack(
-              accentColor: AppTheme.secondary.withOpacity(0.72),
+              accentColor: isBorderline
+                  ? const Color(0xFF5A1212).withOpacity(0.86)
+                  : AppTheme.secondary.withOpacity(0.72),
+              isBorderline: isBorderline,
             ),
           ),
         ),
@@ -111,6 +129,8 @@ class _CardDeck extends StatelessWidget {
             accentColor: accentColor,
             modeLabel: modeLabel,
             isSpecial: isSpecial,
+            isBorderline: isBorderline,
+            intensity: intensity,
             child: child,
           ),
         ),
@@ -122,11 +142,13 @@ class _CardDeck extends StatelessWidget {
 class _CardDealTransition extends StatelessWidget {
   final Animation<double> animation;
   final Color accentColor;
+  final bool isBorderline;
   final Widget child;
 
   const _CardDealTransition({
     required this.animation,
     required this.accentColor,
+    required this.isBorderline,
     required this.child,
   });
 
@@ -199,8 +221,12 @@ class _CardDealTransition extends StatelessWidget {
                     ..rotateY(angle),
                   child: Transform.scale(
                     scale: 0.88 + (0.12 * deal),
-                    child:
-                        showBack ? _CardBack(accentColor: accentColor) : child,
+                    child: showBack
+                        ? _CardBack(
+                            accentColor: accentColor,
+                            isBorderline: isBorderline,
+                          )
+                        : child,
                   ),
                 ),
               ),
@@ -294,12 +320,16 @@ class _CardFront extends StatelessWidget {
   final Color accentColor;
   final String modeLabel;
   final bool isSpecial;
+  final bool isBorderline;
+  final BorderlineIntensity intensity;
 
   const _CardFront({
     required this.child,
     required this.accentColor,
     required this.modeLabel,
     required this.isSpecial,
+    required this.isBorderline,
+    required this.intensity,
   });
 
   @override
@@ -322,24 +352,33 @@ class _CardFront extends StatelessWidget {
                 offset: const Offset(0, 18),
               ),
               BoxShadow(
-                color: accentColor.withOpacity(isSpecial ? 0.45 : 0.22),
-                blurRadius: isSpecial ? 72 : 48,
-                spreadRadius: isSpecial ? 4 : 0,
+                color: isBorderline
+                    ? const Color(0xFFFF3028)
+                        .withOpacity(0.28 + (0.07 * intensity.level))
+                    : accentColor.withOpacity(isSpecial ? 0.45 : 0.22),
+                blurRadius: isBorderline ? 80 : (isSpecial ? 72 : 48),
+                spreadRadius: isBorderline ? 5 : (isSpecial ? 4 : 0),
               ),
             ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(radius),
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFFFF9EA),
-                    Color(0xFFF7E9C4),
-                    Color(0xFFFFF4D6),
-                  ],
+                  colors: isBorderline
+                      ? const [
+                          Color(0xFFFFF0D7),
+                          Color(0xFFF4C7A5),
+                          Color(0xFFFFE4C0),
+                        ]
+                      : const [
+                          Color(0xFFFFF9EA),
+                          Color(0xFFF7E9C4),
+                          Color(0xFFFFF4D6),
+                        ],
                 ),
               ),
               child: Stack(
@@ -347,10 +386,33 @@ class _CardFront extends StatelessWidget {
                   Positioned.fill(
                     child: RepaintBoundary(
                       child: CustomPaint(
-                        painter: _CardFacePainter(accentColor: accentColor),
+                        painter: _CardFacePainter(
+                          accentColor: accentColor,
+                          isBorderline: isBorderline,
+                          intensity: intensity,
+                        ),
                       ),
                     ),
                   ),
+                  if (isBorderline)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: RadialGradient(
+                              center: Alignment.topCenter,
+                              radius: 0.92,
+                              colors: [
+                                const Color(0xFFFF3D3D).withOpacity(0.14),
+                                Colors.transparent,
+                                const Color(0xFF250505).withOpacity(0.16),
+                              ],
+                              stops: const [0, 0.58, 1],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   Positioned.fill(
                     child: Padding(
                       padding: EdgeInsets.all(isCompact ? 11 : 14),
@@ -359,8 +421,10 @@ class _CardFront extends StatelessWidget {
                           borderRadius:
                               BorderRadius.circular(isCompact ? 15 : 18),
                           border: Border.all(
-                            color: accentColor.withOpacity(0.34),
-                            width: 1.6,
+                            color: isBorderline
+                                ? const Color(0xFF9B1717).withOpacity(0.48)
+                                : accentColor.withOpacity(0.34),
+                            width: isBorderline ? 1.9 : 1.6,
                           ),
                         ),
                       ),
@@ -392,6 +456,8 @@ class _CardFront extends StatelessWidget {
                     child: _CardFooter(
                       accentColor: accentColor,
                       modeLabel: modeLabel,
+                      isBorderline: isBorderline,
+                      intensity: intensity,
                     ),
                   ),
                   Positioned.fill(
@@ -417,18 +483,24 @@ class _CardFront extends StatelessWidget {
 
 class _CardBack extends StatelessWidget {
   final Color accentColor;
+  final bool isBorderline;
 
-  const _CardBack({required this.accentColor});
+  const _CardBack({
+    required this.accentColor,
+    this.isBorderline = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF30160F), Color(0xFF6C2E12), Color(0xFF170B08)],
+          colors: isBorderline
+              ? const [Color(0xFF1C0606), Color(0xFF671414), Color(0xFF100404)]
+              : const [Color(0xFF30160F), Color(0xFF6C2E12), Color(0xFF170B08)],
         ),
         border: Border.all(color: Colors.white.withOpacity(0.14), width: 1.2),
         boxShadow: [
@@ -442,7 +514,10 @@ class _CardBack extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
         child: CustomPaint(
-          painter: _CardBackPainter(accentColor: accentColor),
+          painter: _CardBackPainter(
+            accentColor: accentColor,
+            isBorderline: isBorderline,
+          ),
           child: Center(
             child: Container(
               width: 92,
@@ -496,11 +571,22 @@ class _CardCorner extends StatelessWidget {
 class _CardFooter extends StatelessWidget {
   final Color accentColor;
   final String modeLabel;
+  final bool isBorderline;
+  final BorderlineIntensity intensity;
 
-  const _CardFooter({required this.accentColor, required this.modeLabel});
+  const _CardFooter({
+    required this.accentColor,
+    required this.modeLabel,
+    required this.isBorderline,
+    required this.intensity,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final label = isBorderline
+        ? '${modeLabel.toUpperCase()} · ${intensity.displayName.toUpperCase()}'
+        : modeLabel.toUpperCase();
+
     return Row(
       children: [
         Expanded(
@@ -509,11 +595,13 @@ class _CardFooter extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
-            modeLabel.toUpperCase(),
+            label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.inter(
-              color: Colors.black.withOpacity(0.48),
+              color: isBorderline
+                  ? const Color(0xFF5F1010).withOpacity(0.72)
+                  : Colors.black.withOpacity(0.48),
               fontSize: 10,
               fontWeight: FontWeight.w800,
             ),
@@ -529,13 +617,20 @@ class _CardFooter extends StatelessWidget {
 
 class _CardFacePainter extends CustomPainter {
   final Color accentColor;
+  final bool isBorderline;
+  final BorderlineIntensity intensity;
 
-  const _CardFacePainter({required this.accentColor});
+  const _CardFacePainter({
+    required this.accentColor,
+    required this.isBorderline,
+    required this.intensity,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final watermark = Paint()
-      ..color = accentColor.withOpacity(0.055)
+      ..color = (isBorderline ? const Color(0xFF9B1717) : accentColor)
+          .withOpacity(isBorderline ? 0.08 : 0.055)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     final center = Offset(size.width / 2, size.height / 2);
@@ -543,7 +638,8 @@ class _CardFacePainter extends CustomPainter {
     canvas.drawCircle(center, size.width * 0.33, watermark);
 
     final rayPaint = Paint()
-      ..color = accentColor.withOpacity(0.045)
+      ..color = (isBorderline ? const Color(0xFFFF3D3D) : accentColor)
+          .withOpacity(isBorderline ? 0.055 : 0.045)
       ..strokeWidth = 1;
     for (var i = 0; i < 18; i++) {
       final angle = (2 * pi / 18) * i;
@@ -557,24 +653,53 @@ class _CardFacePainter extends CustomPainter {
       );
       canvas.drawLine(start, end, rayPaint);
     }
+
+    if (isBorderline) {
+      final smokePaint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.2
+        ..strokeCap = StrokeCap.round
+        ..color = const Color(0xFF7A1010).withOpacity(0.09);
+
+      for (var i = 0; i < 4 + intensity.level; i++) {
+        final y = size.height * (0.18 + i * 0.13);
+        final path = Path()
+          ..moveTo(size.width * 0.08, y)
+          ..cubicTo(
+            size.width * 0.28,
+            y - 28,
+            size.width * 0.56,
+            y + 32,
+            size.width * 0.92,
+            y - 6,
+          );
+        canvas.drawPath(path, smokePaint);
+      }
+    }
   }
 
   @override
   bool shouldRepaint(covariant _CardFacePainter oldDelegate) {
-    return oldDelegate.accentColor != accentColor;
+    return oldDelegate.accentColor != accentColor ||
+        oldDelegate.isBorderline != isBorderline ||
+        oldDelegate.intensity != intensity;
   }
 }
 
 class _CardBackPainter extends CustomPainter {
   final Color accentColor;
+  final bool isBorderline;
 
-  const _CardBackPainter({required this.accentColor});
+  const _CardBackPainter({
+    required this.accentColor,
+    required this.isBorderline,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final stripePaint = Paint()
-      ..color = Colors.white.withOpacity(0.045)
-      ..strokeWidth = 7;
+      ..color = Colors.white.withOpacity(isBorderline ? 0.055 : 0.045)
+      ..strokeWidth = isBorderline ? 9 : 7;
     for (double x = -size.height; x < size.width; x += 26) {
       canvas.drawLine(
         Offset(x, 0),
@@ -584,7 +709,7 @@ class _CardBackPainter extends CustomPainter {
     }
 
     final borderPaint = Paint()
-      ..color = accentColor.withOpacity(0.35)
+      ..color = accentColor.withOpacity(isBorderline ? 0.52 : 0.35)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     final rect = Rect.fromLTWH(16, 16, size.width - 32, size.height - 32);
@@ -606,6 +731,7 @@ class _CardBackPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _CardBackPainter oldDelegate) {
-    return oldDelegate.accentColor != accentColor;
+    return oldDelegate.accentColor != accentColor ||
+        oldDelegate.isBorderline != isBorderline;
   }
 }

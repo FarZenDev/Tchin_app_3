@@ -4,12 +4,191 @@ class QuestionData {
   final String text;
   final int players;
   final QuestionType type;
+  final List<QuestionTag> tagsOverride;
+  final BorderlineIntensity? intensityOverride;
 
   const QuestionData({
     required this.text,
     required this.players,
     this.type = QuestionType.normal,
+    this.tagsOverride = const [],
+    this.intensityOverride,
   });
+
+  List<QuestionTag> get tags {
+    if (tagsOverride.isNotEmpty) return tagsOverride;
+    return _inferTags(text);
+  }
+
+  BorderlineIntensity get intensity {
+    return intensityOverride ?? _inferIntensity(text, tags);
+  }
+
+  bool get isInteractive {
+    return players > 1 ||
+        tags.any(
+          (tag) =>
+              tag == QuestionTag.balance ||
+              tag == QuestionTag.proces ||
+              tag == QuestionTag.choixImpossible,
+        );
+  }
+
+  static List<QuestionTag> _inferTags(String text) {
+    final lower = text.toLowerCase();
+    final tags = <QuestionTag>{};
+
+    void addIf(bool condition, QuestionTag tag) {
+      if (condition) tags.add(tag);
+    }
+
+    bool hasWord(String word) {
+      final escaped = RegExp.escape(word);
+      return RegExp(
+        '(^|[^a-zà-ÿ])$escaped([^a-zà-ÿ]|\$)',
+        caseSensitive: false,
+      ).hasMatch(lower);
+    }
+
+    addIf(
+      lower.contains('sexe') ||
+          lower.contains('sexuel') ||
+          lower.contains('désir') ||
+          lower.contains('flirt') ||
+          lower.contains('fantasme') ||
+          lower.contains('coucher') ||
+          lower.contains('intime') ||
+          lower.contains('coup d\'un soir'),
+      QuestionTag.sexe,
+    );
+    addIf(
+      lower.contains('drogue') ||
+          lower.contains('substance') ||
+          lower.contains('consommation') ||
+          lower.contains('illégal'),
+      QuestionTag.drogue,
+    );
+    addIf(
+      lower.contains('after') ||
+          lower.contains('2h du matin') ||
+          lower.contains('fin de soirée'),
+      QuestionTag.after,
+    );
+    addIf(
+      lower.contains('mensonge') ||
+          lower.contains('menti') ||
+          lower.contains('mentir') ||
+          lower.contains('manipul') ||
+          lower.contains('double jeu'),
+      QuestionTag.mensonge,
+    );
+    addIf(
+      hasWord('ex') ||
+          lower.contains('couple') ||
+          lower.contains('partenaire') ||
+          lower.contains('relation') ||
+          lower.contains('tromp'),
+      QuestionTag.ex,
+    );
+    addIf(
+      lower.contains('trahison') ||
+          lower.contains('couvert') ||
+          lower.contains('mauvaise fréquentation'),
+      QuestionTag.trahison,
+    );
+    addIf(
+      lower.contains('argent') ||
+          lower.contains('dette') ||
+          lower.contains('paiement') ||
+          lower.contains('dépensé'),
+      QuestionTag.argent,
+    );
+    addIf(
+      lower.contains('dm') ||
+          lower.contains('message') ||
+          lower.contains('conversation'),
+      QuestionTag.dm,
+    );
+    addIf(
+      lower.contains('téléphone') ||
+          lower.contains('historique') ||
+          lower.contains('contact') ||
+          lower.contains('appli') ||
+          lower.contains('recherche internet'),
+      QuestionTag.telephone,
+    );
+    addIf(
+      lower.contains('procès') ||
+          lower.contains('tribunal') ||
+          lower.contains('accus') ||
+          lower.contains('juge') ||
+          lower.contains('verdict') ||
+          lower.contains('dossier judiciaire'),
+      QuestionTag.proces,
+    );
+    addIf(
+      lower.contains('choix impossible') ||
+          lower.contains('tu préfères') ||
+          lower.contains('choisit entre'),
+      QuestionTag.choixImpossible,
+    );
+    addIf(
+      lower.contains('balance') ||
+          lower.contains('qui ici') ||
+          lower.contains('votez') ||
+          lower.contains('la table juge') ||
+          lower.contains('personne ici'),
+      QuestionTag.balance,
+    );
+    addIf(
+      lower.contains('toxique') ||
+          lower.contains('jalous') ||
+          lower.contains('ego'),
+      QuestionTag.toxicite,
+    );
+    addIf(lower.contains('ego'), QuestionTag.ego);
+    addIf(
+      lower.contains('honte') ||
+          lower.contains('sale') ||
+          lower.contains('tabou') ||
+          lower.contains('sans filtre') ||
+          lower.contains('dossier'),
+      QuestionTag.honte,
+    );
+
+    return tags.toList(growable: false);
+  }
+
+  static BorderlineIntensity _inferIntensity(
+    String text,
+    List<QuestionTag> tags,
+  ) {
+    final lower = text.toLowerCase();
+
+    if (lower.contains('cul sec') ||
+        lower.contains('7 gorg') ||
+        lower.contains('sans filtre') ||
+        lower.contains('vérité sexuelle') ||
+        lower.contains('détruire un couple') ||
+        lower.contains('double jeu') ||
+        lower.contains('illégal') ||
+        lower.contains('drogue')) {
+      return BorderlineIntensity.aucunFiltre;
+    }
+
+    if (lower.contains('shot') ||
+        lower.contains('6 gorg') ||
+        lower.contains('5 gorg') ||
+        tags.contains(QuestionTag.sexe) ||
+        tags.contains(QuestionTag.drogue) ||
+        tags.contains(QuestionTag.proces) ||
+        tags.contains(QuestionTag.choixImpossible) ||
+        tags.contains(QuestionTag.trahison)) {
+      return BorderlineIntensity.tresSale;
+    }
+
+    return BorderlineIntensity.sale;
+  }
 }
 
 class AppData {
@@ -1233,6 +1412,38 @@ class AppData {
       QuestionData(
           text:
               "💊 {player1}, quelle règle de soirée tu as déjà ignorée alors que tu savais que c'était une mauvaise idée ? Réponse ou 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "⚖️ La table ouvre le dossier de {player1} : mensonge, désir ou ego. Le thème majoritaire devient sa question, réponse ou 6.",
+          players: 1),
+      QuestionData(
+          text:
+              "🔥 Balance quelqu'un : qui ici pourrait mentir à deux personnes dans la même soirée et dormir tranquille ? Il boit 5.",
+          players: 1),
+      QuestionData(
+          text:
+              "🧨 {player1}, {player2} choisit ton choix impossible : DM affichés, ex appelé ou historique lu. Tu choisis le moins pire ou bois 6.",
+          players: 2),
+      QuestionData(
+          text:
+              "💀 Vote sale : qui ici a le plus de chances d'être le problème dans une relation ? Verdict = 4 gorgées et droit de réponse.",
+          players: 1),
+      QuestionData(
+          text:
+              "🕳️ {player1}, donne une vérité qui ferait dire à la table on ne te voyait pas comme ça. Refus = cul sec.",
+          players: 1),
+      QuestionData(
+          text:
+              "💬 {player1}, {player2} invente le titre de ton pire dossier DM. Si la table y croit, tu bois 5, sinon {player2} boit 3.",
+          players: 2),
+      QuestionData(
+          text:
+              "☠️ Procès collectif : chaque joueur donne un chef d'accusation à {player1}. Il choisit le pire et répond ou boit 7.",
+          players: 1),
+      QuestionData(
+          text:
+              "😈 {player1}, choisis quelqu'un qui aurait le plus besoin d'un avocat ce soir. Il boit 4 et peut révéler une contre-accusation.",
           players: 1),
       QuestionData(
           text:

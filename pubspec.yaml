@@ -59,6 +59,7 @@ flutter:
 
   assets:
     - assets/
+    - assets/cards/
     - assets/devil_laugh_frames/
     - assets/devil_call/hell_bar_background_clean.png
     - assets/devil_call/hell_bar_atmosphere_overlay.png

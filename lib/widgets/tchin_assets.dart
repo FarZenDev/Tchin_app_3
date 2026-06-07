@@ -200,6 +200,15 @@ class TchinModeCardSurface extends StatelessWidget {
           ),
           if (!isBack)
             Positioned.fill(
+              child: _TchinCardFaceInk(
+                modeName: modeName,
+                accent: accent,
+                icon: icon,
+                isBorderline: isBorderline,
+              ),
+            ),
+          if (!isBack)
+            Positioned.fill(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
                   horizontalPadding,
@@ -213,6 +222,313 @@ class TchinModeCardSurface extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _TchinCardFaceInk extends StatelessWidget {
+  final String modeName;
+  final Color accent;
+  final IconData icon;
+  final bool isBorderline;
+
+  const _TchinCardFaceInk({
+    required this.modeName,
+    required this.accent,
+    required this.icon,
+    required this.isBorderline,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ink =
+        isBorderline ? const Color(0xFF35100D) : const Color(0xFF2C211B);
+    final markColor = isBorderline ? const Color(0xFFCF372A) : accent;
+
+    return IgnorePointer(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          final height = constraints.maxHeight;
+
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _TchinCardFaceInkPainter(
+                    accent: markColor,
+                    ink: ink,
+                    isBorderline: isBorderline,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: height * 0.205,
+                left: width * 0.18,
+                right: width * 0.18,
+                child: _TchinFaceLabel(
+                  text: 'DÉFI DU SOIR',
+                  accent: markColor,
+                  ink: ink,
+                  strong: true,
+                ),
+              ),
+              Positioned(
+                bottom: height * 0.172,
+                left: width * 0.18,
+                right: width * 0.18,
+                child: _TchinFaceLabel(
+                  text: modeName.toUpperCase(),
+                  accent: markColor,
+                  ink: ink,
+                ),
+              ),
+              Positioned(
+                left: width * 0.052,
+                top: height * 0.42,
+                child: _TchinSideStamp(
+                  text: 'TCHIN',
+                  accent: markColor,
+                  ink: ink,
+                ),
+              ),
+              Positioned(
+                right: width * 0.052,
+                top: height * 0.42,
+                child: _TchinSideStamp(
+                  text: 'BAR',
+                  accent: markColor,
+                  ink: ink,
+                  flipped: true,
+                ),
+              ),
+              Positioned(
+                left: width * 0.107,
+                top: height * 0.245,
+                child: _TchinFacePip(icon: icon, color: markColor),
+              ),
+              Positioned(
+                right: width * 0.107,
+                bottom: height * 0.232,
+                child: Transform.rotate(
+                  angle: math.pi,
+                  child: _TchinFacePip(icon: icon, color: markColor),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _TchinFaceLabel extends StatelessWidget {
+  final String text;
+  final Color accent;
+  final Color ink;
+  final bool strong;
+
+  const _TchinFaceLabel({
+    required this.text,
+    required this.accent,
+    required this.ink,
+    this.strong = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: strong ? 2 : 1.5,
+            color: accent.withValues(alpha: strong ? 0.34 : 0.24),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.inter(
+              color: ink.withValues(alpha: strong ? 0.24 : 0.18),
+              fontSize: strong ? 9.5 : 8.5,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: strong ? 2 : 1.5,
+            color: accent.withValues(alpha: strong ? 0.34 : 0.24),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TchinSideStamp extends StatelessWidget {
+  final String text;
+  final Color accent;
+  final Color ink;
+  final bool flipped;
+
+  const _TchinSideStamp({
+    required this.text,
+    required this.accent,
+    required this.ink,
+    this.flipped = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: flipped ? math.pi / 2 : -math.pi / 2,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 18,
+            height: 1.5,
+            color: accent.withValues(alpha: 0.28),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: GoogleFonts.inter(
+              color: ink.withValues(alpha: 0.15),
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Container(
+            width: 18,
+            height: 1.5,
+            color: accent.withValues(alpha: 0.28),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TchinFacePip extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+
+  const _TchinFacePip({required this.icon, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 34,
+      height: 34,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color.withValues(alpha: 0.075),
+        border: Border.all(color: color.withValues(alpha: 0.26), width: 1),
+      ),
+      child: Icon(
+        icon,
+        color: color.withValues(alpha: 0.28),
+        size: 17,
+      ),
+    );
+  }
+}
+
+class _TchinCardFaceInkPainter extends CustomPainter {
+  final Color accent;
+  final Color ink;
+  final bool isBorderline;
+
+  const _TchinCardFaceInkPainter({
+    required this.accent,
+    required this.ink,
+    required this.isBorderline,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final panel = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        size.width * 0.18,
+        size.height * 0.26,
+        size.width * 0.64,
+        size.height * 0.42,
+      ),
+      Radius.circular(size.width * 0.035),
+    );
+
+    canvas.drawRRect(
+      panel,
+      Paint()
+        ..color = Colors.white.withValues(alpha: isBorderline ? 0.05 : 0.035)
+        ..style = PaintingStyle.fill,
+    );
+    canvas.drawRRect(
+      panel,
+      Paint()
+        ..color = accent.withValues(alpha: isBorderline ? 0.22 : 0.16)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.1,
+    );
+
+    final rulePaint = Paint()
+      ..color = ink.withValues(alpha: 0.07)
+      ..strokeWidth = 1.1
+      ..strokeCap = StrokeCap.round;
+
+    for (var i = 0; i < 6; i++) {
+      final y = size.height * (0.31 + (i * 0.062));
+      final path = Path()
+        ..moveTo(size.width * 0.26, y)
+        ..cubicTo(
+          size.width * 0.39,
+          y - 5,
+          size.width * 0.48,
+          y + 4,
+          size.width * 0.74,
+          y - 2,
+        );
+      canvas.drawPath(path, rulePaint);
+    }
+
+    final dotPaint = Paint()
+      ..color = accent.withValues(alpha: isBorderline ? 0.22 : 0.16);
+    for (var side = 0; side < 2; side++) {
+      final x = side == 0 ? size.width * 0.135 : size.width * 0.865;
+      for (var i = 0; i < 11; i++) {
+        final y = size.height * (0.265 + (i * 0.046));
+        canvas.drawCircle(Offset(x, y), 1.25, dotPaint);
+      }
+    }
+
+    final slashPaint = Paint()
+      ..color = accent.withValues(alpha: 0.075)
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round;
+    for (var i = 0; i < 5; i++) {
+      final start =
+          Offset(size.width * (0.25 + i * 0.075), size.height * 0.705);
+      canvas.drawLine(
+        start,
+        start.translate(size.width * 0.08, -size.height * 0.036),
+        slashPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _TchinCardFaceInkPainter oldDelegate) {
+    return oldDelegate.accent != accent ||
+        oldDelegate.ink != ink ||
+        oldDelegate.isBorderline != isBorderline;
   }
 }
 
